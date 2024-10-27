@@ -1,4 +1,6 @@
-public class pharmacist {
+package healthcare.users;
+
+public class Pharmacist {
     // Display the pharmacist menu
     public static void showPharmacistMenu() {
         System.out.println("===== Pharmacist Menu =====");

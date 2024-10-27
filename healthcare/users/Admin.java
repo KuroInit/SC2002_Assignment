@@ -1,4 +1,6 @@
-public class admin {
+package healthcare.users;
+
+public class Admin {
     // Display the administrator menu
     public static void showAdministratorMenu() {
         System.out.println("===== Administrator Menu =====");

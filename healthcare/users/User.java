@@ -1,9 +1,11 @@
+package healthcare.users;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class user {
+public class User {
     public static Map<String, String> userPasswordStaffMap = new HashMap<>(); // Staff credentials
     public static Map<String, String> userPasswordPatientMap = new HashMap<>(); // Patient credentials
     public static Map<String, String> userRoleStaffMap = new HashMap<>(); // Staff roles
@@ -73,7 +75,6 @@ public class user {
         saveUserDataToFile(); // Save staff data
         savePatientDataToFile(); // Save patient data
         System.out.println("Password changed successfully!");
-        sc.close();
     }
 
     // Set default staff users
