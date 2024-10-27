@@ -1,4 +1,4 @@
-public class Admin {
+public class admin {
     // Display the administrator menu
     public static void showAdministratorMenu() {
         System.out.println("===== Administrator Menu =====");
