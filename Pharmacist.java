@@ -1,4 +1,4 @@
-public class Pharmacist {
+public class pharmacist {
     // Display the pharmacist menu
     public static void showPharmacistMenu() {
         System.out.println("===== Pharmacist Menu =====");

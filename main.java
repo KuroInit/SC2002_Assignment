@@ -66,7 +66,7 @@ public class main {
                 doctor.showDoctorMenu();
                 break;
             case "Pharmacist":
-                Pharmacist.showPharmacistMenu();
+                pharmacist.showPharmacistMenu();
                 break;
             case "Administrator":
                 admin.showAdministratorMenu();
