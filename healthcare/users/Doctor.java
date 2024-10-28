@@ -171,6 +171,24 @@ public class Doctor {
         return "Doctor ID: " + doctorID + "\nName: " + name + "\nSpecialization: " + specialization;
     }
 
+    public void doctormenu() {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        do {
+            showDoctorMenu();
+            System.out.println("Enter your choice: ");
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    viewSchedule();
+                case 2:
+                    getAppointments();
+                default:
+                    System.out.println("Invalid choice. Please choose a valid option.");
+            }
+        } while (choice != 9);
+    }
+
     public static void showDoctorMenu() {
         System.out.println("===== Doctor Menu =====");
         System.out.println("1. View Patient Medical Records");
