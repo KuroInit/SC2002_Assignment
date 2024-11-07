@@ -176,6 +176,8 @@ public class Patient {
         String doctorId = scanner.nextLine();
         System.out.print("Enter Appointment Date (YYYY-MM-DD): ");
         String date = scanner.nextLine();
+        System.out.print("Enter Appointment Time (HH:MM): ");
+        String time = scanner.nextLine();
     
         // Generate a random appointment ID for uniqueness
         String appointmentId = String.valueOf(new Random().nextInt(9000) + 1000); // 4-digit ID
@@ -185,7 +187,7 @@ public class Patient {
         String consultationNotes = "N/A";
     
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("appointmentRequests.csv", true))) {
-            bw.write(appointmentId + "," + doctorId + "," + patientID + "," + date + "," + status + "," + typeOfService + "," +
+            bw.write(appointmentId + "," + doctorId + "," + patientID + "," + date + "," + time + "," + status + "," + typeOfService + "," +
                      prescribedMedications + "," + consultationNotes + "\n");
             System.out.println("Appointment scheduled successfully and marked as pending.");
         } catch (IOException e) {
