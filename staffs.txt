@@ -1,0 +1,4 @@
+D002,password,Doctor
+P001,password,Pharmacist
+D001,password,Doctor
+A001,password,Administrator

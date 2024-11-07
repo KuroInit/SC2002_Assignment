@@ -4,9 +4,10 @@ import healthcare.users.User;
 import healthcare.users.Patient;
 import healthcare.users.Pharmacist;
 import healthcare.users.Doctor;
+import healthcare.users.Administrator;
 
-import healthcare.users.Admin;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class Main {
 
     private static Map<String, Patient> loadPatientsFromCSV() throws IOException {
         Map<String, Patient> patientMap = new HashMap<>();
-        List<String> lines = Files.readAllLines(Paths.get("patients.csv"));
+        List<String> lines = Files.readAllLines(Paths.get("Patient_List.csv"));
 
         for (String line : lines) {
             String[] details = line.split(",");
@@ -41,6 +42,87 @@ public class Main {
             patientMap.put(patientID, patient);
         }
         return patientMap;
+    }
+
+    private static Map<String, Doctor> loadDoctorsFromCSV() {
+        Map<String, Doctor> doctorMap = new HashMap<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader("Staff_List.csv"))) {
+            String line = reader.readLine(); // Skip header line if necessary
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                
+                // Check if the role is "Doctor"
+                if (data[2].trim().equalsIgnoreCase("Doctor")) {
+                    String doctorID = data[0];
+                    String name = data[1];
+                    String gender = data[3];
+                    String age = data[4].trim();
+
+                    // Assuming Doctor class has a suitable constructor
+                    Doctor doctor = new Doctor(doctorID, name, gender, age);
+                    doctorMap.put(doctorID, doctor);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading doctor data: " + e.getMessage());
+        }
+
+        return doctorMap;
+    }
+
+    private static Map<String, Pharmacist> loadPharmacistsFromCSV() {
+        Map<String, Pharmacist> pharmacistMap = new HashMap<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader("Staff_List.csv"))) {
+            String line = reader.readLine(); // Skip header line if necessary
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                
+                // Check if the role is "Doctor"
+                if (data[2].trim().equalsIgnoreCase("Pharmacist")) {
+                    String pharmacistID = data[0];
+                    String name = data[1];
+                    String gender = data[3];
+                    String age = data[4].trim();
+
+                    // Assuming Doctor class has a suitable constructor
+                    Pharmacist pharmacist = new Pharmacist(pharmacistID, name, gender, age);
+                    pharmacistMap.put(pharmacistID, pharmacist);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading pharmacist data: " + e.getMessage());
+        }
+
+        return pharmacistMap;
+    }
+
+    private static Map<String, Administrator> loadAdministratorsFromCSV() {
+        Map<String, Administrator> administratorMap = new HashMap<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader("Staff_List.csv"))) {
+            String line = reader.readLine(); // Skip header line if necessary
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                
+                // Check if the role is "Doctor"
+                if (data[2].trim().equalsIgnoreCase("Administrator")) {
+                    String administratorID = data[0];
+                    String name = data[1];
+                    String gender = data[3];
+                    String age = data[4].trim();
+
+                    // Assuming Doctor class has a suitable constructor
+                    Administrator administrator = new Administrator(administratorID, name, gender, age);
+                    administratorMap.put(administratorID, administrator);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading administrator data: " + e.getMessage());
+        }
+
+        return administratorMap;
     }
 
     private static void showLoginScreen() throws IOException {
@@ -85,6 +167,10 @@ public class Main {
             User.changeUserPassword(hospitalId);
         }
 
+        Map<String, Doctor> doctorMap = loadDoctorsFromCSV();
+        Map<String, Pharmacist> pharmacistMap = loadPharmacistsFromCSV();
+        Map<String, Administrator> administratorMap = loadAdministratorsFromCSV();
+
         String role = User.userRoleStaffMap.containsKey(hospitalId) ? User.userRoleStaffMap.get(hospitalId)
                 : User.userRolePatientMap.get(hospitalId);
         switch (role) {
@@ -97,20 +183,36 @@ public class Main {
                     System.out.println("Patient details not found.");
                 }
                 break;
-            case "Doctor":
-                Doctor.showDoctorMenu();
+            case "Doctor":       
+                Doctor doctor = doctorMap.get(hospitalId);
+                if (doctor != null) {
+                    doctor.doctormenu();
+                } else {
+                    System.out.println("Doctor details not found.");
+                }
                 break;
             case "Pharmacist":
-                Pharmacist.showPharmacistMenu();
+                Pharmacist pharmacist = pharmacistMap.get(hospitalId);
+                if (pharmacist != null) {
+                    pharmacist.pharmacistMenu();
+                } else {
+                    System.out.println("Pharmacist details not found.");
+                }
                 break;
             case "Administrator":
-                Admin.showAdministratorMenu();
+                Administrator administrator = administratorMap.get(hospitalId);
+                if (administrator != null) {
+                    administrator.administratorMenu();
+                } else {
+                    System.out.println("Administrator details not found.");
+                }
                 break;
             default:
                 System.out.println("Invalid role! Exiting...");
                 break;
         }
 
+        sc.close();
     }
 
 }

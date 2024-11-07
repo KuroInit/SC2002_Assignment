@@ -1,3 +1,5 @@
+package healthcare.users;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -5,10 +7,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Administrator {
-    private static final String STAFF_FILE = "healthcare/database/staffData.csv";
-    private static final String APPOINTMENT_FILE = "healthcare/database/doctorAppointment.csv";
-    private static final String MEDICINE_STOCK_FILE = "healthcare/database/medicineStock.csv";
-    private static final String PATIENT_FILE = "healthcare/database/patientData.csv";
+    private String administratorID;
+    private String name;
+    private String gender;
+    private String age;
+    private static final String STAFF_FILE = "healthcare/Staff_List.csv";
+    private static final String APPOINTMENT_FILE = "healthcare/appointmentRequests.csv";
+    private static final String MEDICINE_STOCK_FILE = "healthcare/medicineStock.csv";
+    private static final String PATIENT_FILE = "healthcare/Patient_List.csv";
+
+    public Administrator(String administratorID,String name,String gender,String age) {
+        this.administratorID = administratorID;
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+    }
 
     // System Initialization
     public void initializeSystem() {
@@ -348,7 +361,7 @@ public class Administrator {
         } while (choice != 8);
     }
 
-    private void showAdminMenu() {
+    public static void showAdminMenu() {
         System.out.println("===== Administrator Menu =====");
         System.out.println("1. View and Manage Hospital Staff");
         System.out.println("2. View Appointment Details");

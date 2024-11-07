@@ -12,21 +12,57 @@ import java.util.stream.Collectors;
 
 public class Pharmacist {
     private String pharmacistID;
-    private static final String APPOINTMENT_FILE = "healthcare/database/doctorAppointment.csv";
-    private static final String MEDICINE_STOCK_FILE = "healthcare/database/medicineStock.csv";
+    private String name;
+    private String gender;
+    private String age;
+    private static final String APPOINTMENT_FILE = "appointmentRequests.csv";
+    private static final String MEDICINE_STOCK_FILE = "medicineStock.csv";
 
-    public Pharmacist(String pharmacistID) {
+    public Pharmacist(String pharmacistID,String name,String gender,String age) {
         this.pharmacistID = pharmacistID;
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
     }
 
     // View Appointment Outcome Record
     public void viewAppointmentOutcomeRecord() {
-        System.out.println("Appointment Outcome Record:");
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(APPOINTMENT_FILE));
-            lines.forEach(System.out::println);
+        String filePath = "appointmentRequests.csv";
+        String line;
+        boolean foundCompleted = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // Read the header
+            br.readLine();
+            
+            System.out.println("Completed Appointments:");
+            System.out.println("-----------------------");
+
+            // Read each line and display completed appointments
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                String status = data[5].trim();  // Assuming 6th column is AppointmentStatus
+
+                if ("COMPLETED".equalsIgnoreCase(status)) {
+                    foundCompleted = true;
+                    System.out.println("Appointment ID: " + data[0]);
+                    System.out.println("Doctor ID: " + data[1]);
+                    System.out.println("Patient ID: " + data[2]);
+                    System.out.println("Appointment Date: " + data[3]);
+                    System.out.println("Appointment Time: " + data[4]);
+                    System.out.println("Status: " + data[5]);
+                    System.out.println("Type of Service: " + (data[6] != null ? data[6] : "N/A"));
+                    System.out.println("Prescribed Medications: " + (data[7] != null ? data[7] : "N/A"));
+                    System.out.println("Consultation Notes: " + (data[8] != null ? data[8] : "N/A"));
+                    System.out.println("---------------");
+                }
+            }
+
+            if (!foundCompleted) {
+                System.out.println("No completed appointments found.");
+            }
         } catch (IOException e) {
-            System.out.println("Error reading appointment records: " + e.getMessage());
+            System.out.println("Error reading appointments file: " + e.getMessage());
         }
     }
 
@@ -120,7 +156,7 @@ public class Pharmacist {
         } while (choice != 5);
     }
 
-    private void showPharmacistMenu() {
+    public static void showPharmacistMenu() {
         System.out.println("===== Pharmacist Menu =====");
         System.out.println("1. View Appointment Outcome Record");
         System.out.println("2. Update Prescription Status");

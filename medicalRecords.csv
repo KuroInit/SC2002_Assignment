@@ -1,0 +1,6 @@
+PatientID,Date,Diagnoses,TreatmentPlan,PrescribedMedicine
+P1001,2024-11-05,Hypertension,"Lifestyle changes; medication",Atenolol
+P1002,2024-11-06,Type 2 Diabetes,"Insulin therapy; diet",Metformin; Insulin
+P1003,2024-11-07,Common cold,"Rest; hydration",Paracetamol
+P1001,2024-11-12,"Annual Health Checkup","Regular monitoring",Multivitamins
+P1002,2024-11-07,Fever,Rest,Crocin

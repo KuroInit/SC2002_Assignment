@@ -82,23 +82,23 @@ public class User {
         userPasswordStaffMap.put("D001", "password"); // Dr. John Smith
         userPasswordStaffMap.put("D002", "password"); // Dr. Emily Clarke
         userPasswordStaffMap.put("A001", "password"); // Sarah Lee (Administrator)
-        userPasswordStaffMap.put("PH001", "password"); // Mark Lee (Pharmacist)
+        userPasswordStaffMap.put("P001", "password"); // Mark Lee (Pharmacist)
 
         userRoleStaffMap.put("D001", "Doctor");
         userRoleStaffMap.put("D002", "Doctor");
         userRoleStaffMap.put("A001", "Administrator");
-        userRoleStaffMap.put("PH001", "Pharmacist");
+        userRoleStaffMap.put("P001", "Pharmacist");
     }
 
     // Set default patient users
     private static void setDefaultPatients() {
-        userPasswordPatientMap.put("P001", "password"); // Patient Alice Brown
-        userPasswordPatientMap.put("P002", "password"); // Patient Bob Stone
-        userPasswordPatientMap.put("P003", "password"); // Patient Charlie White
+        userPasswordPatientMap.put("P1001", "password"); // Patient Alice Brown
+        userPasswordPatientMap.put("P1002", "password"); // Patient Bob Stone
+        userPasswordPatientMap.put("P1003", "password"); // Patient Charlie White
 
-        userRolePatientMap.put("P001", "Patient");
-        userRolePatientMap.put("P002", "Patient");
-        userRolePatientMap.put("P003", "Patient");
+        userRolePatientMap.put("P1001", "Patient");
+        userRolePatientMap.put("P1002", "Patient");
+        userRolePatientMap.put("P1003", "Patient");
     }
 
     // Set default staff names
@@ -106,14 +106,14 @@ public class User {
         userNameMapStaff.put("D001", "Dr. John Smith");
         userNameMapStaff.put("D002", "Dr. Emily Clarke");
         userNameMapStaff.put("A001", "Sarah Lee");
-        userNameMapStaff.put("PH001", "Mark Lee");
+        userNameMapStaff.put("P001", "Mark Lee");
     }
 
     // Set default patient names
     private static void setDefaultPatientNames() {
-        userNameMapPatient.put("P001", "Alice Brown");
-        userNameMapPatient.put("P002", "Bob Stone");
-        userNameMapPatient.put("P003", "Charlie White");
+        userNameMapPatient.put("P1001", "Alice Brown");
+        userNameMapPatient.put("P1002", "Bob Stone");
+        userNameMapPatient.put("P1003", "Charlie White");
     }
 
     // File handling methods (load and save data for staff and patients)

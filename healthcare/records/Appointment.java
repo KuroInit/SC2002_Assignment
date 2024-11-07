@@ -1,10 +1,12 @@
 package healthcare.records;
 
+import java.time.ZoneId;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Appointment {
 
@@ -18,17 +20,36 @@ public class Appointment {
     private AppointmentStatus appointmentStatus;
     private ServiceTypes serviceType;
 
-    // init
-    public Appointment(Date appointmenDate, TreatmentTypes type, String patientID, String doctorID) {
-        this.appointmentDate = appointmentDate;
+    // Constructor with corrected parameter name and initialization
+    public Appointment(Date appointmentDate, TreatmentTypes type, String patientID, String doctorID) {
+        this.appointmentDate = appointmentDate != null ? LocalDate.ofInstant(appointmentDate.toInstant(), ZoneId.systemDefault()) : null;
         this.appointmentID = generateRandomID();
-        this.treatment = TreatmentTypes.CONSULTATION;
+        this.treatment = type;
         this.doctorID = doctorID;
         this.patientID = patientID;
         this.prescribedMedication = new ArrayList<>();
-        this.consultationNotes = "No Notes";
         this.appointmentStatus = AppointmentStatus.PENDING;
         this.serviceType = ServiceTypes.CONSULTATION;
+    }
+
+    public String toCSV() {
+        // Convert the prescribed medications list to a semicolon-separated string
+        String medications = prescribedMedication.stream()
+                                .map(Medication::getMedicationName)
+                                .collect(Collectors.joining(";"));
+
+        // Return a comma-separated line representing the appointment details, including consultationNotes
+        return String.join(",",
+                appointmentID,
+                doctorID,
+                patientID,
+                appointmentDate != null ? appointmentDate.toString() : "",
+                serviceType != null ? serviceType.toString() : "",
+                treatment != null ? treatment.toString() : "",
+                appointmentStatus != null ? appointmentStatus.toString() : "",
+                medications,
+                consultationNotes != null ? consultationNotes : ""
+        );
     }
 
     private String generateRandomID() {
@@ -37,7 +58,7 @@ public class Appointment {
         return String.valueOf(id);
     }
 
-    // patient methods
+    // Patient methods
     public String getPatientID() {
         return patientID;
     }
@@ -83,9 +104,9 @@ public class Appointment {
                 + appointmentStatus.toString();
     }
 
-    // doctor class
-    public void setStatus(AppointmentStatus appointmenStatus) {
-        this.appointmentStatus = appointmenStatus;
+    // Doctor methods
+    public void setStatus(AppointmentStatus appointmentStatus) {
+        this.appointmentStatus = appointmentStatus;
     }
 
     public void setConsultationNotes(String notes) {
@@ -96,7 +117,11 @@ public class Appointment {
         this.prescribedMedication.add(new Medication(medName));
     }
 
-    // enums
+    public void setAppointmentStatus(AppointmentStatus status) {
+        this.appointmentStatus = status;
+    }    
+
+    // Enums
     public enum AppointmentStatus {
         PENDING, APPROVED, REJECTED, COMPLETED;
     }
@@ -109,15 +134,15 @@ public class Appointment {
         CONSULTATION, XRAY, BLOOD_TEST, SURGERY, OTHERS;
     }
 
-    // medication class
+    // Medication class
     public class Medication {
         private String medicationName;
         private AppointmentStatus medicationStatus;
 
-        // init
+        // Constructor with corrected initialization
         public Medication(String name) {
             this.medicationName = name;
-            this.medicationStatus = medicationStatus.PENDING;
+            this.medicationStatus = AppointmentStatus.PENDING;
         }
 
         public String getMedicationName() {
@@ -137,7 +162,6 @@ public class Appointment {
         public String toString() {
             return "Medication: " + medicationName + ", Status: " + medicationStatus;
         }
-
     }
 
     @Override
@@ -152,5 +176,4 @@ public class Appointment {
                 "\nConsultation Notes: " + consultationNotes +
                 "\nPrescribed Medications: " + prescribedMedication;
     }
-
 }

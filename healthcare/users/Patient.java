@@ -19,9 +19,6 @@ public class Patient {
     private String bloodType;
     private String contactInfo;
 
-    private List<Appointment> appointments;
-    private List<MedicalRecord> medicalRecords;
-
     public Patient(String patientID, String name, String dob, String gender, String bloodType, String contactInfo) {
         this.patientID = patientID;
         this.name = name;
@@ -29,8 +26,6 @@ public class Patient {
         this.gender = gender;
         this.bloodType = bloodType;
         this.contactInfo = contactInfo;
-        this.appointments = loadAppointments();
-        this.medicalRecords = loadMedicalRecords();
     }
 
     public static void showPatientMenu() {
@@ -57,43 +52,70 @@ public class Patient {
             switch (choice) {
                 case 1:
                     viewMedicalRecords();
+                    break;
                 case 2:
                     updatePersonalInfo();
+                    break;
                 case 3:
                     viewAvailableAppointments();
+                    break;
                 case 4:
                     scheduleAppointment();
+                    break;
                 case 5:
                     rescheduleAppointment();
+                    break;
                 case 6:
                     cancelAppointment();
+                    break;
                 case 7:
                     viewScheduledAppointments();
+                    break;
                 case 8:
-                    viewPastAppointmentOutcomeRec();
+                    viewCompletedAppointments();
+                    break;
                 case 9:
                     System.out.println("Logging out...");
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
         } while (choice != 9);
     }
 
-    private void viewMedicalRecords() {
-        System.out.println("Medical Record:");
-        System.out.println("Patient ID: " + patientID);
-        System.out.println("Name: " + name);
-        System.out.println("Date of Birth: " + dob);
-        System.out.println("Gender: " + gender);
-        System.out.println("Blood Type: " + bloodType);
-        System.out.println("Contact Information: " + contactInfo);
+    public void viewMedicalRecords() {
+        System.out.println("Medical Records for Patient ID: " + patientID);
+        boolean found = false;
 
-        for (MedicalRecord record : medicalRecords) {
-            System.out.println(record);
+        try (BufferedReader br = new BufferedReader(new FileReader("medicalRecords.csv"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+
+                // Check if the line has at least 5 fields to avoid index errors
+                if (fields.length < 5) {
+                    continue;  // Skip lines with insufficient data
+                }
+
+                // Check if the record is for this patient
+                if (fields[0].equals(patientID)) {
+                    System.out.println("Date: " + fields[1] + 
+                            ", Diagnoses: " + fields[2] + 
+                            ", Treatment Plan: " + fields[3] + 
+                            ", Prescribed Medicine: " + fields[4]);
+                    found = true;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading medical records.");
+        }
+
+        if (!found) {
+            System.out.println("No medical records found for this patient.");
         }
     }
 
-    private void updatePersonalInfo() {
+    public void updatePersonalInfo() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter new contact information: ");
         contactInfo = scanner.nextLine();
@@ -102,9 +124,9 @@ public class Patient {
         updatePatientDataInFile();
     }
 
-    private void updatePatientDataInFile() {
+    public void updatePatientDataInFile() {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("patients.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Patient_List.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -119,7 +141,7 @@ public class Patient {
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("patients.csv"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Patient_List.csv"))) {
             for (String updatedLine : lines) {
                 writer.write(updatedLine);
                 writer.newLine();
@@ -129,263 +151,194 @@ public class Patient {
         }
     }
 
-    private void viewAvailableAppointments() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the Doctor's name to view available slots: ");
-        String selectedDoctorName = scanner.nextLine();
+    public void viewAvailableAppointments() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter Doctor ID: ");
+        String doctorId = sc.nextLine();
 
-        Map<String, List<String>> doctorSlots = new HashMap<>();
-        doctorSlots.put("John Smith", List.of("2024-10-30 10:00 AM", "2024-10-30 11:00 AM"));
-        doctorSlots.put("Emily Clarke", List.of("2024-10-31 09:00 AM", "2024-10-31 10:30 AM"));
-
-        if (doctorSlots.containsKey(selectedDoctorName)) {
-            System.out.println("Available slots for Dr. " + selectedDoctorName + ":");
-            for (String slot : doctorSlots.get(selectedDoctorName)) {
-                System.out.println(" - " + slot);
-            }
-        } else {
-            System.out.println("No available slots for Dr. " + selectedDoctorName + " or invalid doctor name entered.");
-        }
-    }
-
-    private void scheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Doctor's name: ");
-        String doctorName = scanner.nextLine();
-
-        Map<String, List<String>> doctorSlots = new HashMap<>();
-        doctorSlots.put("John Smith", List.of("2024-10-30 10:00 AM", "2024-10-30 11:00 AM"));
-        doctorSlots.put("Emily Clarke", List.of("2024-10-31 09:00 AM", "2024-10-31 10:30 AM"));
-
-        if (doctorSlots.containsKey(doctorName)) {
-            List<String> availableSlots = doctorSlots.get(doctorName);
-
-            System.out.println("Available slots for Dr. " + doctorName + ":");
-            for (int i = 0; i < availableSlots.size(); i++) {
-                System.out.println((i + 1) + ". " + availableSlots.get(i));
-            }
-
-            System.out.print("Select a slot by entering the slot number: ");
-            int slotChoice = scanner.nextInt();
-            scanner.nextLine();
-
-            if (slotChoice < 1 || slotChoice > availableSlots.size()) {
-                System.out.println("Invalid choice. Appointment not scheduled.");
-                return;
-            }
-
-            String selectedDateTime = availableSlots.get(slotChoice - 1);
-
-            Appointment appointment = new Appointment(patientID, doctorName, selectedDateTime, "confirmed");
-            appointments.add(appointment);
-            saveAppointments();
-
-            System.out.println("Appointment scheduled with Dr. " + doctorName + " on " + selectedDateTime);
-            System.out.println("Your Appointment ID is: " + appointment.getAppointmentID());
-        } else {
-            System.out.println("No available slots for Dr. " + doctorName + " or invalid doctor name entered.");
-        }
-    }
-
-    private void rescheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Appointment ID to reschedule: ");
-        String appointmentID = scanner.nextLine();
-
-        Appointment existingAppointment = null;
-
-        for (Appointment appointment : appointments) {
-            if (appointment.getAppointmentID().equals(appointmentID)) {
-                existingAppointment = appointment;
-                break;
-            }
-        }
-
-        if (existingAppointment == null) {
-            System.out.println("Appointment ID not found.");
-            return;
-        }
-
-        String doctorName = existingAppointment.getDoctorID();
-
-        Map<String, List<String>> doctorSlots = new HashMap<>();
-        doctorSlots.put("John Smith", List.of("2024-10-30 10:00 AM", "2024-10-30 11:00 AM"));
-        doctorSlots.put("Emily Clarke", List.of("2024-10-31 09:00 AM", "2024-10-31 10:30 AM"));
-
-        if (doctorSlots.containsKey(doctorName)) {
-            List<String> availableSlots = doctorSlots.get(doctorName);
-
-            System.out.println("Available slots for Dr. " + doctorName + ":");
-            for (int i = 0; i < availableSlots.size(); i++) {
-                System.out.println((i + 1) + ". " + availableSlots.get(i));
-            }
-
-            System.out.print("Select a slot by entering the slot number: ");
-            int slotChoice = scanner.nextInt();
-            scanner.nextLine();
-
-            if (slotChoice < 1 || slotChoice > availableSlots.size()) {
-                System.out.println("Invalid choice. Rescheduling not completed.");
-                return;
-            }
-
-            String selectedDateTime = availableSlots.get(slotChoice - 1);
-
-            existingAppointment.setDateTime(selectedDateTime);
-
-            updateAppointmentInFile(appointmentID, selectedDateTime);
-
-            System.out.println("Appointment rescheduled successfully to " + selectedDateTime);
-        } else {
-            System.out.println("No available slots for Dr. " + doctorName + " or invalid doctor name entered.");
-        }
-    }
-
-    private void updateAppointmentInFile(String appointmentID, String newDateTime) {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("appointments.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("availableAppointments.csv"))) {
             String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data[1].trim().equals(appointmentID)) {
-                    data[3] = newDateTime;
-                    line = String.join(",", data);
-                }
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointments.csv"))) {
-            for (String updatedLine : lines) {
-                writer.write(updatedLine);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void cancelAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Appointment ID to cancel: ");
-        String appointmentID = scanner.nextLine();
-
-        boolean removed = appointments.removeIf(appointment -> appointment.getAppointmentID().equals(appointmentID));
-
-        if (removed) {
-            removeAppointmentFromFile(appointmentID);
-            System.out.println("Appointment with ID " + appointmentID + " has been canceled.");
-        } else {
-            System.out.println("Appointment ID not found.");
-        }
-    }
-
-    private void removeAppointmentFromFile(String appointmentID) {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("appointments.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (!data[1].trim().equals(appointmentID)) {
-                    lines.add(line);
+            System.out.println("Available Slots for Doctor ID " + doctorId + ":");
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields[0].equals(doctorId)) {  // Assuming doctorId is the first field
+                    System.out.println("Date: " + fields[1] + ", Time: " + fields[2]);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            return;
+            System.out.println("Error reading available appointments.");
         }
+    }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointments.csv"))) {
-            for (String updatedLine : lines) {
-                writer.write(updatedLine);
-                writer.newLine();
+    public void scheduleAppointment() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Doctor ID for Appointment: ");
+        String doctorId = scanner.nextLine();
+        System.out.print("Enter Appointment Date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+    
+        // Generate a random appointment ID for uniqueness
+        String appointmentId = String.valueOf(new Random().nextInt(9000) + 1000); // 4-digit ID
+        String status = "PENDING";
+        String typeOfService = "N/A";
+        String prescribedMedications = "N/A";
+        String consultationNotes = "N/A";
+    
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("appointmentRequests.csv", true))) {
+            bw.write(appointmentId + "," + doctorId + "," + patientID + "," + date + "," + status + "," + typeOfService + "," +
+                     prescribedMedications + "," + consultationNotes + "\n");
+            System.out.println("Appointment scheduled successfully and marked as pending.");
+        } catch (IOException e) {
+            System.out.println("Error scheduling appointment.");
+        }
+    }
+    
+
+    public void rescheduleAppointment() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the Appointment ID you want to reschedule: ");
+        String appointmentId = scanner.nextLine();
+        System.out.print("Enter the new Appointment Date (YYYY-MM-DD): ");
+        String newDate = scanner.nextLine();
+        System.out.print("Enter the new Appointment Time (HH:MM): ");
+        String newTime = scanner.nextLine();
+    
+        List<String> appointments = new ArrayList<>();
+        boolean rescheduled = false;
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("appointmentRequests.csv"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields[0].equals(appointmentId) && fields[2].equals(patientID)) {  // Matching AppointmentID and PatientID
+                    // Update the appointment with new date and time while keeping other fields the same
+                    fields[3] = newDate; // Update the date field
+                    fields[4] = newTime; // Add new time if required
+                    line = String.join(",", fields);
+                    rescheduled = true;
+                }
+                appointments.add(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading appointments.");
         }
-    }
-
-    private void viewScheduledAppointments() {
-        System.out.println("Your scheduled appointments:");
-        for (Appointment appointment : appointments) {
-            System.out.println(appointment);
+    
+        if (rescheduled) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("appointmentRequests.csv"))) {
+                for (String appointment : appointments) {
+                    bw.write(appointment + "\n");
+                }
+                System.out.println("Appointment rescheduled successfully.");
+            } catch (IOException e) {
+                System.out.println("Error saving updated appointments.");
+            }
+        } else {
+            System.out.println("Appointment not found or invalid Appointment ID provided.");
         }
-    }
+    }    
 
-    private void viewPastAppointmentOutcomeRec() {
-        System.out.println("Past appointment outcomes:");
-        for (MedicalRecord record : medicalRecords) {
-            System.out.println(record.getAppointmentOutcome());
-        }
-    }
-
-    private void savePatientData() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("patients.csv", true))) {
-            writer.write(patientID + "," + name + "," + dob + "," + gender + "," + bloodType + "," + contactInfo);
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private List<Appointment> loadAppointments() {
-        List<Appointment> appointments = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("appointments.csv"))) {
+    public void cancelAppointment() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the Appointment ID of the appointment you want to cancel: ");
+        String appointmentId = scanner.nextLine();
+    
+        List<String> appointments = new ArrayList<>();
+        boolean cancelled = false;
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("appointmentRequests.csv"))) {
             String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields[0].equals(appointmentId) && fields[2].equals(patientID)) {  // Matching AppointmentID and PatientID
+                    // Update the appointment status to "CANCELLED"
+                    fields[5] = "CANCELLED";  // Assuming status is the 5th field in CSV
+                    line = String.join(",", fields);
+                    cancelled = true;
+                }
+                appointments.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading appointments.");
+        }
+    
+        if (cancelled) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("appointmentRequests.csv"))) {
+                for (String appointment : appointments) {
+                    bw.write(appointment + "\n");
+                }
+                System.out.println("Appointment cancelled successfully.");
+            } catch (IOException e) {
+                System.out.println("Error saving updated appointments.");
+            }
+        } else {
+            System.out.println("Appointment not found or invalid Appointment ID provided.");
+        }
+    }
+    
+    public void viewScheduledAppointments() {
+        System.out.println("Appointments for Patient ID: " + patientID);
+        boolean found = false;
 
-                if (data.length < 5 || !data[0].equals(patientID)) {
-                    continue;
+        try (BufferedReader br = new BufferedReader(new FileReader("appointmentRequests.csv"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                
+                // Check if the line has at least 5 fields to avoid index errors
+                if (fields.length < 5) {
+                    continue;  // Skip lines with insufficient data
                 }
 
-                appointments.add(new Appointment(data[0], data[1], data[2], data[3], data[4]));
+                // Check if the appointment is for this patient and has an allowed status
+                if (fields[2].equals(patientID) && 
+                    (fields[5].equals("APPROVED") || fields[5].equals("REJECTED") || fields[5].equals("PENDING"))) {
+                        System.out.println("AppointmentID: " + fields[0] + ", DoctorID: " + fields[1] +
+                        ", Date: " + fields[3] + ", Date: " + fields[4] + ", Status: " + fields[5] +
+                        ", Type of Service: " + (fields.length > 6 ? fields[6] : "") +
+                        ", Medications: " + (fields.length > 7 ? fields[7] : "") +
+                        ", Consultation Notes: " + (fields.length > 8 ? fields[8] : ""));
+                    found = true;
+                }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading appointments.");
         }
-        return appointments;
-    }
 
-    private void saveAppointments() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointments.csv", true))) {
-            for (Appointment appointment : appointments) {
-                writer.write(appointment.getPatientID() + "," + appointment.getAppointmentID() + "," +
-                        appointment.getDoctorID() + "," + appointment.getDateTime() + "," +
-                        appointment.getStatus());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!found) {
+            System.out.println("No appointments found with status APPROVED, REJECTED, or PENDING.");
         }
     }
 
-    private List<MedicalRecord> loadMedicalRecords() {
-        List<MedicalRecord> records = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("medical_records.csv"))) {
+    public void viewCompletedAppointments() {
+        System.out.println("Completed Appointments for Patient ID: " + patientID);
+        boolean found = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader("appointmentRequests.csv"))) {
             String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                records.add(new MedicalRecord(data[0], data[1], data[2]));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return records;
-    }
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                
+                // Check if the line has at least 5 fields to avoid index errors
+                if (fields.length < 6) {
+                    continue;  // Skip lines with insufficient data
+                }
 
-    private void saveMedicalRecords() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("medical_records.csv"))) {
-            for (MedicalRecord record : medicalRecords) {
-                writer.write(
-                        record.getDiagnosis() + "," + record.getTreatment() + "," + record.getAppointmentOutcome());
-                writer.newLine();
+                // Check if the appointment is for this patient and has a COMPLETED status
+                if (fields[2].equals(patientID) && fields[5].equals("COMPLETED")) {
+                    System.out.println("AppointmentID: " + fields[0] + ", DoctorID: " + fields[1] +
+                            ", Date: " + fields[3] + ", Date: " + fields[4] + ", Status: " + fields[5] +
+                            ", Type of Service: " + (fields.length > 6 ? fields[6] : "") +
+                            ", Medications: " + (fields.length > 7 ? fields[7] : "") +
+                            ", Consultation Notes: " + (fields.length > 8 ? fields[8] : ""));
+                    found = true;
+                }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading appointments.");
+        }
+
+        if (!found) {
+            System.out.println("No completed appointments found.");
         }
     }
 }
