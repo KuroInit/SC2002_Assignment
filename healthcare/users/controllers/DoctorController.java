@@ -13,7 +13,7 @@ import java.util.*;
 public class DoctorController {
     private DoctorModel model;
     private DoctorView view;
-
+    
     public DoctorController(DoctorModel model, DoctorView view) {
         this.model = model;
         this.view = view;
