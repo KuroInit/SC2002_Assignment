@@ -16,7 +16,7 @@ public class User {
     public static Map<String, String> userRolePatientMap = new HashMap<>();
     public static Map<String, String> userNameMapStaff = new HashMap<>();
     public static Map<String, String> userNameMapPatient = new HashMap<>();
-    
+
     private static final String doctorPasswordsFile = "Doctor_Passwords.csv";
     private static final String patientPasswordsFile = "Patient_Passwords.csv";
     private static final String staffPasswordsFile = "Staff_Passwords.csv";
@@ -25,6 +25,7 @@ public class User {
     private static final String staffListFile = "Staff_List.csv";
 
     public static void initializeUsers() {
+        // methods
         loadPasswordsAndRoles();
         loadNames();
     }
@@ -40,8 +41,8 @@ public class User {
         loadPasswordFile(staffPasswordsFile, userPasswordStaffMap, userRoleStaffMap, "Staff");
     }
 
-    private static void loadPasswordFile(String filePath, Map<String, String> passwordMap, 
-                                         Map<String, String> roleMap, String defaultRole) {
+    private static void loadPasswordFile(String filePath, Map<String, String> passwordMap,
+            Map<String, String> roleMap, String defaultRole) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -107,7 +108,8 @@ public class User {
         }
     }
 
-    private static void updatePasswordInFile(String filePath, String hospitalId, String newPassword) throws IOException {
+    private static void updatePasswordInFile(String filePath, String hospitalId, String newPassword)
+            throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(filePath));
         List<String> updatedLines = new ArrayList<>();
 
