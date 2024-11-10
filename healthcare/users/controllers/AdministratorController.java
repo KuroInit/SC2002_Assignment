@@ -10,6 +10,7 @@ public class AdministratorController {
     private final AdministratorModel model;
     private final AdministratorView view;
 
+
     public AdministratorController(AdministratorModel model, AdministratorView view) {
         this.model = model;
         this.view = view;
@@ -37,6 +38,8 @@ public class AdministratorController {
     }
 
     public void viewStaff() {
+        String doctor = "doctor";
+        String staff = "staff";
         Scanner scanner = new Scanner(System.in);
         view.displayViewStaffOptions();
         int filterChoice = scanner.nextInt();
@@ -74,8 +77,8 @@ public class AdministratorController {
             }
         }
 
-        List<String> doctorData = model.getDoctorData();
-        List<String> staffData = model.getStaffData();
+        List<String> doctorData = model.readDataFromFile(model.getFilePathForStaffType(doctor));
+        List<String> staffData = model.readDataFromFile(model.getFilePathForStaffType(staff));
 
         view.displayFilteredDoctors(doctorData, filterField, filterValue);
         view.displayFilteredStaff(staffData, filterField, filterValue);
@@ -83,12 +86,17 @@ public class AdministratorController {
 
     public void addStaff() {
         Scanner scanner = new Scanner(System.in);
+        String filepath = model.getDoctorListPath();
         view.displayAddStaffMenu();
         int staffType = scanner.nextInt();
         scanner.nextLine(); // Consume newline
 
         String newEntry = view.collectStaffDetails(staffType);
-        if (model.addStaffEntry(staffType, newEntry)) {
+        switch(staffType) {
+            case 1 -> filepath = model.getDoctorListPath();
+            case 2 -> filepath = model.getStaffListPath();
+        }
+        if (model.appendDataToFile(filepath, newEntry)) {
             view.displaySuccessMessage("Staff added successfully.");
         } else {
             view.displayErrorMessage("Error adding staff.");
@@ -97,14 +105,16 @@ public class AdministratorController {
 
     public void updateStaff() {
         Scanner scanner = new Scanner(System.in);
+        String filepath = model.getDoctorListPath();
         view.displayUpdateStaffMenu();
         int staffType = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
+        switch(staffType) {
+            case 1 -> filepath = model.getDoctorListPath();
+            case 2 -> filepath = model.getStaffListPath();
+        }
 
-        view.promptIDInput("staff");
-        String id = scanner.nextLine();
-
-        if (model.updateStaffEntry(staffType, id, view.collectUpdatedStaffDetails(scanner, staffType))) {
+        if (model.updateEntry(filepath, view.promptIDInput(), 0, view.collectUpdatedStaffDetails(scanner, staffType))) {
             view.displaySuccessMessage("Staff updated successfully.");
         } else {
             view.displayErrorMessage("Staff ID not found or update failed.");
@@ -113,9 +123,14 @@ public class AdministratorController {
 
     public void removeStaff() {
         Scanner scanner = new Scanner(System.in);
+        String filepath = model.getDoctorListPath();
         view.promptIsDoctor();
-        String isDoctor = scanner.nextLine().trim().toLowerCase();
-        boolean isRemoved = model.removeStaffEntry(isDoctor, view.promptIDInput("staff"));
+        Integer isDoctor = scanner.nextInt();
+        switch(isDoctor) {
+            case 1 -> filepath = model.getDoctorListPath();
+            case 2 -> filepath = model.getStaffListPath();
+        }
+        boolean isRemoved = model.removeEntry(filepath, view.promptIDInput());
 
         if (isRemoved) {
             view.displaySuccessMessage("Staff removed successfully.");
@@ -164,19 +179,18 @@ public class AdministratorController {
             statusFilter = view.getStatusFromChoice(statusChoice);
         }
 
-        List<String> appointments = model.getAppointmentData();
+        List<String> appointments = model.readDataFromFile(model.getAppointmentRequestsPath());
         view.displayAppointments(appointments, filterField, filterValue, statusFilter);
     }
 
     public void manageInventory() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            view.displayInventoryMenu();
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> view.displayInventory(model.getInventoryData());
+                case 1 -> view.displayInventory(model.readDataFromFile(model.getMedicineListPath()));
                 case 2 -> addMedicine();
                 case 3 -> removeMedicine();
                 case 4 -> updateStock();
@@ -193,7 +207,7 @@ public class AdministratorController {
     private void addMedicine() {
         Scanner scanner = new Scanner(System.in);
         String newMedicineEntry = view.collectMedicineDetails(scanner);
-        if (model.addMedicine(newMedicineEntry)) {
+        if (model.appendDataToFile(model.getMedicineListPath(),newMedicineEntry)) {
             view.displaySuccessMessage("Medicine added successfully.");
         } else {
             view.displayErrorMessage("Error adding medicine.");
@@ -204,7 +218,7 @@ public class AdministratorController {
         Scanner scanner = new Scanner(System.in);
         view.promptMedicineName();
         String medicineName = scanner.nextLine();
-        if (model.removeMedicine(medicineName)) {
+        if (model.removeEntry(model.getMedicineListPath(),medicineName)) {
             view.displaySuccessMessage("Medicine removed successfully.");
         } else {
             view.displayErrorMessage("Medicine not found or removal failed.");
@@ -216,9 +230,9 @@ public class AdministratorController {
         view.promptMedicineName();
         String medicineName = scanner.nextLine();
         view.promptStockQuantity();
-        int newQuantity = scanner.nextInt();
+        String newQuantity = scanner.nextLine();
         scanner.nextLine(); // Consume newline
-        if (model.updateMedicineStock(medicineName, newQuantity)) {
+        if (model.updateEntry(model.getMedicineListPath(), medicineName, 0, newQuantity)) {
             view.displaySuccessMessage("Stock updated successfully.");
         } else {
             view.displayErrorMessage("Medicine not found or update failed.");
@@ -230,9 +244,9 @@ public class AdministratorController {
         view.promptMedicineName();
         String medicineName = scanner.nextLine();
         view.promptLowStockIndicator();
-        int newIndicator = scanner.nextInt();
+        String newIndicator = scanner.nextLine();
         scanner.nextLine(); // Consume newline
-        if (model.updateLowStockIndicator(medicineName, newIndicator)) {
+        if (model.updateEntry(model.getMedicineListPath(), medicineName, 0, newIndicator)) {
             view.displaySuccessMessage("Low stock indicator updated successfully.");
         } else {
             view.displayErrorMessage("Medicine not found or update failed.");
@@ -247,7 +261,7 @@ public class AdministratorController {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> view.displayReplenishmentRequests(model.getReplenishmentRequests());
+                case 1 -> view.displayReplenishmentRequests(model.readDataFromFile(model.getReplenishmentRequestsPath()));
                 case 2 -> restockMedicine();
                 case 3 -> {
                     view.displayExitMessage("replenishment requests management");
@@ -263,12 +277,12 @@ public class AdministratorController {
         view.promptMedicineName();
         String medicineName = scanner.nextLine();
         view.promptIncomingStock();
-        int incomingStock = scanner.nextInt();
+        String incomingStock = scanner.nextLine();
         scanner.nextLine(); // Consume newline
 
-        if (model.restockMedicine(medicineName, incomingStock)) {
+        if (model.updateEntry(model.getReplenishmentRequestsPath(), medicineName, 0, incomingStock)) {
             view.displaySuccessMessage("Medicine restocked successfully.");
-            model.updateReplenishmentRequestStatus(medicineName);
+            model.updateEntry(model.getReplenishmentRequestsPath(), medicineName, 0, "APPROVED");
         } else {
             view.displayErrorMessage("Medicine not found or restock failed.");
         }

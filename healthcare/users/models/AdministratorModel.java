@@ -38,12 +38,14 @@ public class AdministratorModel {
     }
 
     // Method to append data to a CSV file
-    public void appendDataToFile(String filePath, String entry) {
+    public boolean appendDataToFile(String filePath, String entry) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
             bw.write(entry);
             bw.newLine();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -60,7 +62,7 @@ public class AdministratorModel {
     }
 
     // Method to update an entry in the CSV file based on a specific ID
-    public boolean updateEntry(String filePath, String id, int idIndex, String[] updatedFields) {
+    public boolean updateEntry(String filePath, String id, int idIndex, String updatedFields) {
         List<String> data = readDataFromFile(filePath);
         boolean entryFound = false;
 
@@ -81,14 +83,14 @@ public class AdministratorModel {
     }
 
     // Method to remove an entry from a CSV file based on a specific ID
-    public boolean removeEntry(String filePath, String id, int idIndex) {
+    public boolean removeEntry(String filePath, String id) {
         List<String> data = readDataFromFile(filePath);
         boolean entryFound = false;
 
         List<String> updatedData = new ArrayList<>();
         for (String line : data) {
             String[] fields = line.split(",");
-            if (!fields[idIndex].equals(id)) {
+            if (!fields[0].equals(id)) {
                 updatedData.add(line);
             } else {
                 entryFound = true;
@@ -106,7 +108,7 @@ public class AdministratorModel {
     public String getFilePathForStaffType(String staffType) {
         return switch (staffType.toLowerCase()) {
             case "doctor" -> doctorListPath;
-            case "pharmacist", "nurse", "administrator" -> staffListPath;
+            case "staff" -> staffListPath;
             default -> null;
         };
     }

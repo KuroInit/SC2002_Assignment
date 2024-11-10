@@ -209,12 +209,18 @@ public class AdministratorView {
         return String.join(",", fields);
     }
 
-    public void promptIDInput(String entityType) {
-        System.out.print("Enter the ID of the " + entityType + ": ");
+    public String promptIDInput() {
+        System.out.print("Enter the Hospital ID: ");
+        Scanner sc = new Scanner(System.in);
+        String id = sc.nextLine();
+        sc.close();
+        return id;
     }
 
     public void promptIsDoctor() {
-        System.out.print("Is the staff a Doctor? (yes/no): ");
+        System.out.print("Is the staff a Doctor?: ");
+        System.out.println("1. Yes");
+        System.out.println("2. No");
     }
 
     public void displayAppointmentOptions() {
