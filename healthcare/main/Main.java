@@ -29,6 +29,8 @@ public class Main {
 
     private static final Scanner sc = new Scanner(System.in);
     private static final String patientListFile = "Patient_List.csv";
+    private static final String staffListFile = "Staff_List.csv";
+    private static final String staffPasswordsFile = "Staff_Passwords.csv";
     private static final String patientPasswordsFile = "Patient_Passwords.csv";
 
     // Utility method to hash passwords with SHA-256
@@ -144,6 +146,9 @@ public class Main {
                 System.out.println("Exiting the Hospital Management System. Goodbye!");
                 System.exit(0);
                 break;
+            case 4:
+                registerAdmin();
+                break;
             default:
                 System.out.println("Invalid option. Please try again.");
         }
@@ -207,10 +212,47 @@ public class Main {
         return "P" + (lastIDNumber + 1);
     }
 
+    private static void registerAdmin() {
+        try {
+            System.out.println("Registering a new patient:");
+            System.out.print("Enter ID: ");
+            String id = sc.nextLine();
+            System.out.print("Enter Name: ");
+            String name = sc.nextLine();
+            System.out.print("Enter Role: ");
+            String dob = sc.nextLine();
+            System.out.print("Enter Gender: ");
+            String gender = sc.nextLine();
+            System.out.print("Enter Age: ");
+            String bloodType = sc.nextLine();
+
+            String newEntry = id + "," + name + "," + dob + "," + gender + "," + bloodType;
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(staffListFile, true))) {
+                writer.write(newEntry);
+                writer.newLine();
+                System.out.println("Registration successful! Your Patient ID is: " + id);
+            }
+
+            String defaultPassword = "password";
+            String hashedPassword = hashPassword(defaultPassword);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(staffPasswordsFile, true))) {
+                writer.write(id + "," + hashedPassword + "," + dob);
+                writer.newLine();
+                System.out.println("Your account has been created with the default password.");
+            }
+
+            User.initializeUsers();
+            System.out.println("User data reloaded successfully.");
+            
+        } catch (IOException e) {
+            System.out.println("Error during registration: " + e.getMessage());
+        }
+    }
+
     private static void showLoginScreen() throws IOException {
         boolean loginSuccessful = false;
         String hospitalId = "";
-
+        User.initializeUsers();
         while (!loginSuccessful) {
             System.out.print("Enter Hospital ID: ");
             if (!sc.hasNextLine()) {
