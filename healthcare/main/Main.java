@@ -217,7 +217,7 @@ public class Main {
                 System.out.println("No input found. Exiting program.");
                 return;
             }
-            hospitalId = sc.nextLine();
+            hospitalId = sc.nextLine().toUpperCase();
 
             if (!User.userPasswordStaffMap.containsKey(hospitalId)
                     && !User.userPasswordPatientMap.containsKey(hospitalId)) {
