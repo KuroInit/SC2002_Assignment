@@ -1,7 +1,7 @@
-AppointmentID,DoctorID,PatientID,AppointmentDate,AppointmentTime,AppointmentStatus,TypeofService,PrescribedMedications,ConsultationNotes
-2937,D001,P1001,2024-11-13,12:00,N/A,N/A,N/A
-1829,D002,P1002,2024-11-15,11:00,APPROVED,N/A,N/A,N/A
-7563,D001,P1003,2024-11-20,10:30,COMPLETED,Consultation,Paracetamol,Fever
-8412,D002,P1001,2024-11-22,09:30,COMPLETED,Consultation,Crocin,Mild Fever
-4201,D001,P1002,2024-11-25,08:30,COMPLETED,Consultation,Paracetamol,Headache
-2461,D002,P1001,2024-11-10,10:30,PENDING,N/A,N/A,N/A
+AppointmentID,DoctorID,PatientID,AppointmentDate,AppointmentTime,AppointmentStatus,TypeofService,ConsultationNotes,PrescribedMedications,Quantity,MedicationStatus
+2937,D002,P1001,2024-11-08,11:00,CONFIRMED,N/A,N/A,N/A,N/A,N/A
+7563,D001,P1003,2024-11-20,10:30,COMPLETED,Consultation,Fever,Ibuprofen,4,DISPENSED
+8412,D002,P1001,2024-11-22,09:30,COMPLETED,Consultation,Mild Fever,Crocin,4,PENDING
+4201,D001,P1002,2024-11-25,08:30,COMPLETED,Consultation,Headache,Paracetamol,2,DISPENSED
+2461,D002,P1001,2024-11-10,10:30,COMPLETED,Blood Test,Low Iron,Vitamin C,3,PENDING
+6417,D002,P1001,2024-11-10,10:30,COMPLETED,X-Ray,Fracture,Vitamin D,6,PENDING
