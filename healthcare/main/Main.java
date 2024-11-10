@@ -1,22 +1,21 @@
 package healthcare.main;
 
-import healthcare.users.User;
+import healthcare.users.Administrator;
+import healthcare.users.Doctor;
 import healthcare.users.Patient;
 import healthcare.users.Pharmacist;
-import healthcare.users.Doctor;
-import healthcare.users.Administrator;
-
+import healthcare.users.User;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.HashMap;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -286,7 +285,7 @@ public class Main {
             }
             String newPassword = sc.nextLine();
             User.changeUserPassword(hospitalId, newPassword);
-        }
+        }//jndssnd
 
         Map<String, Doctor> doctorMap = loadDoctorsFromCSV();
         Map<String, Pharmacist> pharmacistMap = loadPharmacistsFromCSV();
