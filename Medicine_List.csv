@@ -1,4 +1,5 @@
 Medicine Name,Stock,Low Stock Indicator,Stock Level
-Paracetamol,100,25,In Stock
+Paracetamol,100,10,In Stock
 Ibuprofen,100,10,In Stock
 Amoxicillin,10,15,Low Stock
+Cetrizine,50,20,In Stock
