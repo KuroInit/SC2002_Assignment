@@ -152,6 +152,7 @@ public class AdministratorView {
             System.out.print("Enter Role: ");
             details.append(scanner.nextLine());
         }
+        scanner.close();
         return details.toString();
     }
 
