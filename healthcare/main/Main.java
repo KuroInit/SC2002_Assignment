@@ -1,27 +1,27 @@
 package healthcare.main;
 
-import healthcare.users.User;
+import healthcare.users.Administrator;
+import healthcare.users.Doctor;
 import healthcare.users.Patient;
 import healthcare.users.Pharmacist;
-import healthcare.users.Doctor;
-import healthcare.users.Administrator;
-
+import healthcare.users.User;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.HashMap;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         User.initializeUsers();
-
         while (true) {
             showMainMenu();
         }
@@ -31,10 +31,24 @@ public class Main {
     private static final String patientListFile = "Patient_List.csv";
     private static final String patientPasswordsFile = "Patient_Passwords.csv";
 
+    // Utility method to hash passwords with SHA-256
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(password.getBytes());
+            StringBuilder hashString = new StringBuilder();
+            for (byte b : hashBytes) {
+                hashString.append(String.format("%02x", b));
+            }
+            return hashString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Hashing algorithm not available.");
+        }
+    }
+
     private static Map<String, Patient> loadPatientsFromCSV() throws IOException {
         Map<String, Patient> patientMap = new HashMap<>();
         List<String> lines = Files.readAllLines(Paths.get("Patient_List.csv"));
-
         for (String line : lines) {
             String[] details = line.split(",");
             String patientID = details[0].trim();
@@ -46,21 +60,16 @@ public class Main {
 
     private static Map<String, Doctor> loadDoctorsFromCSV() {
         Map<String, Doctor> doctorMap = new HashMap<>();
-        
         try (BufferedReader reader = new BufferedReader(new FileReader("Doctor_List.csv"))) {
             String line = reader.readLine(); // Skip header line if necessary
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                
-                // Check if the role is "Doctor"
                 if (data[2].trim().equalsIgnoreCase("Doctor")) {
                     String doctorID = data[0];
                     String name = data[1];
                     String gender = data[3];
                     String age = data[4];
                     String specialisation = data[5].trim();
-
-                    // Assuming Doctor class has a suitable constructor
                     Doctor doctor = new Doctor(doctorID, name, gender, age, specialisation);
                     doctorMap.put(doctorID, doctor);
                 }
@@ -68,26 +77,20 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error loading doctor data: " + e.getMessage());
         }
-
         return doctorMap;
     }
 
     private static Map<String, Pharmacist> loadPharmacistsFromCSV() {
         Map<String, Pharmacist> pharmacistMap = new HashMap<>();
-        
         try (BufferedReader reader = new BufferedReader(new FileReader("Staff_List.csv"))) {
             String line = reader.readLine(); // Skip header line if necessary
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                
-                // Check if the role is "Doctor"
                 if (data[2].trim().equalsIgnoreCase("Pharmacist")) {
                     String pharmacistID = data[0];
                     String name = data[1];
                     String gender = data[3];
                     String age = data[4].trim();
-
-                    // Assuming Doctor class has a suitable constructor
                     Pharmacist pharmacist = new Pharmacist(pharmacistID, name, gender, age);
                     pharmacistMap.put(pharmacistID, pharmacist);
                 }
@@ -95,26 +98,20 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error loading pharmacist data: " + e.getMessage());
         }
-
         return pharmacistMap;
     }
 
     private static Map<String, Administrator> loadAdministratorsFromCSV() {
         Map<String, Administrator> administratorMap = new HashMap<>();
-        
         try (BufferedReader reader = new BufferedReader(new FileReader("Staff_List.csv"))) {
             String line = reader.readLine(); // Skip header line if necessary
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                
-                // Check if the role is "Doctor"
                 if (data[2].trim().equalsIgnoreCase("Administrator")) {
                     String administratorID = data[0];
                     String name = data[1];
                     String gender = data[3];
                     String age = data[4].trim();
-
-                    // Assuming Doctor class has a suitable constructor
                     Administrator administrator = new Administrator(administratorID, name, gender, age);
                     administratorMap.put(administratorID, administrator);
                 }
@@ -122,7 +119,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error loading administrator data: " + e.getMessage());
         }
-
         return administratorMap;
     }
 
@@ -156,49 +152,35 @@ public class Main {
     private static void registerUser() {
         try {
             System.out.println("Registering a new patient:");
-            
-            // Prompt for patient details
             System.out.print("Enter Name: ");
             String name = sc.nextLine();
-            
             System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
             String dob = sc.nextLine();
-            
             System.out.print("Enter Gender: ");
             String gender = sc.nextLine();
-            
             System.out.print("Enter Blood Type: ");
             String bloodType = sc.nextLine();
-            
             System.out.print("Enter Email Address: ");
             String email = sc.nextLine();
-
             System.out.print("Enter Contact Number: ");
             String phoneNumber = sc.nextLine();
-    
-            // Generate new Patient ID
+
             String newPatientID = generateNewPatientID();
-    
-            // Add details to Patient_List.csv
             String newEntry = newPatientID + "," + name + "," + dob + "," + gender + "," + bloodType + "," + email + "," + phoneNumber;
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(patientListFile, true))) {
                 writer.write(newEntry);
                 writer.newLine();
                 System.out.println("Registration successful! Your Patient ID is: " + newPatientID);
             }
-    
-            // Set default password
+
             String defaultPassword = "password";
-    
-            // Store Patient ID and default password in Patient_Passwords.csv
+            String hashedPassword = hashPassword(defaultPassword);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(patientPasswordsFile, true))) {
-                writer.write(newPatientID + "," + defaultPassword + ",Patient");
+                writer.write(newPatientID + "," + hashedPassword + ",Patient");
                 writer.newLine();
-                System.out.println("Your account has been created with the default password: " + defaultPassword);
-                System.out.println("Please log in and change your password for security.");
+                System.out.println("Your account has been created with the default password.");
             }
-    
-            // Reload users to include the new registration
+
             User.initializeUsers();
             System.out.println("User data reloaded successfully.");
             
@@ -206,7 +188,6 @@ public class Main {
             System.out.println("Error during registration: " + e.getMessage());
         }
     }
-    
 
     private static String generateNewPatientID() {
         String lastPatientID = "";
@@ -214,21 +195,17 @@ public class Main {
             List<String> lines = Files.readAllLines(Paths.get(patientListFile));
             if (!lines.isEmpty()) {
                 String lastLine = lines.get(lines.size() - 1);
-                lastPatientID = lastLine.split(",")[0]; // Get the last patient ID
+                lastPatientID = lastLine.split(",")[0];
             }
         } catch (IOException e) {
             System.out.println("Error reading patient list: " + e.getMessage());
         }
-
         if (lastPatientID.isEmpty()) {
-            return "P1001"; // Default starting ID if file is empty
+            return "P1001";
         }
-
-        // Increment last Patient ID
         int lastIDNumber = Integer.parseInt(lastPatientID.substring(1));
         return "P" + (lastIDNumber + 1);
     }
-
 
     private static void showLoginScreen() throws IOException {
         boolean loginSuccessful = false;
@@ -240,7 +217,7 @@ public class Main {
                 System.out.println("No input found. Exiting program.");
                 return;
             }
-            hospitalId = sc.nextLine();
+            hospitalId = sc.nextLine().toUpperCase();
 
             if (!User.userPasswordStaffMap.containsKey(hospitalId)
                     && !User.userPasswordPatientMap.containsKey(hospitalId)) {
@@ -254,12 +231,12 @@ public class Main {
                 return;
             }
             String password = sc.nextLine();
+            String hashedPassword = hashPassword(password);
 
-            // Compare entered password with stored password directly
             if ((User.userPasswordStaffMap.containsKey(hospitalId)
-                    && User.userPasswordStaffMap.get(hospitalId).equals(password)) ||
+                    && User.userPasswordStaffMap.get(hospitalId).equals(hashedPassword)) ||
                     (User.userPasswordPatientMap.containsKey(hospitalId)
-                            && User.userPasswordPatientMap.get(hospitalId).equals(password))) {
+                            && User.userPasswordPatientMap.get(hospitalId).equals(hashedPassword))) {
                 loginSuccessful = true;
                 System.out.println("Login successful!");
             } else {
@@ -267,7 +244,6 @@ public class Main {
             }
         }
 
-        // Get the user name after successful login
         String name = User.userNameMapStaff.containsKey(hospitalId) ? User.userNameMapStaff.get(hospitalId)
                 : User.userNameMapPatient.get(hospitalId);
         System.out.println("Good Day " + name + "!");
@@ -285,7 +261,8 @@ public class Main {
                 return;
             }
             String newPassword = sc.nextLine();
-            User.changeUserPassword(hospitalId, newPassword);
+            String newHashedPassword = hashPassword(newPassword);
+            User.changeUserPassword(hospitalId, newHashedPassword);
         }
 
         Map<String, Doctor> doctorMap = loadDoctorsFromCSV();
