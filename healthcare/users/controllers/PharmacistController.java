@@ -78,13 +78,15 @@ public class PharmacistController {
     private void updateMedicationStatus(Scanner scanner) {
         System.out.print("Enter the Appointment ID to update medication status to 'DISPENSED': ");
         String appointmentID = scanner.nextLine();
-
+    
         String appointmentRequestsPath = "appointmentRequests.csv";
         String medicineListPath = "Medicine_List.csv";
         List<String> appointments = new ArrayList<>();
         boolean appointmentFound = false;
-
-        // Step 1: Locate the appointment
+        String prescribedMedicine = null;
+        int prescribedQuantity = 0;
+    
+        // Step 1: Locate the appointment and extract the medicine and quantity
         try (BufferedReader br = new BufferedReader(new FileReader(appointmentRequestsPath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -92,6 +94,8 @@ public class PharmacistController {
                 if (details[0].equals(appointmentID) && "PENDING".equalsIgnoreCase(details[10])) {
                     appointmentFound = true;
                     details[10] = "DISPENSED"; // Update status
+                    prescribedMedicine = details[8]; // Assuming the medicine name is in column 5
+                    prescribedQuantity = Integer.parseInt(details[9]); // Assuming quantity is in column 6
                     appointments.add(String.join(",", details));
                 } else {
                     appointments.add(line);
@@ -101,13 +105,13 @@ public class PharmacistController {
             pharmacistView.displayError("Error reading appointment requests: " + e.getMessage());
             return;
         }
-
+    
         if (!appointmentFound) {
             pharmacistView.displayMessage("No pending appointment found with the given ID.");
             return;
         }
-
-        // Update the appointment file
+    
+        // Step 2: Update the appointment file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(appointmentRequestsPath))) {
             for (String updatedLine : appointments) {
                 bw.write(updatedLine);
@@ -116,8 +120,59 @@ public class PharmacistController {
             pharmacistView.displayMessage("Appointment status updated to 'DISPENSED'.");
         } catch (IOException e) {
             pharmacistView.displayError("Error saving updated appointments: " + e.getMessage());
+            return;
+        }
+    
+        // Step 3: Update the medicine list by subtracting the prescribed quantity
+        List<String> medicineData = new ArrayList<>();
+        boolean medicineFound = false;
+    
+        try (BufferedReader br = new BufferedReader(new FileReader(medicineListPath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details[0].equalsIgnoreCase(prescribedMedicine)) { // Assuming medicine name is in column 0
+                    int currentStock = Integer.parseInt(details[1]); // Assuming stock quantity is in column 1
+                    int newStock = currentStock - prescribedQuantity;
+                    if (newStock < 0) {
+                        pharmacistView.displayError("Insufficient stock for " + prescribedMedicine);
+                        return;
+                    }
+                    details[1] = String.valueOf(newStock); // Update stock quantity
+    
+                    // Check if new stock is below the low stock threshold
+                    if (newStock < Integer.parseInt(details[2])) {
+                        details[3] = "Low Stock"; // Assuming stock level is in column 2
+                    }
+    
+                    medicineData.add(String.join(",", details));
+                    medicineFound = true;
+                } else {
+                    medicineData.add(line);
+                }
+            }
+        } catch (IOException e) {
+            pharmacistView.displayError("Error reading medicine list: " + e.getMessage());
+            return;
+        }
+    
+        if (!medicineFound) {
+            pharmacistView.displayError("Medicine not found in the medicine list.");
+            return;
+        }
+    
+        // Step 4: Save the updated medicine list back to the file
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(medicineListPath))) {
+            for (String updatedLine : medicineData) {
+                bw.write(updatedLine);
+                bw.newLine();
+            }
+            pharmacistView.displayMessage("Medicine list updated with new stock quantity and stock level.");
+        } catch (IOException e) {
+            pharmacistView.displayError("Error saving updated medicine list: " + e.getMessage());
         }
     }
+    
 
     private void viewMedicationInventory() {
         StringBuilder inventoryDetails = new StringBuilder(

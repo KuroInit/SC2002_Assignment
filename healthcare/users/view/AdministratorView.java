@@ -1,10 +1,22 @@
 package healthcare.users.view;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class AdministratorView {
 
+    public void showAdminMenu() {
+        System.out.println("\n===== Administrator Menu =====");
+        System.out.println("1. View and Manage Hospital Staff");
+        System.out.println("2. View Appointment Details");
+        System.out.println("3. View and Manage Medication Inventory");
+        System.out.println("4. Approve Replenishment Requests");
+        System.out.println("5. Logout");
+        System.out.println("==============================\n");
+    }
+    
     public void displayStaffManagementMenu() {
         System.out.println("\nHospital Staff Management");
         System.out.println("1. View Staff");
@@ -75,22 +87,22 @@ public class AdministratorView {
     }
 
     public void displayFilteredDoctors(List<String> doctorData, String filterField, String filterValue) {
-        System.out.println("\nFiltered Doctors:");
+        System.out.println("\nDoctor List:\n");
         System.out.printf("%-12s %-17s %-10s %-5s %-20s%n", "Doctor ID", "Name", "Gender", "Age", "Specialisation");
         System.out.println("--------------------------------------------------------------------");
 
         for (String line : doctorData) {
             String[] details = line.split(",");
             if (matchesFilter(details, filterField, filterValue)) {
-                System.out.printf("%-12s %-17s %-10s %-5s %-20s%n", details[0], details[1], details[2], details[3],
-                        details[4]);
+                System.out.printf("%-12s %-17s %-10s %-5s %-20s%n", details[0], details[1], details[3], details[4],
+                        details[5]);
             }
         }
         System.out.println("--------------------------------------------------------------------");
     }
 
     public void displayFilteredStaff(List<String> staffData, String filterField, String filterValue) {
-        System.out.println("\nFiltered Staff:");
+        System.out.println("\nStaff List:\n");
         System.out.printf("%-10s %-17s %-15s %-10s %-5s%n", "Staff ID", "Name", "Role", "Gender", "Age");
         System.out.println("-------------------------------------------------------------------");
 
@@ -109,16 +121,16 @@ public class AdministratorView {
             return true;
         switch (filterField) {
             case "Gender" -> {
-                return details[2].equalsIgnoreCase(filterValue);
+                return details[3].equalsIgnoreCase(filterValue);
             }
             case "Age" -> {
-                return details[3].equals(filterValue);
+                return details[4].equals(filterValue);
             }
             case "Role" -> {
                 return details[2].equalsIgnoreCase(filterValue);
             }
             case "Specialisation" -> {
-                return details[4].equalsIgnoreCase(filterValue);
+                return details[5].equalsIgnoreCase(filterValue);
             }
             default -> {
                 return false;
@@ -136,20 +148,28 @@ public class AdministratorView {
     public String collectStaffDetails(int staffType) {
         Scanner scanner = new Scanner(System.in);
         StringBuilder details = new StringBuilder();
-        System.out.print("Enter ID: ");
-        details.append(scanner.nextLine()).append(",");
-        System.out.print("Enter Name: ");
-        details.append(scanner.nextLine()).append(",");
-        System.out.print("Enter Gender: ");
-        details.append(scanner.nextLine()).append(",");
-        System.out.print("Enter Age: ");
-        details.append(scanner.nextLine()).append(",");
-
+        
         if (staffType == 1) {
+            System.out.print("Enter ID: ");
+            details.append(scanner.nextLine()).append(",");
+            System.out.print("Enter Name: ");
+            details.append(scanner.nextLine()).append(",");
+            System.out.print("Enter Gender: ");
+            details.append(scanner.nextLine()).append(",");
+            System.out.print("Enter Age: ");
+            details.append(scanner.nextLine()).append(",");
             System.out.print("Enter Specialisation: ");
             details.append(scanner.nextLine());
         } else {
+            System.out.print("Enter ID: ");
+            details.append(scanner.nextLine()).append(",");
+            System.out.print("Enter Name: ");
+            details.append(scanner.nextLine()).append(",");
             System.out.print("Enter Role: ");
+            details.append(scanner.nextLine()).append(",");
+            System.out.print("Enter Gender: ");
+            details.append(scanner.nextLine()).append(",");
+            System.out.print("Enter Age: ");
             details.append(scanner.nextLine());
         }
         scanner.close();
@@ -163,26 +183,28 @@ public class AdministratorView {
         System.out.print("Choose the type of staff to update: ");
     }
 
-    public String collectUpdatedStaffDetails(Scanner scanner, int staffType) {
-        String[] fields = new String[5];
+    public String collectUpdatedStaffDetails(String[] existingFields, int idIndex) {
+        Scanner scanner = new Scanner(System.in);
+        String[] fields = Arrays.copyOf(existingFields, existingFields.length); // Copy existing data
+    
         System.out.println("Select the field to update:");
         System.out.println("1. Name");
-        if (staffType == 2)
-            System.out.println("2. Role");
+        if (fields[2].equals("Other Staff")) System.out.println("2. Role");
         System.out.println("3. Gender");
         System.out.println("4. Age");
-        if (staffType == 1)
-            System.out.println("5. Specialisation");
+        if (fields[2].equals("Doctor")) System.out.println("5. Specialisation");
+    
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-
+    
+        // Update only the selected field based on choice
         switch (choice) {
             case 1 -> {
                 System.out.print("Enter new Name: ");
                 fields[1] = scanner.nextLine();
             }
             case 2 -> {
-                if (staffType == 2) {
+                if (fields[2].equals("Other Staff")) {
                     System.out.print("Enter new Role: ");
                     fields[2] = scanner.nextLine();
                 } else {
@@ -191,30 +213,31 @@ public class AdministratorView {
             }
             case 3 -> {
                 System.out.print("Enter new Gender: ");
-                fields[staffType == 1 ? 2 : 3] = scanner.nextLine();
+                fields[3] = scanner.nextLine();
             }
             case 4 -> {
                 System.out.print("Enter new Age: ");
-                fields[staffType == 1 ? 3 : 4] = scanner.nextLine();
+                fields[4] = scanner.nextLine();
             }
             case 5 -> {
-                if (staffType == 1) {
+                if (fields[2].equals("Doctor")) {
                     System.out.print("Enter new Specialisation: ");
-                    fields[4] = scanner.nextLine();
+                    fields[5] = scanner.nextLine();
                 } else {
                     System.out.println("Invalid choice for Other Staff.");
                 }
             }
             default -> System.out.println("Invalid choice.");
         }
+    
         return String.join(",", fields);
     }
+        
 
     public String promptIDInput() {
         System.out.print("Enter the Hospital ID: ");
         Scanner sc = new Scanner(System.in);
         String id = sc.nextLine();
-        sc.close();
         return id;
     }
 
@@ -252,22 +275,31 @@ public class AdministratorView {
     }
 
     public void displayStatusFilterOptions() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("\nAppointment Status Filter:");
         System.out.println("1. View All Statuses");
         System.out.println("2. Filter by Status");
         System.out.print("Choose an option: ");
     }
 
+    public void displayStatusTypeOptions() {
+        System.out.println("Select Appointment Status:");
+        System.out.println("1. Pending Confirmation");
+        System.out.println("2. Confirmed");
+        System.out.println("3. Cancelled");
+        System.out.println("4. Completed");
+        System.out.print("Enter your choice: ");
+    }
+
     public String getStatusFromChoice(int choice) {
         return switch (choice) {
-            case 1 -> "";
-            case 2 -> "Pending Confirmation";
-            case 3 -> "Confirmed";
-            case 4 -> "Cancelled";
-            case 5 -> "Completed";
+            case 1 -> "Pending Confirmation";
+            case 2 -> "Confirmed";
+            case 3 -> "Cancelled";
+            case 4 -> "Completed";
             default -> {
                 System.out.println("Invalid status option.");
-                yield "";
+                yield "Completed";
             }
         };
     }
@@ -303,6 +335,17 @@ public class AdministratorView {
             matchesFilter = details[5].equalsIgnoreCase(statusFilter);
         }
         return matchesFilter;
+    }
+
+    public void inventoryMenu() {
+        System.out.println("\nMedicine Inventory Management");
+        System.out.println("1. View Inventory");
+        System.out.println("2. Add Medicine");
+        System.out.println("3. Remove Medicine");
+        System.out.println("4. Update Stock");
+        System.out.println("5. Update Low Stock Indicator");
+        System.out.println("6. Exit");
+        System.out.print("Choose an option: ");
     }
 
     public void displayInventory(List<String> inventory) {

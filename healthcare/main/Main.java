@@ -1,9 +1,18 @@
 package healthcare.main;
 
-import healthcare.users.Administrator;
-import healthcare.users.Doctor;
-import healthcare.users.Patient;
-import healthcare.users.Pharmacist;
+import healthcare.users.controllers.AdministratorController;
+import healthcare.users.controllers.DoctorController;
+import healthcare.users.controllers.PatientController;
+import healthcare.users.controllers.PharmacistController;
+import healthcare.users.controllers.UserController;
+import healthcare.users.models.PatientModel;
+import healthcare.users.models.DoctorModel;
+import healthcare.users.models.AdministratorModel;
+import healthcare.users.models.PharmacistModel;
+import healthcare.users.view.PatientView;
+import healthcare.users.view.DoctorView;
+import healthcare.users.view.AdministratorView;
+import healthcare.users.view.PharmacistView;
 import healthcare.users.User;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,7 +30,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        User.initializeUsers();
+        UserController.initializeUsers();
+        loadAllData(); // Load data once at startup
         while (true) {
             showMainMenu();
         }
@@ -29,12 +39,20 @@ public class Main {
 
     private static final Scanner sc = new Scanner(System.in);
     private static final String patientListFile = "Patient_List.csv";
+    private static final String doctorListFile = "Doctor_List.csv";
     private static final String staffListFile = "Staff_List.csv";
-    private static final String staffPasswordsFile = "Staff_Passwords.csv";
     private static final String patientPasswordsFile = "Patient_Passwords.csv";
+    private static final String doctorPasswordsFile = "Doctor_Passwords.csv";
+    private static final String staffPasswordsFile = "Staff_Passwords.csv";
+
+    // Memoized data maps for controllers
+    private static Map<String, PatientController> patientMap;
+    private static Map<String, DoctorController> doctorMap;
+    private static Map<String, PharmacistController> pharmacistMap;
+    private static Map<String, AdministratorController> administratorMap;
 
     // Utility method to hash passwords with SHA-256
-    private static String hashPassword(String password) {
+    public static String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(password.getBytes());
@@ -48,109 +66,98 @@ public class Main {
         }
     }
 
-    private static Map<String, Patient> loadPatientsFromCSV() throws IOException {
-        Map<String, Patient> patientMap = new HashMap<>();
-        List<String> lines = Files.readAllLines(Paths.get("Patient_List.csv"));
+    private static void loadAllData() throws IOException {
+        // Load all data once to avoid repeated file I/O
+        patientMap = loadPatientsFromCSV();
+        doctorMap = loadDoctorsFromCSV();
+        pharmacistMap = loadPharmacistsFromCSV();
+        administratorMap = loadAdministratorsFromCSV();
+    }
+
+    private static Map<String, PatientController> loadPatientsFromCSV() throws IOException {
+        if (patientMap != null) return patientMap; // Memoization check
+        patientMap = new HashMap<>();
+        List<String> lines = Files.readAllLines(Paths.get(patientListFile));
         for (String line : lines) {
             String[] details = line.split(",");
             String patientID = details[0].trim();
-            Patient patient = new Patient(patientID);
-            patientMap.put(patientID, patient);
+            PatientModel model = new PatientModel(patientID, details[1], details[2], details[3], details[4], details[5], details[6]);
+            PatientView view = new PatientView();
+            PatientController controller = new PatientController(model, view);
+            patientMap.put(patientID, controller);
         }
         return patientMap;
     }
 
-    private static Map<String, Doctor> loadDoctorsFromCSV() {
-        Map<String, Doctor> doctorMap = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("Doctor_List.csv"))) {
+    private static Map<String, DoctorController> loadDoctorsFromCSV() throws IOException {
+        if (doctorMap != null) return doctorMap; // Memoization check
+        doctorMap = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(doctorListFile))) {
             String line = reader.readLine(); // Skip header line if necessary
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data[2].trim().equalsIgnoreCase("Doctor")) {
-                    String doctorID = data[0];
-                    String name = data[1];
-                    String gender = data[3];
-                    String age = data[4];
-                    String specialisation = data[5].trim();
-                    Doctor doctor = new Doctor(doctorID, name, gender, age, specialisation);
-                    doctorMap.put(doctorID, doctor);
-                }
+                String doctorID = data[0];
+                DoctorModel model = new DoctorModel(doctorID, data[1], data[2], data[3]);
+                DoctorView view = new DoctorView();
+                DoctorController controller = new DoctorController(model, view);
+                doctorMap.put(doctorID, controller);
             }
-        } catch (IOException e) {
-            System.out.println("Error loading doctor data: " + e.getMessage());
         }
         return doctorMap;
     }
 
-    private static Map<String, Pharmacist> loadPharmacistsFromCSV() {
-        Map<String, Pharmacist> pharmacistMap = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("Staff_List.csv"))) {
+    private static Map<String, PharmacistController> loadPharmacistsFromCSV() throws IOException {
+        if (pharmacistMap != null) return pharmacistMap; // Memoization check
+        pharmacistMap = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(staffListFile))) {
             String line = reader.readLine(); // Skip header line if necessary
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data[2].trim().equalsIgnoreCase("Pharmacist")) {
                     String pharmacistID = data[0];
-                    String name = data[1];
-                    String gender = data[3];
-                    String age = data[4].trim();
-                    Pharmacist pharmacist = new Pharmacist(pharmacistID, name, gender, age);
-                    pharmacistMap.put(pharmacistID, pharmacist);
+                    PharmacistModel model = new PharmacistModel(pharmacistID, data[1], data[3], data[4]);
+                    PharmacistView view = new PharmacistView();
+                    PharmacistController controller = new PharmacistController(model, view);
+                    pharmacistMap.put(pharmacistID, controller);
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error loading pharmacist data: " + e.getMessage());
         }
         return pharmacistMap;
     }
 
-    private static Map<String, Administrator> loadAdministratorsFromCSV() {
-        Map<String, Administrator> administratorMap = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("Staff_List.csv"))) {
+    private static Map<String, AdministratorController> loadAdministratorsFromCSV() throws IOException {
+        if (administratorMap != null) return administratorMap; // Memoization check
+        administratorMap = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(staffListFile))) {
             String line = reader.readLine(); // Skip header line if necessary
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data[2].trim().equalsIgnoreCase("Administrator")) {
                     String administratorID = data[0];
-                    String name = data[1];
-                    String gender = data[3];
-                    String age = data[4].trim();
-                    Administrator administrator = new Administrator(administratorID, name, gender, age);
-                    administratorMap.put(administratorID, administrator);
+                    AdministratorModel model = new AdministratorModel(administratorID);
+                    AdministratorView view = new AdministratorView();
+                    AdministratorController controller = new AdministratorController(model, view);
+                    administratorMap.put(administratorID, controller);
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error loading administrator data: " + e.getMessage());
         }
         return administratorMap;
     }
 
     private static void showMainMenu() throws IOException {
-        System.out.println("\n");
-        System.out.println("Welcome to the Hospital Management System (HMS)");
+        System.out.println("\nWelcome to the Hospital Management System (HMS)");
         System.out.println("1. Register As Patient");
         System.out.println("2. Login");
         System.out.println("3. Exit");
         System.out.print("Choose an option: ");
-
         int choice = sc.nextInt();
         sc.nextLine(); // Consume newline
-
         switch (choice) {
-            case 1:
-                registerUser();
-                break;
-            case 2:
-                showLoginScreen();
-                break;
-            case 3:
-                System.out.println("Exiting the Hospital Management System. Goodbye!");
-                System.exit(0);
-                break;
-            case 4:
-                registerAdmin();
-                break;
-            default:
-                System.out.println("Invalid option. Please try again.");
+            case 1 -> registerUser();
+            case 2 -> showLoginScreen();
+            case 3 -> System.exit(0);
+            case 4 -> registerAdmin();
+            default -> System.out.println("Invalid option. Please try again.");
         }
     }
 
@@ -307,40 +314,40 @@ public class Main {
             User.changeUserPassword(hospitalId, newHashedPassword);
         }
 
-        Map<String, Doctor> doctorMap = loadDoctorsFromCSV();
-        Map<String, Pharmacist> pharmacistMap = loadPharmacistsFromCSV();
-        Map<String, Administrator> administratorMap = loadAdministratorsFromCSV();
+        Map<String, DoctorController> doctorMap = loadDoctorsFromCSV();
+        Map<String, PharmacistController> pharmacistMap = loadPharmacistsFromCSV();
+        Map<String, AdministratorController> administratorMap = loadAdministratorsFromCSV();
+        Map<String, PatientController> patientMap = loadPatientsFromCSV();
 
         String role = User.userRoleStaffMap.containsKey(hospitalId) ? User.userRoleStaffMap.get(hospitalId)
                 : User.userRolePatientMap.get(hospitalId);
         switch (role) {
             case "Patient":
-                Map<String, Patient> patientMap = loadPatientsFromCSV();
-                Patient patient = patientMap.get(hospitalId);
+                PatientController patient = patientMap.get(hospitalId);
                 if (patient != null) {
-                    patient.patientmenu();
+                    patient.showPatientMenu();
                 } else {
                     System.out.println("Patient details not found.");
                 }
                 break;
             case "Doctor":       
-                Doctor doctor = doctorMap.get(hospitalId);
+                DoctorController doctor = doctorMap.get(hospitalId);
                 if (doctor != null) {
-                    doctor.doctormenu();
+                    doctor.showMenu();
                 } else {
                     System.out.println("Doctor details not found.");
                 }
                 break;
             case "Pharmacist":
-                Pharmacist pharmacist = pharmacistMap.get(hospitalId);
+                PharmacistController pharmacist = pharmacistMap.get(hospitalId);
                 if (pharmacist != null) {
-                    pharmacist.pharmacistMenu();
+                    pharmacist.showMenu();
                 } else {
                     System.out.println("Pharmacist details not found.");
                 }
                 break;
             case "Administrator":
-                Administrator administrator = administratorMap.get(hospitalId);
+                AdministratorController administrator = administratorMap.get(hospitalId);
                 if (administrator != null) {
                     administrator.administratorMenu();
                 } else {

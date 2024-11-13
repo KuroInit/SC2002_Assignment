@@ -1,5 +1,6 @@
 package healthcare.users.controllers;
 
+import healthcare.main.Main;
 import healthcare.users.models.*;
 import healthcare.users.view.*;
 
@@ -10,49 +11,81 @@ public class AdministratorController {
     private final AdministratorModel model;
     private final AdministratorView view;
 
-
     public AdministratorController(AdministratorModel model, AdministratorView view) {
         this.model = model;
         this.view = view;
     }
 
-    public void manageStaff() {
+    public void administratorMenu() {
         Scanner scanner = new Scanner(System.in);
-        while (true) {
-            view.displayStaffManagementMenu();
-            int choice = scanner.nextInt();
+        int choice;
+
+        do {
+            view.showAdminMenu();
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> viewStaff();
-                case 2 -> addStaff();
-                case 3 -> updateStaff();
-                case 4 -> removeStaff();
-                case 5 -> {
-                    view.displayExitMessage("staff management");
-                    return;
+                case 1 -> manageStaff();
+                case 2 -> viewAppointments();
+                case 3 -> manageInventory();
+                case 4 -> manageReplenishmentRequests();
+                case 5 -> System.out.println("Logging out...");
+                default -> System.out.println("Invalid choice. Please select a valid option.");
+            }
+        } while (choice != 5);
+    }
+
+    
+
+    public void manageStaff() {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+    
+        while (true) {
+            view.displayStaffManagementMenu();
+            
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+    
+                switch (choice) {
+                    case 1 -> viewStaff();
+                    case 2 -> addStaff();
+                    case 3 -> updateStaff();
+                    case 4 -> removeStaff();
+                    case 5 -> {
+                        System.out.println("Exiting staff management...");
+                        return; // Exit the method
+                    }
+                    default -> System.out.println("Invalid choice. Please select a valid option.");
                 }
-                default -> view.displayInvalidOption();
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // Clear invalid input
             }
         }
     }
+    
+    
 
     public void viewStaff() {
-        String doctor = "doctor";
-        String staff = "staff";
+        String doctorRole = "Doctor";
+        String staffRole = "Staff";
         Scanner scanner = new Scanner(System.in);
         view.displayViewStaffOptions();
         int filterChoice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-
+    
         String filterField = "";
         String filterValue = "";
-
+    
         if (filterChoice == 2) {
             view.displayFilterOptions();
             int filterOption = scanner.nextInt();
             scanner.nextLine(); // Consume newline
-
+    
             switch (filterOption) {
                 case 1 -> {
                     view.displayRoleSelectionMenu();
@@ -76,61 +109,149 @@ public class AdministratorController {
                 default -> view.displayInvalidOption();
             }
         }
-
-        List<String> doctorData = model.readDataFromFile(model.getFilePathForStaffType(doctor));
-        List<String> staffData = model.readDataFromFile(model.getFilePathForStaffType(staff));
-
-        view.displayFilteredDoctors(doctorData, filterField, filterValue);
-        view.displayFilteredStaff(staffData, filterField, filterValue);
+    
+        List<String> doctorData = model.readDataFromFile(model.getFilePathForStaffType(doctorRole));
+        List<String> staffData = model.readDataFromFile(model.getFilePathForStaffType(staffRole));
+    
+        // Display the relevant list based on the filter field and value
+        if (filterField.equals("Role")) {
+            // Show either doctors or staff based on the selected role
+            if (filterValue.equalsIgnoreCase(doctorRole)) {
+                view.displayFilteredDoctors(doctorData, filterField, filterValue);
+            } else {
+                view.displayFilteredStaff(staffData, filterField, filterValue);
+            }
+        } else {
+            // Apply other filters (Gender, Age) to both lists
+            view.displayFilteredDoctors(doctorData, filterField, filterValue);
+            view.displayFilteredStaff(staffData, filterField, filterValue);
+        }
     }
+    
 
     public void addStaff() {
-        Scanner scanner = new Scanner(System.in);
-        String filepath = model.getDoctorListPath();
-        view.displayAddStaffMenu();
-        int staffType = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+    Scanner scanner = new Scanner(System.in);
+    String filepath;
+    String passwordFilePath;
+    String role;
 
-        String newEntry = view.collectStaffDetails(staffType);
-        switch(staffType) {
-            case 1 -> filepath = model.getDoctorListPath();
-            case 2 -> filepath = model.getStaffListPath();
+    view.displayAddStaffMenu();
+    int staffType = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
+
+    // Collect staff details from the view
+    String newEntry = view.collectStaffDetails(staffType);
+
+    // Determine the file paths and role based on the staff type
+    switch (staffType) {
+        case 1 -> {
+            filepath = model.getDoctorListPath();
+            passwordFilePath = model.getDoctorPasswordsPath();
+            role = "Doctor";
         }
-        if (model.appendDataToFile(filepath, newEntry)) {
-            view.displaySuccessMessage("Staff added successfully.");
-        } else {
-            view.displayErrorMessage("Error adding staff.");
+        case 2 -> {
+            filepath = model.getStaffListPath();
+            passwordFilePath = model.getStaffPasswordsPath();
+            role = "Staff";
+        }
+        default -> {
+            view.displayErrorMessage("Invalid staff type.");
+            return;
         }
     }
+
+    // Append new staff data to the relevant file (Doctor_List.csv or Staff_List.csv)
+    if (model.appendDataToFile(filepath, newEntry)) {
+        // Extract staff ID and prepare password entry
+        String[] staffDetails = newEntry.split(",");
+        String staffID = staffDetails[0];
+        String defaultPassword = "password";
+        String hashedPassword = Main.hashPassword(defaultPassword); // Use Main's hashPassword method
+
+        // Construct password entry as ID, hashed password, and role
+        String passwordEntry = staffID + "," + hashedPassword + "," + role;
+
+        // Append to the appropriate password file (Doctor or Staff)
+        if (model.appendDataToFile(passwordFilePath, passwordEntry)) {
+            view.displaySuccessMessage("Staff added successfully and password set.");
+        } else {
+            view.displayErrorMessage("Error updating password file.");
+        }
+    } else {
+        view.displayErrorMessage("Error adding staff.");
+    }
+    }
+
 
     public void updateStaff() {
         Scanner scanner = new Scanner(System.in);
-        String filepath = model.getDoctorListPath();
         view.displayUpdateStaffMenu();
         int staffType = scanner.nextInt();
         scanner.nextLine();
-        switch(staffType) {
-            case 1 -> filepath = model.getDoctorListPath();
-            case 2 -> filepath = model.getStaffListPath();
+    
+        // Determine file path and header based on staff type
+        String filepath;
+        String header;
+        switch (staffType) {
+            case 1 -> {
+                filepath = model.getDoctorListPath();
+                header = model.getDoctorHeader();
+            }
+            case 2 -> {
+                filepath = model.getStaffListPath();
+                header = model.getStaffHeader();
+            }
+            default -> {
+                System.out.println("Invalid staff type selected. Defaulting to Doctor.");
+                filepath = model.getDoctorListPath();
+                header = model.getDoctorHeader();
+            }
         }
-
-        if (model.updateEntry(filepath, view.promptIDInput(), 0, view.collectUpdatedStaffDetails(scanner, staffType))) {
+    
+        // Prompt for ID and retrieve existing entry details
+        String id = view.promptIDInput();
+        String[] existingFields = model.getEntryById(filepath, id);  // Retrieve existing fields
+    
+        if (existingFields == null) {
+            view.displayErrorMessage("Staff ID not found.");
+            return;
+        }
+    
+        // Collect only the updated field(s) for the specific staff
+        String updatedEntry = view.collectUpdatedStaffDetails(existingFields, staffType);
+        if (model.updateEntry(filepath, id, 0, updatedEntry, header)) {
             view.displaySuccessMessage("Staff updated successfully.");
         } else {
-            view.displayErrorMessage("Staff ID not found or update failed.");
+            view.displayErrorMessage("Update failed.");
         }
     }
+    
+    
+    
+    
 
     public void removeStaff() {
         Scanner scanner = new Scanner(System.in);
-        String filepath = model.getDoctorListPath();
+        String filepath;
+        String header;
         view.promptIsDoctor();
         Integer isDoctor = scanner.nextInt();
         switch(isDoctor) {
-            case 1 -> filepath = model.getDoctorListPath();
-            case 2 -> filepath = model.getStaffListPath();
+            case 1 -> {
+                filepath = model.getDoctorListPath();
+                header = model.getDoctorHeader();
+            }
+            case 2 -> {
+                filepath = model.getStaffListPath();
+                header = model.getStaffHeader();
+            }
+            default -> {
+                System.out.println("Invalid staff type selected. Defaulting to Doctor.");
+                filepath = model.getDoctorListPath();
+                header = model.getDoctorHeader();
+            }
         }
-        boolean isRemoved = model.removeEntry(filepath, view.promptIDInput());
+        boolean isRemoved = model.removeEntry(filepath, view.promptIDInput(),header);
 
         if (isRemoved) {
             view.displaySuccessMessage("Staff removed successfully.");
@@ -175,17 +296,27 @@ public class AdministratorController {
 
             view.displayStatusFilterOptions();
             int statusChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-            statusFilter = view.getStatusFromChoice(statusChoice);
-        }
+            scanner.nextLine();
+            switch(statusChoice) {
+                case 1 -> statusFilter = "";
+                case 2 -> {
+                    view.displayStatusTypeOptions();
+                    int statusType = scanner.nextInt();
+                    scanner.nextLine();
+                    statusFilter = view.getStatusFromChoice(statusType);
+                }
+            };
 
         List<String> appointments = model.readDataFromFile(model.getAppointmentRequestsPath());
         view.displayAppointments(appointments, filterField, filterValue, statusFilter);
+        }
     }
 
     public void manageInventory() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
+            
+            view.inventoryMenu();
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
@@ -217,8 +348,9 @@ public class AdministratorController {
     private void removeMedicine() {
         Scanner scanner = new Scanner(System.in);
         view.promptMedicineName();
+        String header = model.getMedicineHeader();
         String medicineName = scanner.nextLine();
-        if (model.removeEntry(model.getMedicineListPath(),medicineName)) {
+        if (model.removeEntry(model.getMedicineListPath(),medicineName,header)) {
             view.displaySuccessMessage("Medicine removed successfully.");
         } else {
             view.displayErrorMessage("Medicine not found or removal failed.");
@@ -229,13 +361,44 @@ public class AdministratorController {
         Scanner scanner = new Scanner(System.in);
         view.promptMedicineName();
         String medicineName = scanner.nextLine();
+        
+        // Retrieve the header and existing data for the medicine
+        String header = model.getMedicineHeader();
+        List<String> data = model.readDataFromFile(model.getMedicineListPath());
+        
+        String[] existingEntry = null;
+        for (String line : data) {
+            String[] fields = line.split(",");
+            if (fields[0].equals(medicineName)) {  // Assuming the medicine name is in the first column
+                existingEntry = fields;
+                break;
+            }
+        }
+    
+        // Check if the medicine was found
+        if (existingEntry == null) {
+            view.displayErrorMessage("Medicine not found.");
+            return;
+        }
+    
+        // Prompt for new stock quantity and update only the quantity field (index 1)
         view.promptStockQuantity();
         String newQuantity = scanner.nextLine();
-        scanner.nextLine(); // Consume newline
-        if (model.updateEntry(model.getMedicineListPath(), medicineName, 0, newQuantity)) {
+        existingEntry[1] = newQuantity;
+        if (Integer.parseInt(existingEntry[1])<Integer.parseInt(existingEntry[2])) {
+            existingEntry[3] = "Low Stock";
+        } else {
+            existingEntry[3] = "In Stock";
+        }
+    
+        // Reconstruct the updated entry as a comma-separated string
+        String updatedEntry = String.join(",", existingEntry);
+    
+        // Call updateEntry to replace the line in the file
+        if (model.updateEntry(model.getMedicineListPath(), medicineName, 0, updatedEntry, header)) {
             view.displaySuccessMessage("Stock updated successfully.");
         } else {
-            view.displayErrorMessage("Medicine not found or update failed.");
+            view.displayErrorMessage("Update failed.");
         }
     }
 
@@ -243,15 +406,47 @@ public class AdministratorController {
         Scanner scanner = new Scanner(System.in);
         view.promptMedicineName();
         String medicineName = scanner.nextLine();
+        
+        // Retrieve the header and existing data for the medicine
+        String header = model.getMedicineHeader();
+        List<String> data = model.readDataFromFile(model.getMedicineListPath());
+        
+        String[] existingEntry = null;
+        for (String line : data) {
+            String[] fields = line.split(",");
+            if (fields[0].equals(medicineName)) {  // Assuming the medicine name is in the first column
+                existingEntry = fields;
+                break;
+            }
+        }
+    
+        // Check if the medicine was found
+        if (existingEntry == null) {
+            view.displayErrorMessage("Medicine not found.");
+            return;
+        }
+    
+        // Prompt for new stock quantity and update only the quantity field (index 1)
         view.promptLowStockIndicator();
         String newIndicator = scanner.nextLine();
-        scanner.nextLine(); // Consume newline
-        if (model.updateEntry(model.getMedicineListPath(), medicineName, 0, newIndicator)) {
+        existingEntry[2] = newIndicator;
+        if (Integer.parseInt(existingEntry[1])<Integer.parseInt(existingEntry[2])) {
+            existingEntry[3] = "Low Stock";
+        } else {
+            existingEntry[3] = "In Stock";
+        }
+    
+        // Reconstruct the updated entry as a comma-separated string
+        String updatedEntry = String.join(",", existingEntry);
+    
+        // Call updateEntry to replace the line in the file
+        if (model.updateEntry(model.getMedicineListPath(), medicineName, 0, updatedEntry, header)) {
             view.displaySuccessMessage("Low stock indicator updated successfully.");
         } else {
             view.displayErrorMessage("Medicine not found or update failed.");
         }
     }
+    
 
     public void manageReplenishmentRequests() {
         Scanner scanner = new Scanner(System.in);
@@ -276,15 +471,81 @@ public class AdministratorController {
         Scanner scanner = new Scanner(System.in);
         view.promptMedicineName();
         String medicineName = scanner.nextLine();
+        
+        // Retrieve the header and data from the replenishment requests file
+        String replenishmentHeader = model.getReplenishmentRequestsHeader();
+        List<String> replenishmentData = model.readDataFromFile(model.getReplenishmentRequestsPath());
+    
+        String[] replenishmentEntry = null;
+        for (String line : replenishmentData) {
+            String[] fields = line.split(",");
+            if (fields[0].equals(medicineName)) {  // Assuming medicine name is at index 0
+                replenishmentEntry = fields;
+                break;
+            }
+        }
+    
+        // Check if the medicine was found in the replenishment requests
+        if (replenishmentEntry == null) {
+            view.displayErrorMessage("Medicine not found in replenishment requests.");
+            return;
+        }
+    
+        // Prompt for incoming stock quantity and update the stock field in replenishment requests
         view.promptIncomingStock();
         String incomingStock = scanner.nextLine();
-        scanner.nextLine(); // Consume newline
-
-        if (model.updateEntry(model.getReplenishmentRequestsPath(), medicineName, 0, incomingStock)) {
-            view.displaySuccessMessage("Medicine restocked successfully.");
-            model.updateEntry(model.getReplenishmentRequestsPath(), medicineName, 0, "APPROVED");
-        } else {
-            view.displayErrorMessage("Medicine not found or restock failed.");
+    
+        int newTotalStock;
+        try {
+            int currentStock = Integer.parseInt(replenishmentEntry[1]);  // Assuming stock is at index 1
+            int additionalStock = Integer.parseInt(incomingStock);
+            newTotalStock = currentStock + additionalStock;
+            replenishmentEntry[1] = String.valueOf(newTotalStock);  // Update the stock in replenishment requests
+        } catch (NumberFormatException e) {
+            view.displayErrorMessage("Invalid stock quantity.");
+            return;
         }
-    }
+    
+        // Update the replenishment entry with the new stock and status "APPROVED"
+        replenishmentEntry[3] = "APPROVED";  // Assuming status is at index 3
+        String updatedReplenishmentEntry = String.join(",", replenishmentEntry);
+    
+        // Update the replenishment requests file
+        if (model.updateEntry(model.getReplenishmentRequestsPath(), medicineName, 0, updatedReplenishmentEntry, replenishmentHeader)) {
+            view.displaySuccessMessage("Replenishment request approved and stock updated.");
+    
+            // Update the main medicine list file with the new stock quantity
+            String medicineHeader = model.getMedicineHeader();
+            List<String> medicineData = model.readDataFromFile(model.getMedicineListPath());
+            
+            String[] medicineEntry = null;
+            for (String line : medicineData) {
+                String[] fields = line.split(",");
+                if (fields[0].equals(medicineName)) {  // Assuming medicine name is at index 0
+                    medicineEntry = fields;
+                    break;
+                }
+            }
+    
+            // Check if the medicine was found in the main medicine list
+            if (medicineEntry == null) {
+                view.displayErrorMessage("Medicine not found in the main medicine list.");
+                return;
+            }
+    
+            // Update the stock field in the main medicine list
+            medicineEntry[1] = String.valueOf(newTotalStock);  // Assuming stock is at index 1
+            if (Integer.parseInt(medicineEntry[1])<Integer.parseInt(medicineEntry[2])) {
+                medicineEntry[3] = "Low Stock";
+            } else {
+                medicineEntry[3] = "In Stock";
+            }
+            String updatedMedicineEntry = String.join(",", medicineEntry);
+    
+            // Update the medicine list file
+            model.updateEntry(model.getMedicineListPath(), medicineName, 0, updatedMedicineEntry, medicineHeader);
+        } else {
+            view.displayErrorMessage("Restock failed in the replenishment requests.");
+        }
+    }    
 }

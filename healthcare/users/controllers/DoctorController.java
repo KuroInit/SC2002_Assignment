@@ -139,7 +139,7 @@ public class DoctorController {
             for (String line : appointments) {
                 String[] parts = line.split(",");
                 if (parts.length >= 6 && parts[1].equals(model.getDoctorID())
-                        && "approved".equalsIgnoreCase(parts[5])) {
+                        && "confirmed".equalsIgnoreCase(parts[5])) {
                     view.displayMessage("Date: " + parts[3] + ", Time: " + parts[4] + ", Patient ID: " + parts[2]);
                     hasBookedAppointments = true;
                 }
