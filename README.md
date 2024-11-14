@@ -20,12 +20,12 @@ The initial password for every user is `password`.
 
 We are a group 2 from tutorial group SCS5, Nanyang Technological University, Singapore. There are 4 members in our group:
 
-| Name                    | Github Account                                          | Email                 |
-|-------------------------|---------------------------------------------------------|-----------------------|
-| Vinod Jain Vishesh      | [pufanyi](https://github.com/custedlol)                 | [VISHESH001@e.ntu.edu.sg](mailto:VISHESH001@e.ntu.edu.sg)   |
-| Venkatesh Arun mOorthy  | [jin-qingyang](https://github.com/ArunmOorthyVenkatesh) | [ARUNMOOR001@e.ntu.edu.sg](mailto:ARUNMOOR001@e.ntu.edu.sg) |
-| Chawla Preet Singh      | [Jinyi087](https://github.com/PreetSingh0804)           | [PREETSIN001@e.ntu.edu.sg](mailto:PREETSIN001@e.ntu.edu.sg) |
-| Ashwin Suresh           | [niyaojiayou](https://github.com/KuroInit)              | [ASHWIN012@e.ntu.edu.sg](mailto:ASHWIN012@e.ntu.edu.sg)     |
+| Name                   | Github Account                                          | Email                                                       |
+| ---------------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
+| Vinod Jain Vishesh     | [pufanyi](https://github.com/custedlol)                 | [VISHESH001@e.ntu.edu.sg](mailto:VISHESH001@e.ntu.edu.sg)   |
+| Venkatesh Arun mOorthy | [jin-qingyang](https://github.com/ArunmOorthyVenkatesh) | [ARUNMOOR001@e.ntu.edu.sg](mailto:ARUNMOOR001@e.ntu.edu.sg) |
+| Chawla Preet Singh     | [Jinyi087](https://github.com/PreetSingh0804)           | [PREETSIN001@e.ntu.edu.sg](mailto:PREETSIN001@e.ntu.edu.sg) |
+| Ashwin Suresh          | [KuroInit](https://github.com/KuroInit)                 | [ASHWIN012@e.ntu.edu.sg](mailto:ASHWIN012@e.ntu.edu.sg)     |
 
 ## Project Overview
 
@@ -34,6 +34,7 @@ The Hospital Management System (HMS) is a full-featured healthcare management so
 ## Key Features
 
 ### 1. User Authentication and Role Management
+
 - **Multi-role Access**: Supports four primary user roles:
   - **Administrator**: Manages hospital staff, medicine inventory, and replenishment requests.
   - **Doctor**: Manages appointments, patient records, and schedules.
@@ -42,28 +43,34 @@ The Hospital Management System (HMS) is a full-featured healthcare management so
 - **Secure Login**: Each user is authenticated through secure login. Passwords are stored using SHA-256 encryption to prevent unauthorized access.
 
 ### 2. Patient Registration
+
 - **Patient Registration**: Patients can register with essential details (e.g., name, date of birth, gender, blood type, email, contact number) and receive a unique ID.
 - **Default Password and Password Change**: New patients are assigned a default password, which can be changed upon first login.
 
 ### 3. Appointment Management
+
 - **Schedule Management**: Doctors can set and view availability slots for appointments, with patients able to view available slots for scheduling.
 - **Booking and Rescheduling**: Patients can schedule, reschedule, or cancel appointments, while doctors can confirm, decline, or view upcoming appointments.
 - **Restrictions**: Appointment scheduling on Sundays is restricted, ensuring compliance with non-operational days.
 
 ### 4. Medical Records Management
+
 - **Patient Medical Records**: Doctors can add, view, and update patients’ medical records, including diagnosis, treatment plans, and prescribed medications.
 - **Appointment Outcomes**: Doctors can record and update the outcome of each appointment, specifying consultation notes, prescribed medications, and medication status.
 
 ### 5. Inventory and Replenishment Management
+
 - **Medicine Inventory**: Administrators and pharmacists can view, add, update, or remove medicines from the inventory.
 - **Low Stock Alerts**: Provides alerts when medicine stock levels fall below a specified threshold, triggering replenishment requests.
 - **Replenishment Requests**: Allows pharmacists to submit and administrators to approve or decline replenishment requests.
 
 ### 6. Feedback Collection
+
 - **Patient Feedback**: Patients can submit feedback on their treatment experience, which is stored in a CSV file for later analysis.
 - **Rating System**: Patients can rate their experience (1-5 stars) and provide detailed comments, allowing hospital staff to review and improve service quality.
 
 ### 7. Password Security
+
 - **Encryption**: Passwords are hashed using SHA-256 encryption via the `Obfuscation` class to ensure sensitive information remains protected.
 - **Change Password Option**: After login, users are prompted to change their password for additional security.
 
@@ -80,24 +87,31 @@ The HMS project is structured as follows:
 ## Additional Features
 
 ### 1. **Password Encryption**
-   The system employs SHA-256 hashing for password storage, providing additional security by obfuscating sensitive data.
+
+The system employs SHA-256 hashing for password storage, providing additional security by obfuscating sensitive data.
 
 ### 2. **Patient Feedback System**
-   Patients can submit feedback along with a rating, which is saved in `patient_feedback.csv`. This feedback enables the hospital to monitor service quality.
+
+Patients can submit feedback along with a rating, which is saved in `patient_feedback.csv`. This feedback enables the hospital to monitor service quality.
 
 ### 3. **No Appointments on Sundays**
-   The system restricts appointments from being scheduled on Sundays, preventing bookings on days when the hospital is closed.
+
+The system restricts appointments from being scheduled on Sundays, preventing bookings on days when the hospital is closed.
 
 ## Technical Details
 
 ### 1. Model-View-Controller (MVC) Architecture
+
 The application uses the MVC architecture to separate concerns. This approach improves modularity and maintainability, ensuring that data, user interface, and control logic remain isolated from one another.
 
 ### 2. Data Persistence
+
 All data (e.g., patient details, appointment records, and feedback) is stored in CSV files, simulating a database. Data is read once at startup, and modifications are saved back to the CSV files.
 
 ### 3. Error Handling
+
 The application includes error handling for file I/O, user input validation, and exceptional cases such as invalid login attempts.
 
 ### 4. Code Structure
+
 The `Main` class serves as the application’s entry point, initiating the program and displaying the main menu. Controllers for each role manage their respective models and views, facilitating data manipulation and display.
