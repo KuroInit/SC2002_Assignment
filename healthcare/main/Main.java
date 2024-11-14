@@ -43,7 +43,6 @@ public class Main {
     private static final String patientListFile = "Patient_List.csv";
     private static final String doctorListFile = "Doctor_List.csv";
     private static final String staffListFile = "Staff_List.csv";
-    private static final String patientPasswordsFile = "Patient_Passwords.csv";
     private static final String staffPasswordsFile = "Staff_Passwords.csv";
 
     // Memoized data maps for controllers
@@ -76,6 +75,7 @@ public class Main {
     }
 
     private static Map<String, PatientController> loadPatientsFromCSV() throws IOException {
+        UserController.initializeUsers();
         if (patientMap != null) return patientMap; // Memoization check
         patientMap = new HashMap<>();
         List<String> lines = Files.readAllLines(Paths.get(patientListFile));
@@ -91,6 +91,7 @@ public class Main {
     }
 
     private static Map<String, DoctorController> loadDoctorsFromCSV() throws IOException {
+        UserController.initializeUsers();
         if (doctorMap != null) return doctorMap; // Memoization check
         doctorMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(doctorListFile))) {
@@ -108,6 +109,7 @@ public class Main {
     }
 
     private static Map<String, PharmacistController> loadPharmacistsFromCSV() throws IOException {
+        UserController.initializeUsers();
         if (pharmacistMap != null) return pharmacistMap; // Memoization check
         pharmacistMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(staffListFile))) {
@@ -127,6 +129,7 @@ public class Main {
     }
 
     private static Map<String, AdministratorController> loadAdministratorsFromCSV() throws IOException {
+        UserController.initializeUsers();
         if (administratorMap != null) return administratorMap; // Memoization check
         administratorMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(staffListFile))) {
@@ -178,7 +181,7 @@ public class Main {
             System.out.print("Enter Contact Number: ");
             String phoneNumber = sc.nextLine();
 
-            String newPatientID = "P" + (UserModel.userNameMapPatient.size() + 1001);
+            String newPatientID = "P" + (UserModel.userNameMapPatient.size() + 1000);
             String defaultPassword = "password";
             String hashedPassword = Obfuscation.hashPassword(defaultPassword);
             String role = "Patient";
@@ -195,24 +198,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error during registration: " + e.getMessage());
         }
-    }
-
-    private static String generateNewPatientID() {
-        String lastPatientID = "";
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(patientListFile));
-            if (!lines.isEmpty()) {
-                String lastLine = lines.get(lines.size() - 1);
-                lastPatientID = lastLine.split(",")[0];
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading patient list: " + e.getMessage());
-        }
-        if (lastPatientID.isEmpty()) {
-            return "P1001";
-        }
-        int lastIDNumber = Integer.parseInt(lastPatientID.substring(1));
-        return "P" + (lastIDNumber + 1);
     }
 
     private static void registerAdmin() {

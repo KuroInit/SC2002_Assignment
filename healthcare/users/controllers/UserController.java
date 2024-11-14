@@ -1,6 +1,5 @@
 package healthcare.users.controllers;
 
-import healthcare.users.models.User;
 import healthcare.users.models.UserModel;
 import healthcare.users.view.UserView;
 
@@ -33,9 +32,9 @@ public class UserController {
     }
 
     private static void loadPasswordsAndRoles() {
-        loadPasswordFile(DOCTOR_PASSWORDS_FILE, User.userPasswordStaffMap, User.userRoleStaffMap, "Doctor");
-        loadPasswordFile(PATIENT_PASSWORDS_FILE, User.userPasswordPatientMap, User.userRolePatientMap, "Patient");
-        loadPasswordFile(STAFF_PASSWORDS_FILE, User.userPasswordStaffMap, User.userRoleStaffMap, "Staff");
+        loadPasswordFile(DOCTOR_PASSWORDS_FILE, UserModel.userPasswordStaffMap, UserModel.userRoleStaffMap, "Doctor");
+        loadPasswordFile(PATIENT_PASSWORDS_FILE, UserModel.userPasswordPatientMap, UserModel.userRolePatientMap, "Patient");
+        loadPasswordFile(STAFF_PASSWORDS_FILE, UserModel.userPasswordStaffMap, UserModel.userRoleStaffMap, "Staff");
     }
 
     private static void loadPasswordFile(String filePath, Map<String, String> passwordMap,
@@ -59,9 +58,9 @@ public class UserController {
     }
 
     private static void loadNames() {
-        loadNameFile(DOCTOR_LIST_FILE, User.userNameMapStaff);
-        loadNameFile(PATIENT_LIST_FILE, User.userNameMapPatient);
-        loadNameFile(STAFF_LIST_FILE, User.userNameMapStaff);
+        loadNameFile(DOCTOR_LIST_FILE, UserModel.userNameMapStaff);
+        loadNameFile(PATIENT_LIST_FILE, UserModel.userNameMapPatient);
+        loadNameFile(STAFF_LIST_FILE, UserModel.userNameMapStaff);
     }
 
     private static void loadNameFile(String filePath, Map<String, String> nameMap) {

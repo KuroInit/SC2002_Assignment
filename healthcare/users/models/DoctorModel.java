@@ -6,24 +6,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DoctorModel {
     private String doctorID;
     private String name;
-    private String gender;
-    private String age;
     private List<Appointment> appointments;
     private List<LocalDate> availableDates;
 
     public DoctorModel(String doctorID, String name, String gender, String age) {
         this.doctorID = doctorID;
         this.name = name;
-        this.gender = gender;
-        this.age = age;
         this.appointments = new ArrayList<>();
         this.availableDates = new ArrayList<>();
     }
