@@ -26,7 +26,7 @@ public class PatientController {
             scanner.nextLine(); // Consume newline
             System.out.println();
             handleMenuChoice(choice, scanner);
-        } while (choice != 9);
+        } while (choice != 10);
     }
 
     private void handleMenuChoice(int choice, Scanner scanner) {

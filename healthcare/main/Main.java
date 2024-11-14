@@ -9,11 +9,13 @@ import healthcare.users.models.PatientModel;
 import healthcare.users.models.DoctorModel;
 import healthcare.users.models.AdministratorModel;
 import healthcare.users.models.PharmacistModel;
+import healthcare.users.models.UserModel;
 import healthcare.users.view.PatientView;
 import healthcare.users.view.DoctorView;
 import healthcare.users.view.AdministratorView;
 import healthcare.users.view.PharmacistView;
-import healthcare.users.User;
+import healthcare.users.view.UserView;
+import healthcare.records.Obfuscation;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -42,7 +44,6 @@ public class Main {
     private static final String doctorListFile = "Doctor_List.csv";
     private static final String staffListFile = "Staff_List.csv";
     private static final String patientPasswordsFile = "Patient_Passwords.csv";
-    private static final String doctorPasswordsFile = "Doctor_Passwords.csv";
     private static final String staffPasswordsFile = "Staff_Passwords.csv";
 
     // Memoized data maps for controllers
@@ -177,25 +178,20 @@ public class Main {
             System.out.print("Enter Contact Number: ");
             String phoneNumber = sc.nextLine();
 
-            String newPatientID = generateNewPatientID();
-            String newEntry = newPatientID + "," + name + "," + dob + "," + gender + "," + bloodType + "," + email + "," + phoneNumber;
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(patientListFile, true))) {
-                writer.write(newEntry);
-                writer.newLine();
-                System.out.println("Registration successful! Your Patient ID is: " + newPatientID);
-            }
-
+            String newPatientID = "P" + (UserModel.userNameMapPatient.size() + 1001);
             String defaultPassword = "password";
-            String hashedPassword = hashPassword(defaultPassword);
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(patientPasswordsFile, true))) {
-                writer.write(newPatientID + "," + hashedPassword + ",Patient");
-                writer.newLine();
-                System.out.println("Your account has been created with the default password.");
-            }
+            String hashedPassword = Obfuscation.hashPassword(defaultPassword);
+            String role = "Patient";
 
-            User.initializeUsers();
-            System.out.println("User data reloaded successfully.");
-            
+            // Create new UserModel, Controller, and View
+            UserModel model = new UserModel(newPatientID, hashedPassword, "Patient", name);
+            UserView view = new UserView();
+            UserController controller = new UserController(model, view);
+
+            // Store new user data
+            controller.registerUser(newPatientID,name,dob, gender, bloodType, email, phoneNumber,role,hashedPassword);
+            System.out.println("Registration successful! Your Patient ID is: " + newPatientID);
+            System.out.println("Your account has been created with the default password.");
         } catch (IOException e) {
             System.out.println("Error during registration: " + e.getMessage());
         }
@@ -248,7 +244,7 @@ public class Main {
                 System.out.println("Your account has been created with the default password.");
             }
 
-            User.initializeUsers();
+            UserController.initializeUsers();
             System.out.println("User data reloaded successfully.");
             
         } catch (IOException e) {
@@ -259,7 +255,8 @@ public class Main {
     private static void showLoginScreen() throws IOException {
         boolean loginSuccessful = false;
         String hospitalId = "";
-        User.initializeUsers();
+        UserController.initializeUsers(); // Initialize users at the start
+    
         while (!loginSuccessful) {
             System.out.print("Enter Hospital ID: ");
             if (!sc.hasNextLine()) {
@@ -267,36 +264,41 @@ public class Main {
                 return;
             }
             hospitalId = sc.nextLine().toUpperCase();
-
-            if (!User.userPasswordStaffMap.containsKey(hospitalId)
-                    && !User.userPasswordPatientMap.containsKey(hospitalId)) {
+    
+            // Check if the hospital ID exists in either staff or patient maps
+            if (!UserModel.userPasswordStaffMap.containsKey(hospitalId)
+                    && !UserModel.userPasswordPatientMap.containsKey(hospitalId)) {
                 System.out.println("Invalid Hospital ID. Please try again.");
                 continue;
             }
-
+    
             System.out.print("Enter Password: ");
             if (!sc.hasNextLine()) {
                 System.out.println("No input found. Exiting program.");
                 return;
             }
             String password = sc.nextLine();
-            String hashedPassword = hashPassword(password);
-
-            if ((User.userPasswordStaffMap.containsKey(hospitalId)
-                    && User.userPasswordStaffMap.get(hospitalId).equals(hashedPassword)) ||
-                    (User.userPasswordPatientMap.containsKey(hospitalId)
-                            && User.userPasswordPatientMap.get(hospitalId).equals(hashedPassword))) {
+            String hashedPassword = Obfuscation.hashPassword(password); // Hash the entered password
+    
+            // Check if the hashed password matches the stored hashed password for the user
+            if ((UserModel.userPasswordStaffMap.containsKey(hospitalId)
+                    && UserModel.userPasswordStaffMap.get(hospitalId).equals(hashedPassword)) ||
+                    (UserModel.userPasswordPatientMap.containsKey(hospitalId)
+                            && UserModel.userPasswordPatientMap.get(hospitalId).equals(hashedPassword))) {
                 loginSuccessful = true;
                 System.out.println("Login successful!");
             } else {
                 System.out.println("Incorrect password. Please try again.");
             }
         }
-
-        String name = User.userNameMapStaff.containsKey(hospitalId) ? User.userNameMapStaff.get(hospitalId)
-                : User.userNameMapPatient.get(hospitalId);
+    
+        // Retrieve and display the user's name
+        String name = UserModel.userNameMapStaff.containsKey(hospitalId) ? 
+                      UserModel.userNameMapStaff.get(hospitalId) : 
+                      UserModel.userNameMapPatient.get(hospitalId);
         System.out.println("Good Day " + name + "!");
-
+    
+        // Offer the option to change the password
         System.out.print("Do you want to change your password? (yes/no): ");
         if (!sc.hasNextLine()) {
             System.out.println("No input found. Exiting program.");
@@ -310,17 +312,21 @@ public class Main {
                 return;
             }
             String newPassword = sc.nextLine();
-            String newHashedPassword = hashPassword(newPassword);
-            User.changeUserPassword(hospitalId, newHashedPassword);
+            String newHashedPassword = Obfuscation.hashPassword(newPassword); // Hash the new password
+            UserController.changeUserPassword(hospitalId, newHashedPassword);
+            System.out.println("Password updated successfully.");
         }
-
+    
+        // Load maps for different user roles
         Map<String, DoctorController> doctorMap = loadDoctorsFromCSV();
         Map<String, PharmacistController> pharmacistMap = loadPharmacistsFromCSV();
         Map<String, AdministratorController> administratorMap = loadAdministratorsFromCSV();
         Map<String, PatientController> patientMap = loadPatientsFromCSV();
-
-        String role = User.userRoleStaffMap.containsKey(hospitalId) ? User.userRoleStaffMap.get(hospitalId)
-                : User.userRolePatientMap.get(hospitalId);
+    
+        // Determine the role of the user and display the appropriate menu
+        String role = UserModel.userRoleStaffMap.containsKey(hospitalId) ? 
+                      UserModel.userRoleStaffMap.get(hospitalId) : 
+                      UserModel.userRolePatientMap.get(hospitalId);
         switch (role) {
             case "Patient":
                 PatientController patient = patientMap.get(hospitalId);
@@ -330,7 +336,7 @@ public class Main {
                     System.out.println("Patient details not found.");
                 }
                 break;
-            case "Doctor":       
+            case "Doctor":
                 DoctorController doctor = doctorMap.get(hospitalId);
                 if (doctor != null) {
                     doctor.showMenu();

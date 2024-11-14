@@ -1,6 +1,7 @@
 package healthcare.users.controllers;
 
 import healthcare.users.models.User;
+import healthcare.users.models.UserModel;
 import healthcare.users.view.UserView;
 
 import java.io.*;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserController {
-    private User model;
+    private UserModel model;
     private UserView view;
 
     private static final String DOCTOR_PASSWORDS_FILE = "Doctor_Passwords.csv";
@@ -21,7 +22,7 @@ public class UserController {
     private static final String PATIENT_LIST_FILE = "Patient_List.csv";
     private static final String STAFF_LIST_FILE = "Staff_List.csv";
 
-    public UserController(User model, UserView view) {
+    public UserController(UserModel model, UserView view) {
         this.model = model;
         this.view = view;
     }
@@ -79,32 +80,101 @@ public class UserController {
         }
     }
 
-    public void changeUserPassword(String hospitalId, String newPassword) throws IOException {
-        String role = User.userRoleStaffMap.containsKey(hospitalId) ? User.userRoleStaffMap.get(hospitalId)
-                : User.userRolePatientMap.get(hospitalId);
+    public static void registerUser(String userId, String name, String dob, String gender, String bloodType, 
+                                    String email, String phoneNumber, String role, String hashedPassword) throws IOException {
+        String filePath;
+        Map<String, String> passwordMap;
+        Map<String, String> roleMap;
+        Map<String, String> nameMap;
 
+        // Determine the file and map to update based on the role
         switch (role) {
-            case "Doctor" -> updatePasswordInFile(DOCTOR_PASSWORDS_FILE, hospitalId, newPassword);
-            case "Pharmacist", "Administrator" -> updatePasswordInFile(STAFF_PASSWORDS_FILE, hospitalId, newPassword);
-            case "Patient" -> updatePasswordInFile(PATIENT_PASSWORDS_FILE, hospitalId, newPassword);
-            default -> view.displayMessage("Role not recognized. Unable to change password.");
+            case "Patient":
+                filePath = "Patient_List.csv";
+                passwordMap = UserModel.userPasswordPatientMap;
+                roleMap = UserModel.userRolePatientMap;
+                nameMap = UserModel.userNameMapPatient;
+                break;
+            case "Doctor":
+                filePath = "Doctor_List.csv"; // Separate file for doctors
+                passwordMap = UserModel.userPasswordStaffMap;
+                roleMap = UserModel.userRoleStaffMap;
+                nameMap = UserModel.userNameMapStaff;
+                break;
+            case "Pharmacist":
+            case "Administrator":
+                filePath = "Staff_List.csv";
+                passwordMap = UserModel.userPasswordStaffMap;
+                roleMap = UserModel.userRoleStaffMap;
+                nameMap = UserModel.userNameMapStaff;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid role provided");
+        }
+
+        // Add user details to maps
+        passwordMap.put(userId, hashedPassword);
+        roleMap.put(userId, role);
+        nameMap.put(userId, name);
+
+        // Write user data to the appropriate file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write(userId + "," + name + "," + dob + "," + gender + "," + bloodType + "," + email + "," + phoneNumber);
+            writer.newLine();
+        }
+
+        // Write password data to the respective password file
+        String passwordFilePath = role.equals("Patient") ? "Patient_Passwords.csv" : 
+                                  (role.equals("Doctor") ? "Doctor_Passwords.csv" : "Staff_Passwords.csv");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(passwordFilePath, true))) {
+            writer.write(userId + "," + hashedPassword + "," + role);
+            writer.newLine();
         }
     }
 
-    private void updatePasswordInFile(String filePath, String hospitalId, String newPassword) throws IOException {
+    public static void changeUserPassword(String hospitalId, String newHashedPassword) throws IOException {
+        String role = UserModel.userRoleStaffMap.containsKey(hospitalId) ? 
+                    UserModel.userRoleStaffMap.get(hospitalId) : 
+                    UserModel.userRolePatientMap.get(hospitalId);
+        String filePath;
+
+        switch (role) {
+            case "Doctor":
+                filePath = "Doctor_Passwords.csv";
+                UserModel.userPasswordStaffMap.put(hospitalId, newHashedPassword);
+                break;
+            case "Pharmacist":
+            case "Administrator":
+                filePath = "Staff_Passwords.csv";
+                UserModel.userPasswordStaffMap.put(hospitalId, newHashedPassword);
+                break;
+            case "Patient":
+                filePath = "Patient_Passwords.csv";
+                UserModel.userPasswordPatientMap.put(hospitalId, newHashedPassword);
+                break;
+            default:
+                System.out.println("Role not recognized. Unable to change password.");
+                return;
+        }
+
+    // Update the password in the file
+        updatePasswordInFile(filePath, hospitalId, newHashedPassword);
+    }
+
+// Helper method to update password in the file
+    private static void updatePasswordInFile(String filePath, String hospitalId, String newHashedPassword) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(filePath));
         List<String> updatedLines = new ArrayList<>();
 
         for (String line : lines) {
             String[] details = line.split(",");
             if (details[0].equals(hospitalId)) {
-                details[1] = newPassword; // Update the password field
+                details[1] = newHashedPassword; // Update the password field
                 line = String.join(",", details);
             }
             updatedLines.add(line);
         }
 
         Files.write(Paths.get(filePath), updatedLines);
-        view.displayMessage("Password updated successfully.");
     }
 }
