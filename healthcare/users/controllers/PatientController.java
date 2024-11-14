@@ -2,6 +2,7 @@ package healthcare.users.controllers;
 
 import healthcare.users.models.*;
 import healthcare.users.view.*;
+import healthcare.records.*;
 
 import java.io.*;
 import java.util.*;
@@ -55,11 +56,19 @@ public class PatientController {
                 viewCompletedAppointments();
                 break;
             case 9:
+                feedback();
+                break;
+            case 10:
                 patientView.displayLogoutMessage();
                 break;
             default:
                 patientView.displayInvalidChoiceMessage();
         }
+    }
+
+    private void feedback() {
+        Scanner s = new Scanner(System.in);
+        Feedback.collectFeedback(s);
     }
 
     private void viewMedicalRecords() {
@@ -104,7 +113,8 @@ public class PatientController {
             while ((line = reader.readLine()) != null) {
                 String[] record = line.split(",");
                 if (record[0].equals(patientModel.getPatientID())) {
-                    System.out.printf("Date of Diagnosis: %s%nDiagnosis: %s%nTreatment Plan: %s%nPrescribed Medicine: %s%n",
+                    System.out.printf(
+                            "Date of Diagnosis: %s%nDiagnosis: %s%nTreatment Plan: %s%nPrescribed Medicine: %s%n",
                             record[1], record[2], record[3], record[4]);
                     System.out.println("----------------------------------------------------");
                     hasRecords = true;
@@ -365,19 +375,22 @@ public class PatientController {
     private void rescheduleAppointment(Scanner scanner) {
         String appointmentRequestsPath = "appointmentRequests.csv";
         String appointmentsPath = "availableAppointments.csv";
-    
+
         // Step 1: Display existing appointments for this patient
         List<String[]> patientAppointments = new ArrayList<>();
         System.out.println("Your Scheduled Appointments:");
         System.out.println("----------------------------------------------------");
-    
+
         try (BufferedReader reader = new BufferedReader(new FileReader(appointmentRequestsPath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
-                if (details[2].equals(patientModel.getPatientID()) && (details[5].equalsIgnoreCase("PENDING CONFIRMATION") || details[5].equalsIgnoreCase("CONFIRMED"))) {
+                if (details[2].equals(patientModel.getPatientID())
+                        && (details[5].equalsIgnoreCase("PENDING CONFIRMATION")
+                                || details[5].equalsIgnoreCase("CONFIRMED"))) {
                     patientAppointments.add(details);
-                    System.out.printf("ID: %s | Doctor ID: %s | Date: %s | Time: %s%n", details[0], details[1], details[3], details[4]);
+                    System.out.printf("ID: %s | Doctor ID: %s | Date: %s | Time: %s%n", details[0], details[1],
+                            details[3], details[4]);
                 }
             }
         } catch (IOException e) {
@@ -385,52 +398,53 @@ public class PatientController {
             e.printStackTrace();
             return;
         }
-    
+
         if (patientAppointments.isEmpty()) {
             System.out.println("You have no appointments to reschedule.");
             return;
         }
-    
+
         // Step 2: Select an appointment to reschedule
         System.out.print("Enter the Appointment ID to reschedule: ");
         String appointmentID = scanner.nextLine();
         String[] appointmentToReschedule = null;
-    
+
         for (String[] appointment : patientAppointments) {
             if (appointment[0].equals(appointmentID)) {
                 appointmentToReschedule = appointment;
                 break;
             }
         }
-    
+
         if (appointmentToReschedule == null) {
             System.out.println("Invalid Appointment ID.");
             return;
         }
-    
+
         String doctorId = appointmentToReschedule[1];
         String oldDate = appointmentToReschedule[3];
         String oldTime = appointmentToReschedule[4];
-    
+
         // Step 3: Enter a new date and display available times
         List<String> availableTimes = new ArrayList<>();
         boolean appointmentsFound = false;
         String newDate = "";
-    
+
         while (!appointmentsFound) {
-            System.out.print("Enter the new date to view available appointments (YYYY-MM-DD) or type 'exit' to cancel: ");
+            System.out
+                    .print("Enter the new date to view available appointments (YYYY-MM-DD) or type 'exit' to cancel: ");
             newDate = scanner.nextLine();
-    
+
             if (newDate.equalsIgnoreCase("exit")) {
                 System.out.println("Rescheduling cancelled.");
                 return;
             }
-    
+
             System.out.printf("Available Appointments for Doctor %s on %s:%n", doctorId, newDate);
             System.out.println("----------------------------------------------------");
-    
+
             availableTimes.clear();
-    
+
             try (BufferedReader appointmentsReader = new BufferedReader(new FileReader(appointmentsPath))) {
                 String line;
                 while ((line = appointmentsReader.readLine()) != null) {
@@ -441,7 +455,7 @@ public class PatientController {
                         appointmentsFound = true;
                     }
                 }
-    
+
                 if (!appointmentsFound) {
                     System.out.println("No available appointments found for this date. Please try a different date.");
                 }
@@ -451,7 +465,7 @@ public class PatientController {
                 return;
             }
         }
-    
+
         // Step 4: Select a new time slot
         System.out.print("Choose a new appointment time by entering the corresponding number: ");
         int timeChoice = scanner.nextInt();
@@ -461,7 +475,7 @@ public class PatientController {
             return;
         }
         String newTime = availableTimes.get(timeChoice - 1);
-    
+
         // Step 5: Update appointmentRequests.csv with the new date and time
         List<String> updatedRequests = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(appointmentRequestsPath))) {
@@ -481,7 +495,7 @@ public class PatientController {
             e.printStackTrace();
             return;
         }
-    
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(appointmentRequestsPath))) {
             for (String updatedLine : updatedRequests) {
                 writer.write(updatedLine);
@@ -491,7 +505,7 @@ public class PatientController {
             System.out.println("An error occurred while writing to the appointment requests file.");
             e.printStackTrace();
         }
-    
+
         // Step 6: Update availableAppointments.csv
         List<String> updatedAppointments = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(appointmentsPath))) {
@@ -510,7 +524,7 @@ public class PatientController {
             e.printStackTrace();
             return;
         }
-    
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(appointmentsPath))) {
             for (String updatedLine : updatedAppointments) {
                 writer.write(updatedLine);
@@ -635,7 +649,8 @@ public class PatientController {
             System.out.println("----------------------------------------------------");
             while ((line = reader.readLine()) != null) {
                 String[] appointment = line.split(",");
-                if (appointment[2].equals(patientModel.getPatientID()) && appointment[5].equalsIgnoreCase("CONFIRMED")) {
+                if (appointment[2].equals(patientModel.getPatientID())
+                        && appointment[5].equalsIgnoreCase("CONFIRMED")) {
                     String doctorName = doctorNames.getOrDefault(appointment[1], "Unknown Doctor");
                     System.out.printf("Appointment ID: %s, Doctor: %s, Date: %s, Time: %s, Status: %s%n",
                             appointment[0], doctorName, appointment[3], appointment[4], appointment[5]);
