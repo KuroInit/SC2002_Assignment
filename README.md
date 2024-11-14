@@ -2,7 +2,7 @@
 
 # Hospital Management System (HMS)
 
-NTU AY2023/24 Semester 1 SC2002 Group Project - Hospital Management System (hMS).
+NTU AY2023/24 Semester 1 SC2002 Group Project - Hospital Management System (HMS).
 
 Hospital Management System (FYPMS) is a Java console application that utilizes object-oriented concepts to efficiently manage final year project settings. The program is designed with a focus on reusability, extensibility, and maintainability, allowing for easy upgrades and future development. It provides flexibility to accommodate different user types and their requirements.
 
