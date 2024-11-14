@@ -20,12 +20,12 @@ The initial password for every user is `password`.
 
 We are a group 2 from tutorial group SCS5, Nanyang Technological University, Singapore. There are 4 members in our group:
 
-| Name                   | Github Account                                          | Email                                                       |
-| ---------------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
-| Vinod Jain Vishesh     | [pufanyi](https://github.com/custedlol)                 | [VISHESH001@e.ntu.edu.sg](mailto:VISHESH001@e.ntu.edu.sg)   |
-| Venkatesh Arun mOorthy | [jin-qingyang](https://github.com/ArunmOorthyVenkatesh) | [ARUNMOOR001@e.ntu.edu.sg](mailto:ARUNMOOR001@e.ntu.edu.sg) |
-| Chawla Preet Singh     | [Jinyi087](https://github.com/PreetSingh0804)           | [PREETSIN001@e.ntu.edu.sg](mailto:PREETSIN001@e.ntu.edu.sg) |
-| Ashwin Suresh          | [KuroInit](https://github.com/KuroInit)                 | [ASHWIN012@e.ntu.edu.sg](mailto:ASHWIN012@e.ntu.edu.sg)     |
+| Name                   | Github Account                                                  | Email                                                       |
+| ---------------------- | --------------------------------------------------------------- | ----------------------------------------------------------- |
+| Vinod Jain Vishesh     | [CUSTEDLOL](https://github.com/custedlol)                       | [VISHESH001@e.ntu.edu.sg](mailto:VISHESH001@e.ntu.edu.sg)   |
+| Venkatesh Arun mOorthy | [ArunMoorthyVenkatesh](https://github.com/ArunmOorthyVenkatesh) | [ARUNMOOR001@e.ntu.edu.sg](mailto:ARUNMOOR001@e.ntu.edu.sg) |
+| Chawla Preet Singh     | [PreetSingh0804](https://github.com/PreetSingh0804)             | [PREETSIN001@e.ntu.edu.sg](mailto:PREETSIN001@e.ntu.edu.sg) |
+| Ashwin Suresh          | [KuroInit](https://github.com/KuroInit)                         | [ASHWIN012@e.ntu.edu.sg](mailto:ASHWIN012@e.ntu.edu.sg)     |
 
 ## Project Overview
 
