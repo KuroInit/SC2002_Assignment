@@ -288,7 +288,7 @@ public class Main {
         boolean loginSuccessful = false;
         String hospitalId = "";
         UserController.initializeUsers(); // Initialize users at the start
-    
+
         while (!loginSuccessful) {
             System.out.print("Enter Hospital ID: ");
             if (!sc.hasNextLine()) {
@@ -296,14 +296,14 @@ public class Main {
                 return;
             }
             hospitalId = sc.nextLine().toUpperCase();
-    
+
             // Check if the hospital ID exists in either staff or patient maps
             if (!UserModel.userPasswordStaffMap.containsKey(hospitalId)
                     && !UserModel.userPasswordPatientMap.containsKey(hospitalId)) {
                 System.out.println("Invalid Hospital ID. Please try again.");
                 continue;
             }
-    
+
             // Get the password securely using the getPasswordInput method
             String password;
             try {
@@ -314,7 +314,7 @@ public class Main {
                 password = sc.nextLine();
             }
             String hashedPassword = Obfuscation.hashPassword(password); // Hash the entered password
-    
+
             // Check if the hashed password matches the stored hashed password for the user
             if ((UserModel.userPasswordStaffMap.containsKey(hospitalId)
                     && UserModel.userPasswordStaffMap.get(hospitalId).equals(hashedPassword)) ||
@@ -325,7 +325,7 @@ public class Main {
             } else {
                 System.out.println("Incorrect password. Please try again.");
             }
-        
+
         }
 
         // Retrieve and display the user's name
