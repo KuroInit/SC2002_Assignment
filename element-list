@@ -1,0 +1,6 @@
+healthcare.main
+healthcare.records
+healthcare.users
+healthcare.users.controllers
+healthcare.users.models
+healthcare.users.view
