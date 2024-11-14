@@ -182,35 +182,66 @@ public class Main {
 
     private static void registerUser() {
         try {
-            System.out.println("Registering a new patient:");
-            System.out.print("Enter Name: ");
+            System.out.println("===============================================");
+            System.out.println("          Register a New Patient              ");
+            System.out.println("===============================================");
+
+            // Name input
+            System.out.println("-> Please enter the following details:");
+            System.out.print("   Name: ");
             String name = sc.nextLine();
-            System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
+
+            // Date of Birth input
+            System.out.print("   Date of Birth (YYYY-MM-DD): ");
             String dob = sc.nextLine();
-            System.out.print("Enter Gender: ");
+
+            // Gender input
+            System.out.print("   Gender: ");
             String gender = sc.nextLine();
-            System.out.print("Enter Blood Type: ");
+
+            // Blood Type input
+            System.out.print("   Blood Type: ");
             String bloodType = sc.nextLine();
-            System.out.print("Enter Email Address: ");
+
+            // Email input
+            System.out.print("   Email Address: ");
             String email = sc.nextLine();
-            System.out.print("Enter Contact Number: ");
+
+            // Phone Number input
+            System.out.print("   Contact Number: ");
             String phoneNumber = sc.nextLine();
 
+            System.out.println("===============================================");
+            System.out.println(" Note: Your account will be created with a     ");
+            System.out.println(" default password. Please change it after      ");
+            System.out.println(" your first login.                             ");
+            System.out.println("===============================================");
+
+            // Generate new patient ID and set a default password
             String newPatientID = "P" + (UserModel.userNameMapPatient.size() + 1000);
             String defaultPassword = "password";
             String hashedPassword = Obfuscation.hashPassword(defaultPassword);
             String role = "Patient";
 
             // Create new UserModel, Controller, and View
-            UserModel model = new UserModel(newPatientID, hashedPassword, "Patient", name);
+            UserModel model = new UserModel(newPatientID, hashedPassword, role, name);
             UserView view = new UserView();
             UserController controller = new UserController(model, view);
 
             // Store new user data
             controller.registerUser(newPatientID, name, dob, gender, bloodType, email, phoneNumber, role,
                     hashedPassword);
-            System.out.println("Registration successful! Your Patient ID is: " + newPatientID);
-            System.out.println("Your account has been created with the default password.");
+
+            System.out.println("===============================================");
+            System.out.println(" Registration Successful!                      ");
+            System.out.println(" Your Patient ID is: " + newPatientID);
+            System.out.println(" Your account has been created with a default  ");
+            System.out.println(" password. Please log in to change it.         ");
+            System.out.println("===============================================");
+
+            System.out.println("\nPress Enter to go back to the main menu...");
+            sc.nextLine();
+
         } catch (IOException e) {
             System.out.println("Error during registration: " + e.getMessage());
         }
