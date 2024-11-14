@@ -529,6 +529,9 @@ public class AdministratorView {
         }
 
         System.out.println("--------------------------------------------------------------");
+        System.out.println("\nPress Enter to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
     public String collectMedicineDetails(Scanner scanner) {
