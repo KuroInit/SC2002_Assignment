@@ -18,7 +18,7 @@ The initial password for every user is `password`.
 
 - ## Team Members
 
-We are a group 6 from tutorial group A50, Nanyang Technological University, Singapore. There are 4 members in our group:
+We are a group 2 from tutorial group SCS5, Nanyang Technological University, Singapore. There are 4 members in our group:
 
 | Name                    | Github Account                                          | Email                 |
 |-------------------------|---------------------------------------------------------|-----------------------|
