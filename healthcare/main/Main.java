@@ -76,13 +76,15 @@ public class Main {
 
     private static Map<String, PatientController> loadPatientsFromCSV() throws IOException {
         UserController.initializeUsers();
-        if (patientMap != null) return patientMap; // Memoization check
+        if (patientMap != null)
+            return patientMap; // Memoization check
         patientMap = new HashMap<>();
         List<String> lines = Files.readAllLines(Paths.get(patientListFile));
         for (String line : lines) {
             String[] details = line.split(",");
             String patientID = details[0].trim();
-            PatientModel model = new PatientModel(patientID, details[1], details[2], details[3], details[4], details[5], details[6]);
+            PatientModel model = new PatientModel(patientID, details[1], details[2], details[3], details[4], details[5],
+                    details[6]);
             PatientView view = new PatientView();
             PatientController controller = new PatientController(model, view);
             patientMap.put(patientID, controller);
@@ -92,7 +94,8 @@ public class Main {
 
     private static Map<String, DoctorController> loadDoctorsFromCSV() throws IOException {
         UserController.initializeUsers();
-        if (doctorMap != null) return doctorMap; // Memoization check
+        if (doctorMap != null)
+            return doctorMap; // Memoization check
         doctorMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(doctorListFile))) {
             String line = reader.readLine(); // Skip header line if necessary
@@ -110,7 +113,8 @@ public class Main {
 
     private static Map<String, PharmacistController> loadPharmacistsFromCSV() throws IOException {
         UserController.initializeUsers();
-        if (pharmacistMap != null) return pharmacistMap; // Memoization check
+        if (pharmacistMap != null)
+            return pharmacistMap; // Memoization check
         pharmacistMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(staffListFile))) {
             String line = reader.readLine(); // Skip header line if necessary
@@ -130,7 +134,8 @@ public class Main {
 
     private static Map<String, AdministratorController> loadAdministratorsFromCSV() throws IOException {
         UserController.initializeUsers();
-        if (administratorMap != null) return administratorMap; // Memoization check
+        if (administratorMap != null)
+            return administratorMap; // Memoization check
         administratorMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(staffListFile))) {
             String line = reader.readLine(); // Skip header line if necessary
@@ -149,6 +154,14 @@ public class Main {
     }
 
     private static void showMainMenu() throws IOException {
+        System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓██████████████▓▒░ ░▒▓███████▓▒░");
+        System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒░        ");
+        System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒░        ");
+        System.out.println("░▒▓████████▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒ ░▒▓██████▓▒░  ");
+        System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒       ░▒▓█▓▒░ ");
+        System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒       ░▒▓█▓▒░ ");
+        System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒ ▒▓███████▓▒░  ");
+        System.out.println("=================================================");
         System.out.println("\nWelcome to the Hospital Management System (HMS)");
         System.out.println("1. Register As Patient");
         System.out.println("2. Login");
@@ -192,7 +205,8 @@ public class Main {
             UserController controller = new UserController(model, view);
 
             // Store new user data
-            controller.registerUser(newPatientID,name,dob, gender, bloodType, email, phoneNumber,role,hashedPassword);
+            controller.registerUser(newPatientID, name, dob, gender, bloodType, email, phoneNumber, role,
+                    hashedPassword);
             System.out.println("Registration successful! Your Patient ID is: " + newPatientID);
             System.out.println("Your account has been created with the default password.");
         } catch (IOException e) {
@@ -231,7 +245,7 @@ public class Main {
 
             UserController.initializeUsers();
             System.out.println("User data reloaded successfully.");
-            
+
         } catch (IOException e) {
             System.out.println("Error during registration: " + e.getMessage());
         }
@@ -241,7 +255,7 @@ public class Main {
         boolean loginSuccessful = false;
         String hospitalId = "";
         UserController.initializeUsers(); // Initialize users at the start
-    
+
         while (!loginSuccessful) {
             System.out.print("Enter Hospital ID: ");
             if (!sc.hasNextLine()) {
@@ -249,14 +263,14 @@ public class Main {
                 return;
             }
             hospitalId = sc.nextLine().toUpperCase();
-    
+
             // Check if the hospital ID exists in either staff or patient maps
             if (!UserModel.userPasswordStaffMap.containsKey(hospitalId)
                     && !UserModel.userPasswordPatientMap.containsKey(hospitalId)) {
                 System.out.println("Invalid Hospital ID. Please try again.");
                 continue;
             }
-    
+
             System.out.print("Enter Password: ");
             if (!sc.hasNextLine()) {
                 System.out.println("No input found. Exiting program.");
@@ -264,7 +278,7 @@ public class Main {
             }
             String password = sc.nextLine();
             String hashedPassword = Obfuscation.hashPassword(password); // Hash the entered password
-    
+
             // Check if the hashed password matches the stored hashed password for the user
             if ((UserModel.userPasswordStaffMap.containsKey(hospitalId)
                     && UserModel.userPasswordStaffMap.get(hospitalId).equals(hashedPassword)) ||
@@ -276,13 +290,12 @@ public class Main {
                 System.out.println("Incorrect password. Please try again.");
             }
         }
-    
+
         // Retrieve and display the user's name
-        String name = UserModel.userNameMapStaff.containsKey(hospitalId) ? 
-                      UserModel.userNameMapStaff.get(hospitalId) : 
-                      UserModel.userNameMapPatient.get(hospitalId);
+        String name = UserModel.userNameMapStaff.containsKey(hospitalId) ? UserModel.userNameMapStaff.get(hospitalId)
+                : UserModel.userNameMapPatient.get(hospitalId);
         System.out.println("Good Day " + name + "!");
-    
+
         // Offer the option to change the password
         System.out.print("Do you want to change your password? (yes/no): ");
         if (!sc.hasNextLine()) {
@@ -301,17 +314,16 @@ public class Main {
             UserController.changeUserPassword(hospitalId, newHashedPassword);
             System.out.println("Password updated successfully.");
         }
-    
+
         // Load maps for different user roles
         Map<String, DoctorController> doctorMap = loadDoctorsFromCSV();
         Map<String, PharmacistController> pharmacistMap = loadPharmacistsFromCSV();
         Map<String, AdministratorController> administratorMap = loadAdministratorsFromCSV();
         Map<String, PatientController> patientMap = loadPatientsFromCSV();
-    
+
         // Determine the role of the user and display the appropriate menu
-        String role = UserModel.userRoleStaffMap.containsKey(hospitalId) ? 
-                      UserModel.userRoleStaffMap.get(hospitalId) : 
-                      UserModel.userRolePatientMap.get(hospitalId);
+        String role = UserModel.userRoleStaffMap.containsKey(hospitalId) ? UserModel.userRoleStaffMap.get(hospitalId)
+                : UserModel.userRolePatientMap.get(hospitalId);
         switch (role) {
             case "Patient":
                 PatientController patient = patientMap.get(hospitalId);
