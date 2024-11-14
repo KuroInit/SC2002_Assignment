@@ -154,6 +154,7 @@ public class Main {
     }
 
     private static void showMainMenu() throws IOException {
+        System.out.println("=================================================");
         System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓██████████████▓▒░ ░▒▓███████▓▒░");
         System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒░        ");
         System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒░        ");
@@ -166,6 +167,7 @@ public class Main {
         System.out.println("1. Register As Patient");
         System.out.println("2. Login");
         System.out.println("3. Exit");
+        System.out.println("=================================================");
         System.out.print("Choose an option: ");
         int choice = sc.nextInt();
         sc.nextLine(); // Consume newline
