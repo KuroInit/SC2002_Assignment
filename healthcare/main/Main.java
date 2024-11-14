@@ -1,21 +1,21 @@
 package healthcare.main;
 
+import healthcare.records.Obfuscation;
 import healthcare.users.controllers.AdministratorController;
 import healthcare.users.controllers.DoctorController;
 import healthcare.users.controllers.PatientController;
 import healthcare.users.controllers.PharmacistController;
 import healthcare.users.controllers.UserController;
-import healthcare.users.models.PatientModel;
-import healthcare.users.models.DoctorModel;
 import healthcare.users.models.AdministratorModel;
+import healthcare.users.models.DoctorModel;
+import healthcare.users.models.PatientModel;
 import healthcare.users.models.PharmacistModel;
 import healthcare.users.models.UserModel;
-import healthcare.users.view.PatientView;
-import healthcare.users.view.DoctorView;
 import healthcare.users.view.AdministratorView;
+import healthcare.users.view.DoctorView;
+import healthcare.users.view.PatientView;
 import healthcare.users.view.PharmacistView;
 import healthcare.users.view.UserView;
-import healthcare.records.Obfuscation;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -288,7 +288,7 @@ public class Main {
         boolean loginSuccessful = false;
         String hospitalId = "";
         UserController.initializeUsers(); // Initialize users at the start
-
+    
         while (!loginSuccessful) {
             System.out.print("Enter Hospital ID: ");
             if (!sc.hasNextLine()) {
@@ -296,22 +296,25 @@ public class Main {
                 return;
             }
             hospitalId = sc.nextLine().toUpperCase();
-
+    
             // Check if the hospital ID exists in either staff or patient maps
             if (!UserModel.userPasswordStaffMap.containsKey(hospitalId)
                     && !UserModel.userPasswordPatientMap.containsKey(hospitalId)) {
                 System.out.println("Invalid Hospital ID. Please try again.");
                 continue;
             }
-
-            System.out.print("Enter Password: ");
-            if (!sc.hasNextLine()) {
-                System.out.println("No input found. Exiting program.");
-                return;
+    
+            // Get the password securely using the getPasswordInput method
+            String password;
+            try {
+                password = Obfuscation.getPasswordInput("Enter Password: ");
+            } catch (RuntimeException e) {
+                // Fallback if Console is not available (e.g., when running in some IDEs)
+                System.out.print("Enter Password (fallback to visible input): ");
+                password = sc.nextLine();
             }
-            String password = sc.nextLine();
             String hashedPassword = Obfuscation.hashPassword(password); // Hash the entered password
-
+    
             // Check if the hashed password matches the stored hashed password for the user
             if ((UserModel.userPasswordStaffMap.containsKey(hospitalId)
                     && UserModel.userPasswordStaffMap.get(hospitalId).equals(hashedPassword)) ||
@@ -322,6 +325,7 @@ public class Main {
             } else {
                 System.out.println("Incorrect password. Please try again.");
             }
+        
         }
 
         // Retrieve and display the user's name
