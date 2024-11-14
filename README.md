@@ -1,36 +1,78 @@
 # SC2002_Assignment
 
-Introduction
+# Hospital Management System (HMS)
 
-The Hospital Management System (HMS) is a comprehensive application designed to streamline and automate hospital operations. This system is implemented with an MVC (Model-View-Controller) architecture to separate concerns, ensure data security, and enhance maintainability. It supports patient, doctor, pharmacist, and administrator roles with unique functionalities for each, such as appointment scheduling, patient records, and medical inventory management.
+## Project Overview
 
-Features
+The Hospital Management System (HMS) is a full-featured healthcare management software developed in Java. It provides a robust platform for managing patients, staff, doctors, appointments, medical records, and patient feedback, with a focus on security, efficiency, and user accessibility. This system is designed using the MVC (Model-View-Controller) architecture to separate concerns, enabling easy maintainability and scalability. The project includes various advanced features like password encryption, feedback collection, and restrictions for weekend appointments.
 
-Core Features
-User Registration and Authentication:
-New users can register, and existing users can log in with role-based access.
-Role-Based Access Control:
-Distinct menus and functionalities for doctors, patients, pharmacists, and administrators.
-Patient Feedback Collection:
-Patients can submit feedback and ratings, stored securely for hospital review.
-Password Encryption:
-SHA-256 hashing is used to securely store user passwords.
-Additional Features
-No Appointments on Sundays:
-The system automatically prevents scheduling appointments on Sundays.
-Memoized Data Loading:
-Data is loaded once at startup to reduce file I/O during runtime.
-Secure User Management:
-Includes password encryption and role-based access permissions.
-Project Structure
+## Key Features
 
-The project is organized into folders based on the MVC architecture:
+### 1. User Authentication and Role Management
+- **Multi-role Access**: Supports four primary user roles:
+  - **Administrator**: Manages hospital staff, medicine inventory, and replenishment requests.
+  - **Doctor**: Manages appointments, patient records, and schedules.
+  - **Pharmacist**: Manages prescription updates, medication inventory, and restocking requests.
+  - **Patient**: Can view and update personal information, schedule and reschedule appointments, and provide feedback.
+- **Secure Login**: Each user is authenticated through secure login. Passwords are stored using SHA-256 encryption to prevent unauthorized access.
 
-healthcare.users: Contains the user classes with specific models, views, and controllers for each role.
-healthcare.records: Stores records-related classes, including medical records, appointments, and feedback.
-healthcare.main: The entry point (Main.java) that handles system startup, login, and menu display.
-Key Classes
-Model: DoctorModel, PatientModel, PharmacistModel, AdministratorModel
-View: DoctorView, PatientView, PharmacistView, AdministratorView
-Controller: DoctorController, PatientController, PharmacistController, AdministratorController
-Main Class: Main.java
+### 2. Patient Registration
+- **Patient Registration**: Patients can register with essential details (e.g., name, date of birth, gender, blood type, email, contact number) and receive a unique ID.
+- **Default Password and Password Change**: New patients are assigned a default password, which can be changed upon first login.
+
+### 3. Appointment Management
+- **Schedule Management**: Doctors can set and view availability slots for appointments, with patients able to view available slots for scheduling.
+- **Booking and Rescheduling**: Patients can schedule, reschedule, or cancel appointments, while doctors can confirm, decline, or view upcoming appointments.
+- **Restrictions**: Appointment scheduling on Sundays is restricted, ensuring compliance with non-operational days.
+
+### 4. Medical Records Management
+- **Patient Medical Records**: Doctors can add, view, and update patients’ medical records, including diagnosis, treatment plans, and prescribed medications.
+- **Appointment Outcomes**: Doctors can record and update the outcome of each appointment, specifying consultation notes, prescribed medications, and medication status.
+
+### 5. Inventory and Replenishment Management
+- **Medicine Inventory**: Administrators and pharmacists can view, add, update, or remove medicines from the inventory.
+- **Low Stock Alerts**: Provides alerts when medicine stock levels fall below a specified threshold, triggering replenishment requests.
+- **Replenishment Requests**: Allows pharmacists to submit and administrators to approve or decline replenishment requests.
+
+### 6. Feedback Collection
+- **Patient Feedback**: Patients can submit feedback on their treatment experience, which is stored in a CSV file for later analysis.
+- **Rating System**: Patients can rate their experience (1-5 stars) and provide detailed comments, allowing hospital staff to review and improve service quality.
+
+### 7. Password Security
+- **Encryption**: Passwords are hashed using SHA-256 encryption via the `Obfuscation` class to ensure sensitive information remains protected.
+- **Change Password Option**: After login, users are prompted to change their password for additional security.
+
+## Project Structure
+
+The HMS project is structured as follows:
+
+- **Main**: Entry point for the application, handling the startup sequence, user login, and primary menu display.
+- **Models**: Contains data models representing different types of users and records.
+- **Views**: Provides CLI-based user interfaces for each role, displaying menus and collecting user input.
+- **Controllers**: Manages the application logic for each user role, handling interactions between views and models.
+- **Records**: Manages sensitive data like appointment records, feedback, and password hashing.
+
+## Additional Features
+
+### 1. **Password Encryption**
+   The system employs SHA-256 hashing for password storage, providing additional security by obfuscating sensitive data.
+
+### 2. **Patient Feedback System**
+   Patients can submit feedback along with a rating, which is saved in `patient_feedback.csv`. This feedback enables the hospital to monitor service quality.
+
+### 3. **No Appointments on Sundays**
+   The system restricts appointments from being scheduled on Sundays, preventing bookings on days when the hospital is closed.
+
+## Technical Details
+
+### 1. Model-View-Controller (MVC) Architecture
+The application uses the MVC architecture to separate concerns. This approach improves modularity and maintainability, ensuring that data, user interface, and control logic remain isolated from one another.
+
+### 2. Data Persistence
+All data (e.g., patient details, appointment records, and feedback) is stored in CSV files, simulating a database. Data is read once at startup, and modifications are saved back to the CSV files.
+
+### 3. Error Handling
+The application includes error handling for file I/O, user input validation, and exceptional cases such as invalid login attempts.
+
+### 4. Code Structure
+The `Main` class serves as the application’s entry point, initiating the program and displaying the main menu. Controllers for each role manage their respective models and views, facilitating data manipulation and display.
