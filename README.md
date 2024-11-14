@@ -2,7 +2,30 @@
 
 # Hospital Management System (HMS)
 
-Main Page: https://kuroinit.github.io/SC2002_Assignment/#
+NTU AY2023/24 Semester 1 SC2002 Group Project - Hospital Management System (FYPMS).
+
+Hospital Management System (FYPMS) is a Java console application that utilizes object-oriented concepts to efficiently manage final year project settings. The program is designed with a focus on reusability, extensibility, and maintainability, allowing for easy upgrades and future development. It provides flexibility to accommodate different user types and their requirements.
+
+The initial password for every user is `password`.
+
+## Links
+
+- [Main Page]((https://kuroinit.github.io/SC2002_Assignment/#))
+- [GitHub Repository](https://github.com/KuroInit/SC2002_Assignment)
+- [Documentation](https://github.com/KuroInit/SC2002_Assignment/tree/main/docs)
+- [Report](docs/report)
+- [Presentation Video](pornktube.com)
+
+- ## Team Members
+
+We are a group 6 from tutorial group A50, Nanyang Technological University, Singapore. There are 4 members in our group:
+
+| Name         | Github Account                                  | Email                 |
+|--------------|-------------------------------------------------|-----------------------|
+| Venkatesh Arun Moorthy      | [pufanyi](https://github.com/pufanyi)           | [FPU001@e.ntu.edu.sg](mailto:FPU001@e.ntu.edu.sg) |
+| Jin Qingyang | [jin-qingyang](https://github.com/jin-qingyang) | [JINQ0003@e.ntu.edu.sg](mailto:JINQ0003@e.ntu.edu.sg) |
+| Jiang Jinyi  | [Jinyi087](https://github.com/Jinyi087)         | [D220006@e.ntu.edu.sg](mailto:D220006@e.ntu.edu.sg) |
+| Soo Ying Xi  | [niyaojiayou](https://github.com/niyaojiayou)   | [D220001@e.ntu.edu.sg](mailto:D220001@e.ntu.edu.sg)  |
 
 ## Project Overview
 
