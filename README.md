@@ -2,6 +2,8 @@
 
 # Hospital Management System (HMS)
 
+Main Page: https://kuroinit.github.io/SC2002_Assignment/#
+
 ## Project Overview
 
 The Hospital Management System (HMS) is a full-featured healthcare management software developed in Java. It provides a robust platform for managing patients, staff, doctors, appointments, medical records, and patient feedback, with a focus on security, efficiency, and user accessibility. This system is designed using the MVC (Model-View-Controller) architecture to separate concerns, enabling easy maintainability and scalability. The project includes various advanced features like password encryption, feedback collection, and restrictions for weekend appointments.
