@@ -14,7 +14,7 @@ The initial password for every user is `password`.
 - [GitHub Repository](https://github.com/KuroInit/SC2002_Assignment)
 - [Documentation](https://github.com/KuroInit/SC2002_Assignment/tree/main/docs)
 - [Report](docs/report)
-- [Presentation Video](https://www.pornktube.com)
+- [Presentation Video](https://best.pornktube.com/)
 
 - ## Team Members
 
