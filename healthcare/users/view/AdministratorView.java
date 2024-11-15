@@ -515,7 +515,7 @@ public class AdministratorView {
 
     public String getStatusFromChoice(int choice) {
         return switch (choice) {
-            case 1 -> "Pending Confirmation";
+            case 1 -> "Pending";
             case 2 -> "Confirmed";
             case 3 -> "Cancelled";
             case 4 -> "Completed";
@@ -532,11 +532,26 @@ public class AdministratorView {
         System.out.println("==========================================================");
         System.out.println("                  Appointments                    ");
         System.out.println("==========================================================");
-
         boolean found = false;
         for (String appointment : appointments) {
             String[] details = appointment.split(",");
-            if (matchesAppointmentFilter(details, filterField, filterValue, statusFilter)) {
+        if (filterField==null && filterValue==null && statusFilter==null) {
+            System.out.println("| Appointment Details                                     |");
+            System.out.println("----------------------------------------------------------");
+            System.out.printf("| Appointment ID:           %s%n", details[0]);
+            System.out.printf("| Doctor ID:                %s%n", details[1]);
+            System.out.printf("| Patient ID:               %s%n", details[2]);
+            System.out.printf("| Date:                     %s%n", details[3]);
+            System.out.printf("| Time:                     %s%n", details[4]);
+            System.out.printf("| Status:                   %s%n", details[5]);
+            System.out.printf("| Service:                  %s%n", details[6]);
+            System.out.printf("| Consultation Notes:       %s%n", details[7]);
+            System.out.printf("| Prescribed Medications:   %s%n", details[8]);
+            System.out.printf("| Quantity of Medications:  %s%n", details[9]);
+            System.out.printf("| Medication Status:        %s%n", details[10]);
+            System.out.println("----------------------------------------------------------");
+        }
+            else if (matchesAppointmentFilter(details, filterField, filterValue, statusFilter)) {
                 System.out.println("| Appointment Details                                     |");
                 System.out.println("----------------------------------------------------------");
                 System.out.printf("| Appointment ID:           %s%n", details[0]);
@@ -552,15 +567,17 @@ public class AdministratorView {
                 System.out.printf("| Medication Status:        %s%n", details[10]);
                 System.out.println("----------------------------------------------------------");
                 found = true;
+            
+            if (!found) {
+                System.out.println("|                No matching appointments found           |");
+                System.out.println("----------------------------------------------------------");
             }
         }
-
-        if (!found) {
-            System.out.println("|                No matching appointments found           |");
-            System.out.println("----------------------------------------------------------");
         }
-
         System.out.println("==========================================================");
+        System.out.println("\nPress Enter to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
     private boolean matchesAppointmentFilter(String[] details, String filterField, String filterValue,
