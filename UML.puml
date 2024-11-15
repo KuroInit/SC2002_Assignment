@@ -1,8 +1,9 @@
 @startuml
 ' Main package
 package healthcare.main {
+    package healthcare.main {
     class Main {
-        + void main(String[] args)
+        + void main(String[] args) throws IOException
         - Scanner sc
         - String patientListFile
         - String doctorListFile
@@ -26,6 +27,28 @@ package healthcare.main {
         + static void registerAdmin()
         + static void showLoginScreen() throws IOException
     }
+}
+
+Main --> healthcare.users.controllers.UserController : uses
+Main --> healthcare.users.controllers.PatientController : manages
+Main --> healthcare.users.controllers.DoctorController : manages
+Main --> healthcare.users.controllers.PharmacistController : manages
+Main --> healthcare.users.controllers.AdministratorController : manages
+
+Main --> healthcare.users.models.PatientModel : creates
+Main --> healthcare.users.models.DoctorModel : creates
+Main --> healthcare.users.models.PharmacistModel : creates
+Main --> healthcare.users.models.AdministratorModel : creates
+
+Main --> healthcare.users.view.UserView : interacts
+Main --> healthcare.users.view.PatientView : interacts
+Main --> healthcare.users.view.DoctorView : interacts
+Main --> healthcare.users.view.PharmacistView : interacts
+Main --> healthcare.users.view.AdministratorView : interacts
+
+Main --> healthcare.records.Appointment : references
+Main --> healthcare.records.MedicalRecord : references
+Main --> healthcare.records.Feedback : references
 }
 
 ' Records package
