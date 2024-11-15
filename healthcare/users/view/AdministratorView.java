@@ -52,7 +52,6 @@ public class AdministratorView {
     }
 
     public void displayFilterOptions() {
-        Screen.clearConsole();
         System.out.println("===========================================");
         System.out.println("              Filter Options               ");
         System.out.println("===========================================");
@@ -66,7 +65,6 @@ public class AdministratorView {
     }
 
     public void displayRoleSelectionMenu() {
-        Screen.clearConsole();
         System.out.println("===========================================");
         System.out.println("              Select a Role                ");
         System.out.println("===========================================");
@@ -81,7 +79,6 @@ public class AdministratorView {
     }
 
     public void displayGenderSelectionMenu() {
-        Screen.clearConsole();
         System.out.println("===========================================");
         System.out.println("             Select Gender                 ");
         System.out.println("===========================================");
@@ -145,6 +142,9 @@ public class AdministratorView {
         }
 
         System.out.println("---------------------------------------------------------------");
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
+
     }
 
     public void displayFilteredStaff(List<String> staffData, String filterField, String filterValue) {
@@ -170,6 +170,8 @@ public class AdministratorView {
         }
 
         System.out.println("-------------------------------------------------------------");
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     private boolean matchesFilter(String[] details, String filterField, String filterValue) {

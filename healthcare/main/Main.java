@@ -183,6 +183,7 @@ public class Main {
     }
 
     private static void exitApp() {
+        Screen.clearConsole();
         System.out.println("===========================================");
         System.out.println("               EXITING APP                 ");
         System.out.println("===========================================");
