@@ -45,8 +45,7 @@ public class PharmacistView {
         System.out.println("===========================================");
         System.out.println(appointmentDetails);
         System.out.println("===========================================");
-        System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine();
+
     }
 
     public void displayMedicationInventory(String inventoryDetails) {

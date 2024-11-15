@@ -1,10 +1,8 @@
 package healthcare.users.controllers;
 
+import healthcare.records.*;
 import healthcare.users.models.*;
 import healthcare.users.view.*;
-import healthcare.records.*;
-import healthcare.records.Appointment.AppointmentStatus;
-
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -179,12 +177,22 @@ public class PatientController {
     private void updatePatientFile(String newEmail, String newContactNumber) {
         String patientListPath = "Patient_List.csv";
         List<String> lines = new ArrayList<>();
-
+    
         try (BufferedReader reader = new BufferedReader(new FileReader(patientListPath))) {
             String line;
-            line = reader.readLine(); // Read header line (if any)
+            boolean isHeader = true; // Flag to handle header line separately
+    
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
+    
+                // Add header line as-is
+                if (isHeader) {
+                    lines.add(line); // Add header to the list
+                    isHeader = false;
+                    continue;
+                }
+    
+                // Update patient data if the ID matches
                 if (data[0].equals(patientModel.getPatientID())) {
                     if (newEmail != null) {
                         data[5] = newEmail;
@@ -192,9 +200,9 @@ public class PatientController {
                     if (newContactNumber != null) {
                         data[6] = newContactNumber;
                     }
-                    line = String.join(",", data);
+                    line = String.join(",", data); // Join updated fields into a line
                 }
-                lines.add(line);
+                lines.add(line); // Add each line (updated or not) to the list
             }
         } catch (IOException e) {
             System.out.println("===========================================");
@@ -205,7 +213,8 @@ public class PatientController {
             new Scanner(System.in).nextLine(); // Wait for Enter
             return;
         }
-
+    
+        // Write all lines back to the file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(patientListPath))) {
             for (String updatedLine : lines) {
                 writer.write(updatedLine);
@@ -225,6 +234,7 @@ public class PatientController {
             new Scanner(System.in).nextLine(); // Wait for Enter
         }
     }
+    
 
     private void viewAvailableAppointments(Scanner scanner) {
         String doctorListPath = "Doctor_List.csv";
@@ -634,7 +644,7 @@ public class PatientController {
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details[2].equals(patientModel.getPatientID())
-                        && (details[5].equalsIgnoreCase("PENDING CONFIRMATION")
+                        && (details[5].equalsIgnoreCase("PENDING")
                                 || details[5].equalsIgnoreCase("CONFIRMED"))) {
                     patientAppointments.add(details);
                     System.out.printf("ID: %s | Doctor ID: %s | Date: %s | Time: %s%n", details[0], details[1],
@@ -758,7 +768,7 @@ public class PatientController {
                 if (values[0].equals(appointmentID)) {
                     values[3] = newDate;
                     values[4] = newTime;
-                    values[5] = "PENDING CONFIRMATION";
+                    values[5] = "PENDING";
                     line = String.join(",", values);
                 }
                 updatedRequests.add(line);
@@ -841,7 +851,7 @@ public class PatientController {
             while ((line = reader.readLine()) != null) {
                 String[] appointment = line.split(",");
                 if (appointment[2].equals(patientModel.getPatientID()) &&
-                        (appointment[5].equalsIgnoreCase("PENDING CONFIRMATION") ||
+                        (appointment[5].equalsIgnoreCase("PENDING") ||
                                 appointment[5].equalsIgnoreCase("CONFIRMED"))) {
                     patientAppointments.add(appointment);
                 }
@@ -978,7 +988,7 @@ public class PatientController {
             while ((line = reader.readLine()) != null) {
                 String[] appointment = line.split(",");
                 if (appointment[2].equals(patientModel.getPatientID())
-                        && appointment[5].equalsIgnoreCase("CONFIRMED")) {
+                        && (appointment[5].equalsIgnoreCase("CONFIRMED") || appointment[5].equalsIgnoreCase("PENDING"))) {
                     String doctorName = doctorNames.getOrDefault(appointment[1], "Unknown Doctor");
                     System.out.printf("Appointment ID: %s, Doctor: %s, Date: %s, Time: %s, Status: %s%n",
                             appointment[0], doctorName, appointment[3], appointment[4], appointment[5]);

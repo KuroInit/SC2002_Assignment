@@ -8,9 +8,9 @@ import java.util.Scanner;
 public class Feedback {
     private String patientName;
     private String feedbackMessage;
-    private int rating;
+    private float rating;
 
-    public Feedback(String patientName, String feedbackMessage, int rating) {
+    public Feedback(String patientName, String feedbackMessage, float rating) {
         this.patientName = patientName;
         this.feedbackMessage = feedbackMessage;
         this.rating = rating;
@@ -20,7 +20,7 @@ public class Feedback {
         String fileName = "patient_feedback.csv";
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName, true))) {
-            writer.printf("\"%s\",\"%s\",%d%n", patientName, feedbackMessage, rating);
+            writer.printf("\"%s\",\"%s\",%f%n", patientName, feedbackMessage, rating);
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
         }
@@ -40,12 +40,12 @@ public class Feedback {
         String feedbackMessage = scanner.nextLine();
 
         // Collect rating with validation
-        int rating = 0;
+        float rating = 0;
         boolean validRating = false;
         while (!validRating) {
             System.out.print("Enter rating (1 to 5): ");
             try {
-                rating = Integer.parseInt(scanner.nextLine());
+                rating = Float.parseFloat(scanner.nextLine());
                 if (rating >= 1 && rating <= 5) {
                     validRating = true;
                 } else {

@@ -379,7 +379,6 @@ public class Main {
         UserController.initializeUsers(); // Initialize users at the start
 
         while (!loginSuccessful) {
-            Screen.clearConsole();
             System.out.println("===========================================");
             System.out.println("              Login Screen                ");
             System.out.println("===========================================");
@@ -417,6 +416,7 @@ public class Main {
                 System.out.println("Login successful!");
                 Screen.clearConsole();
             } else {
+                Screen.clearConsole();
                 System.out.println("Incorrect password. Please try again.");
             }
         }
@@ -428,23 +428,36 @@ public class Main {
         System.out.println("Good Day " + name + "!");
 
         // Offer the option to change the password
-        System.out.print("Do you want to change your password? (yes/no): ");
-        if (!sc.hasNextLine()) {
-            System.out.println("No input found. Exiting program.");
-            return;
-        }
-        String changePassword = sc.nextLine();
-        if (changePassword.equalsIgnoreCase("yes")) {
-            System.out.print("Enter your new password: ");
-            if (!sc.hasNextLine()) {
-                System.out.println("No input found. Exiting program.");
-                return;
-            }
-            String newPassword = sc.nextLine();
-            String newHashedPassword = Obfuscation.hashPassword(newPassword); // Hash the new password
-            UserController.changeUserPassword(hospitalId, newHashedPassword);
-            System.out.println("Password updated successfully.");
-        }
+        // Offer the option to change the password
+String changePassword;
+while (true) {
+    System.out.print("Do you want to change your password? (yes/no): ");
+    if (!sc.hasNextLine()) {
+        System.out.println("No input found. Exiting program.");
+        return;
+    }
+
+    changePassword = sc.nextLine().trim().toLowerCase();
+    if (changePassword.equals("yes") || changePassword.equals("no")) {
+        break; // Exit the loop if the input is valid
+    } else {
+        System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+    }
+}
+
+if (changePassword.equals("yes")) {
+    System.out.print("Enter your new password: ");
+    if (!sc.hasNextLine()) {
+        System.out.println("No input found. Exiting program.");
+        return;
+    }
+
+    String newPassword = sc.nextLine();
+    String newHashedPassword = Obfuscation.hashPassword(newPassword); // Hash the new password
+    UserController.changeUserPassword(hospitalId, newHashedPassword);
+    System.out.println("Password updated successfully.");
+}
+
 
         // Load maps for different user roles
         Map<String, DoctorController> doctorMap = loadDoctorsFromCSV();
