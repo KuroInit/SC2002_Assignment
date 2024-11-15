@@ -63,9 +63,6 @@ public class DoctorView {
         System.out.printf("| %-20s : %s%n", "Time", appointmentDetails[4]);
         System.out.printf("| %-20s : %s%n", "Status", appointmentDetails[5]);
         System.out.println("----------------------------------------------------");
-        System.out.println("\nPress Enter to continue...");
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
     }
 
 }

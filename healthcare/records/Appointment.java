@@ -2,6 +2,7 @@ package healthcare.records;
 
 import java.time.ZoneId;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class Appointment {
 
-    private LocalDate appointmentDate;
+    private LocalDateTime appointmentDate;
     private TreatmentTypes treatment;
     private String appointmentID;
     private String doctorID;
@@ -22,7 +23,9 @@ public class Appointment {
 
     // Constructor with corrected parameter name and initialization
     public Appointment(Date appointmentDate, TreatmentTypes type, String patientID, String doctorID) {
-        this.appointmentDate = appointmentDate != null ? LocalDate.ofInstant(appointmentDate.toInstant(), ZoneId.systemDefault()) : null;
+        this.appointmentDate = appointmentDate != null
+                ? LocalDateTime.ofInstant(appointmentDate.toInstant(), ZoneId.systemDefault())
+                : null;
         this.appointmentID = generateRandomID();
         this.treatment = type;
         this.doctorID = doctorID;
@@ -35,10 +38,11 @@ public class Appointment {
     public String toCSV() {
         // Convert the prescribed medications list to a semicolon-separated string
         String medications = prescribedMedication.stream()
-                                .map(Medication::getMedicationName)
-                                .collect(Collectors.joining(";"));
+                .map(Medication::getMedicationName)
+                .collect(Collectors.joining(";"));
 
-        // Return a comma-separated line representing the appointment details, including consultationNotes
+        // Return a comma-separated line representing the appointment details, including
+        // consultationNotes
         return String.join(",",
                 appointmentID,
                 doctorID,
@@ -48,8 +52,7 @@ public class Appointment {
                 treatment != null ? treatment.toString() : "",
                 appointmentStatus != null ? appointmentStatus.toString() : "",
                 medications,
-                consultationNotes != null ? consultationNotes : ""
-        );
+                consultationNotes != null ? consultationNotes : "");
     }
 
     private String generateRandomID() {
@@ -75,7 +78,7 @@ public class Appointment {
         return appointmentStatus;
     }
 
-    public LocalDate getAppointmentDate() {
+    public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
 
@@ -119,7 +122,7 @@ public class Appointment {
 
     public void setAppointmentStatus(AppointmentStatus status) {
         this.appointmentStatus = status;
-    }    
+    }
 
     // Enums
     public enum AppointmentStatus {

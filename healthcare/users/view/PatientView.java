@@ -22,7 +22,6 @@ public class PatientView {
         System.out.println("| 10. Logout                              |");
         System.out.println("|                                         |");
         System.out.println("===========================================");
-        System.out.print("Choose an option: ");
     }
 
     public void displayPatientDetails(PatientModel patient) {
