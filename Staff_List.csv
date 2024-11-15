@@ -1,5 +1,15 @@
 Staff ID,Name,Role,Gender,Age
-P001,Mark Lee,Pharmacist,Male,29
-A001,Sarah Lee,Administrator,Female,40
-A002,Preet,Administrator,Male,19
-P001,Preet,Pharmacist,Male,23
+A001,Harvey,Administrator,Male,40
+A002,Michael,Administrator,Male,19
+A003,James,Administrator,Male,29
+A004,Charles,Administrator,Male,39
+A005,Becky,Administrator,Female,45
+A006,Jack,Administrator,Male,23
+A007,Vishesh,Administrator,Male,54
+P001,Arun,Pharmacist,Male,21
+P002,Roland,Pharmacist,Male,33
+P003,David,Pharmacist,Male,31
+P004,Alexis,Pharmacist,Female,23
+P005,Sheldon,Pharmacist,Male,43
+P006,Howard,Pharmacist,Male,56
+P007,Raj,Pharmacist,Male,23
