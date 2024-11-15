@@ -39,8 +39,6 @@ public class PharmacistController {
                 }
                 default -> {
                     pharmacistView.displayError("Invalid choice. Please select a valid option.");
-                    System.out.println("\nPress Enter to continue...");
-                    scanner.nextLine();
                 }
             }
         } while (choice != 5);
@@ -79,8 +77,6 @@ public class PharmacistController {
             }
         } catch (IOException e) {
             pharmacistView.displayError("Error reading appointments file: " + e.getMessage());
-            System.out.println("\nPress Enter to continue...");
-            new Scanner(System.in).nextLine();
             return;
         }
 
@@ -117,8 +113,6 @@ public class PharmacistController {
             }
         } catch (IOException e) {
             pharmacistView.displayError("Error reading appointment requests: " + e.getMessage());
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
             return;
         }
 
@@ -140,8 +134,6 @@ public class PharmacistController {
             scanner.nextLine();
         } catch (IOException e) {
             pharmacistView.displayError("Error saving updated appointments: " + e.getMessage());
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
             return;
         }
 
@@ -158,8 +150,6 @@ public class PharmacistController {
                     int newStock = currentStock - prescribedQuantity;
                     if (newStock < 0) {
                         pharmacistView.displayError("Insufficient stock for " + prescribedMedicine);
-                        System.out.println("\nPress Enter to continue...");
-                        scanner.nextLine();
                         return;
                     }
                     details[1] = String.valueOf(newStock);
@@ -176,15 +166,11 @@ public class PharmacistController {
             }
         } catch (IOException e) {
             pharmacistView.displayError("Error reading medicine list: " + e.getMessage());
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
             return;
         }
 
         if (!medicineFound) {
             pharmacistView.displayError("Medicine not found in the medicine list.");
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
             return;
         }
 
@@ -220,8 +206,6 @@ public class PharmacistController {
             }
         } catch (IOException e) {
             pharmacistView.displayError("Error reading medication inventory: " + e.getMessage());
-            System.out.println("\nPress Enter to continue...");
-            new Scanner(System.in).nextLine();
             return;
         }
         inventoryDetails.append("---------------------------------------------------------\n");
@@ -256,8 +240,6 @@ public class PharmacistController {
             }
         } catch (IOException e) {
             pharmacistView.displayError("Error reading medicine list: " + e.getMessage());
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
             return;
         }
 
