@@ -1,7 +1,5 @@
 package healthcare.users.view;
 
-import java.util.Scanner;
-
 public class PharmacistView {
 
     public void displayPharmacistMenu() {
@@ -27,8 +25,6 @@ public class PharmacistView {
         System.out.println("===========================================");
         System.out.println("   " + message);
         System.out.println("===========================================");
-        System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine(); // Wait for Enter
     }
 
     public void displayError(String errorMessage) {
@@ -39,7 +35,7 @@ public class PharmacistView {
         System.out.println("   Error: " + errorMessage);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine(); // Wait for Enter
+        new java.util.Scanner(System.in).nextLine();
     }
 
     public void displayAppointmentOutcome(String appointmentDetails) {
@@ -50,7 +46,7 @@ public class PharmacistView {
         System.out.println(appointmentDetails);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine(); // Wait for Enter
+        new java.util.Scanner(System.in).nextLine();
     }
 
     public void displayMedicationInventory(String inventoryDetails) {
@@ -61,8 +57,7 @@ public class PharmacistView {
         System.out.println(inventoryDetails);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine(); // Wait for Enter
+        new java.util.Scanner(System.in).nextLine();
     }
 
 }

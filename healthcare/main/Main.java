@@ -322,6 +322,7 @@ public class Main {
         UserController.initializeUsers(); // Initialize users at the start
 
         while (!loginSuccessful) {
+            Screen.clearConsole();
             System.out.println("===========================================");
             System.out.println("              Login Screen                ");
             System.out.println("===========================================");

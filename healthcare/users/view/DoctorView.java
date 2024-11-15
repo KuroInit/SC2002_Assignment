@@ -21,7 +21,6 @@ public class DoctorView {
         System.out.println("|  8. Logout                              |");
         System.out.println("|                                         |");
         System.out.println("===========================================");
-        System.out.print("Choose an option: ");
     }
 
     public void displayMessage(String message) {
