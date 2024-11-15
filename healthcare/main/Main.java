@@ -1,22 +1,10 @@
 package healthcare.main;
 
-import healthcare.records.Obfuscation;
-import healthcare.users.controllers.AdministratorController;
-import healthcare.users.controllers.DoctorController;
-import healthcare.users.controllers.PatientController;
-import healthcare.users.controllers.PharmacistController;
-import healthcare.users.controllers.UserController;
-import healthcare.users.models.AdministratorModel;
-import healthcare.users.models.DoctorModel;
-import healthcare.users.models.PatientModel;
-import healthcare.users.models.PharmacistModel;
-import healthcare.users.models.UserModel;
-import healthcare.users.view.AdministratorView;
-import healthcare.users.view.DoctorView;
-import healthcare.users.view.PatientView;
-import healthcare.users.view.PharmacistView;
-import healthcare.users.view.Screen;
-import healthcare.users.view.UserView;
+import healthcare.records.*;
+import healthcare.users.controllers.*;
+import healthcare.users.models.*;
+import healthcare.users.view.*;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -198,140 +186,140 @@ public class Main {
         System.exit(0);
     }
 
-        private static void registerUser() {
-            try {
-                Screen.clearConsole(); // Clear the console at the start
-                System.out.println("===============================================");
-                System.out.println("          Register a New Patient              ");
-                System.out.println("===============================================");
-    
-                // Name input
-                System.out.println("-> Please enter the following details:");
-                System.out.print("   Name: ");
-                String name = sc.nextLine();
-                if (!name.matches("[a-zA-Z ]+")) {
-                    System.out.println("Error: Name must contain only letters and spaces.");
-                    displayMenu(); // Call your method to display the menu again
-                    return;
-                }
-    
-                // Date of Birth input
-                System.out.print("   Date of Birth (YYYY-MM-DD): ");
-                String dob = sc.nextLine();
-                if (!isValidDate(dob)) {
-                    System.out.println("Error: Invalid date format. Please use YYYY-MM-DD.");
-                    displayMenu();
-                    return;
-                }
-    
-                // Gender input
-                System.out.print("   Gender: ");
-                String gender = sc.nextLine();
-                if (!gender.matches("(?i)Male|Female|Other")) {
-                    System.out.println("Error: Gender must be 'Male', 'Female', or 'Other'.");
-                    displayMenu();
-                    return;
-                }
-    
-                // Blood Type input
-                System.out.print("   Blood Type: ");
-                String bloodType = sc.nextLine();
-                if (!bloodType.matches("(?i)(A|B|AB|O)[+-]")) {
-                    System.out.println("Error: Blood type must be A+, A-, B+, B-, AB+, AB-, O+, or O-.");
-                    displayMenu();
-                    return;
-                }
-    
-                // Email input
-                System.out.print("   Email Address: ");
-                String email = sc.nextLine();
-                if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
-                    System.out.println("Error: Invalid email format.");
-                    displayMenu();
-                    return;
-                }
-    
-                // Phone Number input
-                System.out.print("   Contact Number: ");
-                String phoneNumber = sc.nextLine();
-                if (!phoneNumber.matches("\\d{8}")) {
-                    System.out.println("Error: Contact number must contain 8 digits.");
-                    displayMenu();
-                    return;
-                }
-    
-    
-                // Generate new patient ID and set a default password
-                String newPatientID = "P" + (UserModel.userNameMapPatient.size() + 1000);
-                String defaultPassword = "password";
-                String hashedPassword = Obfuscation.hashPassword(defaultPassword);
-                String role = "Patient";
-    
-                // Create new UserModel, Controller, and View
-                UserModel model = new UserModel(newPatientID, hashedPassword, role, name);
-                UserView view = new UserView();
-                UserController controller = new UserController(model, view);
-    
-                // Store new user data
-                controller.registerUser(newPatientID, name, dob, gender, bloodType, email, phoneNumber, role, hashedPassword);
-    
-                Screen.clearConsole();
-                System.out.println("===============================================");
-                System.out.println(" Registration Successful!                      ");
-                System.out.println(" Your Patient ID is: " + newPatientID);
-                System.out.println(" Your account has been created with a default  ");
-                System.out.println(" password. Please log in to change it.         ");
-                System.out.println("===============================================");
-    
-                System.out.println("\nPress Enter to go back to the main menu...");
-                sc.nextLine();
-                Screen.clearConsole();
-                showMainMenu(); // Show the main menu again
-    
-            } catch (IOException e) {
-                System.out.println("Error during registration: " + e.getMessage());
-                displayMenu(); // Show the main menu again after an error
+    private static void registerUser() {
+        try {
+            Screen.clearConsole(); // Clear the console at the start
+            System.out.println("===============================================");
+            System.out.println("          Register a New Patient              ");
+            System.out.println("===============================================");
+
+            // Name input
+            System.out.println("-> Please enter the following details:");
+            System.out.print("   Name: ");
+            String name = sc.nextLine();
+            if (!name.matches("[a-zA-Z ]+")) {
+                System.out.println("Error: Name must contain only letters and spaces.");
+                displayMenu(); // Call your method to display the menu again
+                return;
+            }
+
+            // Date of Birth input
+            System.out.print("   Date of Birth (YYYY-MM-DD): ");
+            String dob = sc.nextLine();
+            if (!isValidDate(dob)) {
+                System.out.println("Error: Invalid date format. Please use YYYY-MM-DD.");
+                displayMenu();
+                return;
+            }
+
+            // Gender input
+            System.out.print("   Gender: ");
+            String gender = sc.nextLine();
+            if (!gender.matches("(?i)Male|Female|Other")) {
+                System.out.println("Error: Gender must be 'Male', 'Female', or 'Other'.");
+                displayMenu();
+                return;
+            }
+
+            // Blood Type input
+            System.out.print("   Blood Type: ");
+            String bloodType = sc.nextLine();
+            if (!bloodType.matches("(?i)(A|B|AB|O)[+-]")) {
+                System.out.println("Error: Blood type must be A+, A-, B+, B-, AB+, AB-, O+, or O-.");
+                displayMenu();
+                return;
+            }
+
+            // Email input
+            System.out.print("   Email Address: ");
+            String email = sc.nextLine();
+            if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                System.out.println("Error: Invalid email format.");
+                displayMenu();
+                return;
+            }
+
+            // Phone Number input
+            System.out.print("   Contact Number: ");
+            String phoneNumber = sc.nextLine();
+            if (!phoneNumber.matches("\\d{8}")) {
+                System.out.println("Error: Contact number must contain 8 digits.");
+                displayMenu();
+                return;
+            }
+
+            // Generate new patient ID and set a default password
+            String newPatientID = "P" + (UserModel.userNameMapPatient.size() + 1000);
+            String defaultPassword = "password";
+            String hashedPassword = Obfuscation.hashPassword(defaultPassword);
+            String role = "Patient";
+
+            // Create new UserModel, Controller, and View
+            UserModel model = new UserModel(newPatientID, hashedPassword, role, name);
+            UserView view = new UserView();
+            UserController controller = new UserController(model, view);
+
+            // Store new user data
+            controller.registerUser(newPatientID, name, dob, gender, bloodType, email, phoneNumber, role,
+                    hashedPassword);
+
+            Screen.clearConsole();
+            System.out.println("===============================================");
+            System.out.println(" Registration Successful!                      ");
+            System.out.println(" Your Patient ID is: " + newPatientID);
+            System.out.println(" Your account has been created with a default  ");
+            System.out.println(" password. Please log in to change it.         ");
+            System.out.println("===============================================");
+
+            System.out.println("\nPress Enter to go back to the main menu...");
+            sc.nextLine();
+            Screen.clearConsole();
+            showMainMenu(); // Show the main menu again
+
+        } catch (IOException e) {
+            System.out.println("Error during registration: " + e.getMessage());
+            displayMenu(); // Show the main menu again after an error
+        }
+    }
+
+    // Helper method for date validation
+    private static boolean isValidDate(String date) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setLenient(false);
+            sdf.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    private static void displayMenu() {
+        while (true) {
+            System.out.println("===============================================");
+            System.out.println("           Registration Menu                   ");
+            System.out.println("===============================================");
+            System.out.println("1. Restart Registration");
+            System.out.println("2. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = sc.nextInt();
+            sc.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    registerUser();
+                    break;
+
+                case 2:
+                    System.out.println("Exiting the program. Goodbye!");
+                    System.exit(0); // Exit the program
+
+                default:
+                    System.out.println("Invalid choice. Please select 1 or 2.");
             }
         }
-    
-        // Helper method for date validation
-        private static boolean isValidDate(String date) {
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                sdf.setLenient(false);
-                sdf.parse(date);
-                return true;
-            } catch (ParseException e) {
-                return false;
-            }
-        }
-    
-        private static void displayMenu() {
-            while (true) {
-                System.out.println("===============================================");
-                System.out.println("           Registration Menu                   ");
-                System.out.println("===============================================");
-                System.out.println("1. Restart Registration");
-                System.out.println("2. Exit");
-                System.out.print("Enter your choice: ");
-    
-                int choice = sc.nextInt();
-                sc.nextLine(); // Consume the newline character
-    
-                switch (choice) {
-                    case 1:
-                        registerUser();
-                        break;
-    
-                    case 2:
-                        System.out.println("Exiting the program. Goodbye!");
-                        System.exit(0); // Exit the program
-    
-                    default:
-                        System.out.println("Invalid choice. Please select 1 or 2.");
-                }
-            }
-        }
+    }
 
     private static void registerAdmin() {
         try {
