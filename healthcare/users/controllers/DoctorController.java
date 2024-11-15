@@ -33,11 +33,11 @@ public class DoctorController {
             System.out.print("Enter your choice: ");
             while (!scanner.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number between 1 and 8.");
-                scanner.next(); // consume invalid input
+                scanner.next();
                 System.out.print("Enter your choice: ");
             }
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             if (choice < 1 || choice > 8) {
                 view.displayMessage("Invalid choice. Please choose a valid option between 1 and 8.");
@@ -292,17 +292,15 @@ public class DoctorController {
             return;
         }
 
-        // Get booked slots and generate all possible time slots
         HashSet<LocalTime> bookedSlots = getBookedSlots(date);
         List<LocalTime> allSlots = generateAvailableTimeSlots();
         Screen.clearConsole();
-        // Display all slots to the user
+
         view.displayMessage("Mark slots as unavailable by entering the slot number. Enter 'done' when finished.");
         for (int i = 0; i < allSlots.size(); i++) {
             view.displayMessage((i + 1) + ". " + allSlots.get(i));
         }
 
-        // Collect unavailable slots
         List<LocalTime> unavailableSlots = new ArrayList<>();
         while (true) {
             System.out.print("Enter slot number to mark as unavailable, or 'done' to finish: ");
@@ -331,7 +329,6 @@ public class DoctorController {
             }
         }
 
-        // Save the available slots, ensuring no duplicates are created
         saveAvailableSlots(date, allSlots, unavailableSlots, bookedSlots);
 
         System.out.println("Available slots updated successfully for " + date.toString());
@@ -371,15 +368,13 @@ public class DoctorController {
     private void saveAvailableSlots(LocalDate date, List<LocalTime> allSlots, List<LocalTime> unavailableSlots,
             HashSet<LocalTime> bookedSlots) {
         String appointmentsPath = "availableAppointments.csv";
-        String doctorID = "D001"; // Replace with the actual doctor ID as needed
+        String doctorID = "D001";
 
-        // First, read existing appointments and remove entries for the selected date
-        // and doctor
         List<String> updatedAppointments = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(appointmentsPath))) {
             String line;
-            String header = reader.readLine(); // Read header line
+            String header = reader.readLine();
             if (header != null) {
                 updatedAppointments.add(header);
             }
@@ -388,7 +383,7 @@ public class DoctorController {
                 if (values.length >= 3) {
                     String existingDoctorID = values[0].trim();
                     String existingDate = values[1].trim();
-                    // Skip entries that match the selected date and doctor
+
                     if (!(existingDoctorID.equals(doctorID) && existingDate.equals(date.toString()))) {
                         updatedAppointments.add(line);
                     }
@@ -400,18 +395,15 @@ public class DoctorController {
             return;
         }
 
-        // Now, prepare new available slots for the selected date
         List<LocalTime> availableSlots = new ArrayList<>(allSlots);
         availableSlots.removeAll(unavailableSlots);
         availableSlots.removeAll(bookedSlots);
 
-        // Append the new available slots to the updatedAppointments list
         for (LocalTime time : availableSlots) {
             String newLine = String.format("%s,%s,%s", doctorID, date.toString(), time.toString());
             updatedAppointments.add(newLine);
         }
 
-        // Write the updated appointments back to the file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(appointmentsPath))) {
             for (String updatedLine : updatedAppointments) {
                 writer.write(updatedLine);
@@ -425,9 +417,9 @@ public class DoctorController {
 
     private void updateAppointmentStatus() {
         Scanner scanner = new Scanner(System.in);
-        String doctorID = model.getDoctorID(); // Get the current doctor's ID
+        String doctorID = model.getDoctorID();
         Screen.clearConsole();
-        // Step 1: Display pending appointments for the doctor
+
         List<String[]> pendingAppointments = new ArrayList<>();
         System.out.println("====================================================");
         System.out.println("      Pending Appointments for Dr. " + model.getName());
@@ -439,7 +431,7 @@ public class DoctorController {
                 String[] fields = line.split(",");
                 if (fields.length >= 6 && fields[1].equals(doctorID) && "PENDING".equalsIgnoreCase(fields[5])) {
                     pendingAppointments.add(fields);
-                    // Display appointment details
+
                     System.out.printf("Appointment ID: %s | Patient ID: %s | Date: %s | Time: %s%n",
                             fields[0], fields[2], fields[3], fields[4]);
                 }
@@ -458,7 +450,6 @@ public class DoctorController {
             return;
         }
 
-        // Step 2: Allow the doctor to select an appointment
         String appointmentId = "";
         String[] selectedAppointment = null;
         do {
@@ -469,7 +460,6 @@ public class DoctorController {
                 continue;
             }
 
-            // Validate if the entered Appointment ID exists in the pending appointments
             for (String[] appointment : pendingAppointments) {
                 if (appointment[0].equals(appointmentId)) {
                     selectedAppointment = appointment;
@@ -482,7 +472,6 @@ public class DoctorController {
             }
         } while (selectedAppointment == null);
 
-        // Step 3: Choose the new status
         int choice = 0;
         do {
             System.out.println("Choose an option:");
@@ -505,7 +494,6 @@ public class DoctorController {
 
         String newStatus = (choice == 1) ? "CONFIRMED" : "CANCELLED";
 
-        // Step 4: Update the appointment status in the CSV file
         try {
             List<String> appointments = model.readCSV("appointmentRequests.csv");
             List<String> updatedAppointments = new ArrayList<>();
@@ -514,7 +502,7 @@ public class DoctorController {
             for (String line : appointments) {
                 String[] fields = line.split(",");
                 if (fields.length >= 6 && fields[0].equals(appointmentId) && fields[1].equals(doctorID)) {
-                    // Update the appointment status
+
                     fields[5] = newStatus;
                     line = String.join(",", fields);
                     updated = true;
@@ -540,10 +528,9 @@ public class DoctorController {
     private void recordAppointmentOutcome() {
         Scanner scanner = new Scanner(System.in);
 
-        String doctorID = model.getDoctorID(); // Assuming model provides the doctor's ID
+        String doctorID = model.getDoctorID();
         String appointmentRequestsPath = "appointmentRequests.csv";
 
-        // Step 1: Display confirmed appointments for the doctor
         List<String[]> doctorAppointments = new ArrayList<>();
         Screen.clearConsole();
         System.out.println("===========================================");
@@ -552,7 +539,7 @@ public class DoctorController {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(appointmentRequestsPath))) {
             String line;
-            String header = reader.readLine(); // Skip header line
+            String header = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details.length >= 11 && details[1].equals(doctorID) && details[5].equalsIgnoreCase("CONFIRMED")) {
@@ -580,7 +567,6 @@ public class DoctorController {
             return;
         }
 
-        // Step 2: Allow the doctor to select an appointment
         String appointmentId = "";
         String[] selectedAppointment = null;
         do {
@@ -597,7 +583,6 @@ public class DoctorController {
             }
         } while (selectedAppointment == null);
 
-        // Proceed to record outcome for the selected appointment
         String typeOfService = "";
         do {
             System.out.print("Enter Type of Service: ");
@@ -643,7 +628,6 @@ public class DoctorController {
 
         String medicationStatus = "PENDING";
 
-        // Step 3: Update the appointment in appointmentRequests.csv
         try {
             List<String> appointments = model.readCSV(appointmentRequestsPath);
             List<String> updatedAppointments = new ArrayList<>();
