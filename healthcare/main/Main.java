@@ -428,6 +428,7 @@ public class Main {
                             && UserModel.userPasswordPatientMap.get(hospitalId).equals(hashedPassword))) {
                 loginSuccessful = true;
                 System.out.println("Login successful!");
+                Screen.clearConsole();
             } else {
                 System.out.println("Incorrect password. Please try again.");
             }
