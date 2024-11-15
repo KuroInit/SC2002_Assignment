@@ -6,9 +6,12 @@ import java.util.Map;
 public class UserModel {
     public static Map<String, String> userPasswordStaffMap = new HashMap<>();
     public static Map<String, String> userPasswordPatientMap = new HashMap<>();
+    public static Map<String, String> userPasswordDoctorMap = new HashMap<>();
     public static Map<String, String> userRoleStaffMap = new HashMap<>();
     public static Map<String, String> userRolePatientMap = new HashMap<>();
+    public static Map<String, String> userRoleDoctorMap = new HashMap<>();
     public static Map<String, String> userNameMapStaff = new HashMap<>();
+    public static Map<String, String> userNameMapDoctor = new HashMap<>();
     public static Map<String, String> userNameMapPatient = new HashMap<>();
 
     private String userId;

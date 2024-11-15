@@ -2,7 +2,6 @@ package healthcare.users.controllers;
 
 import healthcare.users.models.UserModel;
 import healthcare.users.view.UserView;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +31,7 @@ public class UserController {
     }
 
     private static void loadPasswordsAndRoles() {
-        loadPasswordFile(DOCTOR_PASSWORDS_FILE, UserModel.userPasswordStaffMap, UserModel.userRoleStaffMap, "Doctor");
+        loadPasswordFile(DOCTOR_PASSWORDS_FILE, UserModel.userPasswordDoctorMap, UserModel.userRoleDoctorMap, "Doctor");
         loadPasswordFile(PATIENT_PASSWORDS_FILE, UserModel.userPasswordPatientMap, UserModel.userRolePatientMap, "Patient");
         loadPasswordFile(STAFF_PASSWORDS_FILE, UserModel.userPasswordStaffMap, UserModel.userRoleStaffMap, "Staff");
     }
@@ -58,7 +57,7 @@ public class UserController {
     }
 
     private static void loadNames() {
-        loadNameFile(DOCTOR_LIST_FILE, UserModel.userNameMapStaff);
+        loadNameFile(DOCTOR_LIST_FILE, UserModel.userNameMapDoctor);
         loadNameFile(PATIENT_LIST_FILE, UserModel.userNameMapPatient);
         loadNameFile(STAFF_LIST_FILE, UserModel.userNameMapStaff);
     }
@@ -96,9 +95,9 @@ public class UserController {
                 break;
             case "Doctor":
                 filePath = "Doctor_List.csv"; // Separate file for doctors
-                passwordMap = UserModel.userPasswordStaffMap;
-                roleMap = UserModel.userRoleStaffMap;
-                nameMap = UserModel.userNameMapStaff;
+                passwordMap = UserModel.userPasswordDoctorMap;
+                roleMap = UserModel.userRoleDoctorMap;
+                nameMap = UserModel.userNameMapDoctor;
                 break;
             case "Pharmacist":
             case "Administrator":

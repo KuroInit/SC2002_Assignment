@@ -5,7 +5,9 @@ import healthcare.users.controllers.*;
 import healthcare.users.models.*;
 import healthcare.users.view.*;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -158,12 +160,13 @@ public class Main {
         System.out.println("3. Exit");
         System.out.println("=================================================");
         System.out.print("Choose an option: ");
-        String choice = sc.nextLine();
-        
+        int choice = sc.nextInt();
+        sc.nextLine(); // Consume newline
         switch (choice) {
-            case "1" -> registerUser();
-            case "2" -> showLoginScreen();
-            case "3" -> exitApp();
+            case 1 -> registerUser();
+            case 2 -> showLoginScreen();
+            case 3 -> exitApp();
+            case 4 -> registerAdmin();
             default -> System.out.println("Invalid option. Please try again.");
         }
     }
@@ -250,14 +253,43 @@ public class Main {
             String hashedPassword = Obfuscation.hashPassword(defaultPassword);
             String role = "Patient";
 
+            PatientModel patientModel = new PatientModel(newPatientID, name, dob, gender, bloodType, email, phoneNumber);
+            PatientView view = new PatientView();
+            PatientController controller = new PatientController(patientModel, view);
+
+// Update the in-memory patient map immediately
+            patientMap.put(newPatientID, controller);
+            patientMap = loadPatientsFromCSV();
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(patientListFile, true))) {
+                String patientDetails = newPatientID + "," + name + "," + dob + "," + gender + "," + bloodType + "," + email + "," + phoneNumber;
+                writer.write(patientDetails);
+                writer.newLine();
+            } catch (IOException e) {
+                System.out.println("Error writing to Patient_List.csv: " + e.getMessage());
+                return;
+            }
+    
+            // Write patient password to Patient_Passwords.csv
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Patient_Passwords.csv", true))) {
+                String passwordDetails = newPatientID + "," + hashedPassword + ",Patient";
+                writer.write(passwordDetails);
+                writer.newLine();
+            } catch (IOException e) {
+                System.out.println("Error writing to Patient_Passwords.csv: " + e.getMessage());
+                return;
+            }
             // Create new UserModel, Controller, and View
-            UserModel model = new UserModel(newPatientID, hashedPassword, role, name);
-            UserView view = new UserView();
-            UserController controller = new UserController(model, view);
+            UserModel userModel = new UserModel(newPatientID, hashedPassword, role, name);
+            UserView userView = new UserView();
+            UserController userController = new UserController(userModel, userView);
+
+            UserModel.userPasswordPatientMap.put(newPatientID, hashedPassword);
+            UserModel.userRolePatientMap.put(newPatientID, role);
+            UserModel.userNameMapPatient.put(newPatientID, name);
 
             // Store new user data
-            controller.registerUser(newPatientID, name, dob, gender, bloodType, email, phoneNumber, role,
-                    hashedPassword);
+            
 
             Screen.clearConsole();
             System.out.println("===============================================");
@@ -317,7 +349,7 @@ public class Main {
         }
     }
 
-    /*private static void registerAdmin() {
+    private static void registerAdmin() {
         try {
             System.out.println("===========================================");
             System.out.println("           Register a New Patient          ");
@@ -368,7 +400,7 @@ public class Main {
             System.out.println("Error during registration: " + e.getMessage());
             System.out.println("===========================================");
         }
-    }*/
+    }
 
     private static void showLoginScreen() throws IOException {
         boolean loginSuccessful = false;
@@ -376,6 +408,7 @@ public class Main {
         UserController.initializeUsers(); // Initialize users at the start
 
         while (!loginSuccessful) {
+            Screen.clearConsole();
             System.out.println("===========================================");
             System.out.println("              Login Screen                ");
             System.out.println("===========================================");
@@ -413,7 +446,6 @@ public class Main {
                 System.out.println("Login successful!");
                 Screen.clearConsole();
             } else {
-                Screen.clearConsole();
                 System.out.println("Incorrect password. Please try again.");
             }
         }
@@ -425,36 +457,23 @@ public class Main {
         System.out.println("Good Day " + name + "!");
 
         // Offer the option to change the password
-        // Offer the option to change the password
-String changePassword;
-while (true) {
-    System.out.print("Do you want to change your password? (yes/no): ");
-    if (!sc.hasNextLine()) {
-        System.out.println("No input found. Exiting program.");
-        return;
-    }
-
-    changePassword = sc.nextLine().trim().toLowerCase();
-    if (changePassword.equals("yes") || changePassword.equals("no")) {
-        break; // Exit the loop if the input is valid
-    } else {
-        System.out.println("Invalid input. Please enter 'yes' or 'no'.");
-    }
-}
-
-if (changePassword.equals("yes")) {
-    System.out.print("Enter your new password: ");
-    if (!sc.hasNextLine()) {
-        System.out.println("No input found. Exiting program.");
-        return;
-    }
-
-    String newPassword = sc.nextLine();
-    String newHashedPassword = Obfuscation.hashPassword(newPassword); // Hash the new password
-    UserController.changeUserPassword(hospitalId, newHashedPassword);
-    System.out.println("Password updated successfully.");
-}
-
+        System.out.print("Do you want to change your password? (yes/no): ");
+        if (!sc.hasNextLine()) {
+            System.out.println("No input found. Exiting program.");
+            return;
+        }
+        String changePassword = sc.nextLine();
+        if (changePassword.equalsIgnoreCase("yes")) {
+            System.out.print("Enter your new password: ");
+            if (!sc.hasNextLine()) {
+                System.out.println("No input found. Exiting program.");
+                return;
+            }
+            String newPassword = sc.nextLine();
+            String newHashedPassword = Obfuscation.hashPassword(newPassword); // Hash the new password
+            UserController.changeUserPassword(hospitalId, newHashedPassword);
+            System.out.println("Password updated successfully.");
+        }
 
         // Load maps for different user roles
         Map<String, DoctorController> doctorMap = loadDoctorsFromCSV();
