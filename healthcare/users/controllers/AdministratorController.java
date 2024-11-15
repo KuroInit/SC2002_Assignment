@@ -3,9 +3,8 @@ package healthcare.users.controllers;
 import healthcare.main.Main;
 import healthcare.users.models.*;
 import healthcare.users.view.*;
-
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
 
 public class AdministratorController {
     private final AdministratorModel model;
@@ -261,6 +260,11 @@ public class AdministratorController {
         String filterValue = "";
         String statusFilter = "";
 
+        if (choice==1) {
+            List<String> appointments = model.readDataFromFile(model.getAppointmentRequestsPath());
+            view.displayAppointments(appointments, null, null, null);
+        }
+        
         if (choice == 2) {
             view.displayAppointmentFilterOptions();
             int filterOption = scanner.nextInt();
@@ -297,7 +301,6 @@ public class AdministratorController {
                     statusFilter = view.getStatusFromChoice(statusType);
                 }
             }
-            ;
 
             List<String> appointments = model.readDataFromFile(model.getAppointmentRequestsPath());
             view.displayAppointments(appointments, filterField, filterValue, statusFilter);

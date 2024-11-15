@@ -120,18 +120,18 @@ public class AdministratorView {
 
     public void displayFilteredDoctors(List<String> doctorData, String filterField, String filterValue) {
         Screen.clearConsole();
-        System.out.println("===============================================================");
+        System.out.println("============================================================================");
         System.out.println("                        Doctor List                            ");
-        System.out.println("===============================================================");
-        System.out.printf("| %-12s | %-17s | %-10s | %-5s | %-20s |%n", "Doctor ID", "Name", "Gender", "Age",
+        System.out.println("============================================================================");
+        System.out.printf("| %-12s | %-17s | %-10s | %-5s | %-17s |%n", "Doctor ID", "Name", "Gender", "Age",
                 "Specialisation");
-        System.out.println("---------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------");
 
         boolean found = false;
         for (String line : doctorData) {
             String[] details = line.split(",");
             if (matchesFilter(details, filterField, filterValue)) {
-                System.out.printf("| %-12s | %-17s | %-10s | %-5s | %-20s |%n", details[0], details[1], details[3],
+                System.out.printf("| %-12s | %-17s | %-10s | %-5s | %-17s |%n", details[0], details[1], details[3],
                         details[4], details[5]);
                 found = true;
             }
@@ -141,25 +141,24 @@ public class AdministratorView {
             System.out.println("|                    No matching records found                 |");
         }
 
-        System.out.println("---------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
         new Scanner(System.in).nextLine();
-
     }
 
     public void displayFilteredStaff(List<String> staffData, String filterField, String filterValue) {
         Screen.clearConsole();
-        System.out.println("=============================================================");
+        System.out.println("==========================================================================");
         System.out.println("                          Staff List                         ");
-        System.out.println("=============================================================");
-        System.out.printf("| %-10s | %-17s | %-15s | %-10s | %-5s |%n", "Staff ID", "Name", "Role", "Gender", "Age");
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("==========================================================================");
+        System.out.printf("| %-10s | %-17s | %-15s | %-10s | %-7s |%n", "Staff ID", "Name", "Role", "Gender", "Age");
+        System.out.println("--------------------------------------------------------------------------");
 
         boolean found = false;
         for (String line : staffData) {
             String[] details = line.split(",");
             if (matchesFilter(details, filterField, filterValue)) {
-                System.out.printf("| %-10s | %-17s | %-15s | %-10s | %-5s |%n", details[0], details[1], details[2],
+                System.out.printf("| %-10s | %-17s | %-15s | %-10s | %-7s |%n", details[0], details[1], details[2],
                         details[3], details[4]);
                 found = true;
             }
@@ -169,7 +168,7 @@ public class AdministratorView {
             System.out.println("|                     No matching records found              |");
         }
 
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
         new Scanner(System.in).nextLine();
     }
@@ -219,28 +218,43 @@ public class AdministratorView {
         System.out.println("===========================================");
 
         // Common inputs
-        System.out.print("   Enter ID: ");
-        details.append(scanner.nextLine()).append(",");
-
-        System.out.print("   Enter Name: ");
-        details.append(scanner.nextLine()).append(",");
-
-        System.out.print("   Enter Gender: ");
-        details.append(scanner.nextLine()).append(",");
-
-        System.out.print("   Enter Age: ");
-        details.append(scanner.nextLine());
 
         // Special input for Doctor type
         if (staffType == 1) {
+            System.out.print("   Enter ID: ");
+            details.append(scanner.nextLine()).append(",");
+
+            System.out.print("   Enter Name: ");
+            details.append(scanner.nextLine()).append(",");
+
+            details.append("DOCTOR").append(",");
+
+            System.out.print("   Enter Gender: ");
+            details.append(scanner.nextLine()).append(",");
+
+            System.out.print("   Enter Age: ");
+            details.append(scanner.nextLine());
             details.append(",");
+
             System.out.print("   Enter Specialisation: ");
             details.append(scanner.nextLine());
         } else {
             // Add Role input for other staff types
-            details.insert(details.length() - 2, ",");
+            System.out.print("   Enter ID: ");
+            details.append(scanner.nextLine()).append(",");
+
+            System.out.print("   Enter Name: ");
+            details.append(scanner.nextLine()).append(",");
+
             System.out.print("   Enter Role: ");
-            details.append(",").append(scanner.nextLine());
+            details.append(scanner.nextLine()).append(",");
+
+            System.out.print("   Enter Gender: ");
+            details.append(scanner.nextLine()).append(",");
+
+            System.out.print("   Enter Age: ");
+            details.append(scanner.nextLine());
+            
         }
 
         System.out.println("===========================================");
@@ -269,16 +283,87 @@ public class AdministratorView {
         System.out.println("          Update Staff Details             ");
         System.out.println("===========================================");
         System.out.println("Select the field to update:");
+        
+        if (idIndex==1) {
+            System.out.println("  1. Name");
+            System.out.println("  2. Age");
+            System.out.println("  3. Specialisation");
+            System.out.println("===========================================");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            // Update only the selected field based on choice
+            System.out.println("===========================================");
+            switch (choice) {
+            case 1 -> {
+                System.out.print("Enter new Name: ");
+                fields[1] = scanner.nextLine();
+            }
+            case 2 -> {
+                System.out.print("Enter new Age: ");
+                fields[4] = scanner.nextLine();
+            }
+            case 3 -> {
+                System.out.print("Enter new Specialization: ");
+                fields[5] = scanner.nextLine();
+            }
+        
+            default -> System.out.println("Invalid choice.");
+            }
+            System.out.println("===========================================");
+
+            
+    
+        }
+        else if (idIndex==2) {
+            System.out.println("  1. Name");
+            System.out.println("  2. Role");
+            System.out.println("  3. Age");
+            System.out.print("Enter your choice: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        // Update only the selected field based on choice
+        System.out.println("===========================================");
+        switch (choice) {
+            case 1 -> {
+                System.out.print("Enter new Name: ");
+                fields[1] = scanner.nextLine();
+            }
+            case 2 -> {
+                System.out.print("Enter new Role: ");
+                fields[2] = scanner.nextLine();
+                System.out.print("Enter new ID: ");
+                fields[0] = scanner.nextLine();
+            }
+            case 3 -> {
+                System.out.print("Enter new Age: ");
+                fields[4] = scanner.nextLine();
+            }
+        
+            default -> System.out.println("Invalid choice.");
+        }
+        System.out.println("===========================================");
+
+        
+    }
+    return String.join(",", fields);
+    
+}  
+        /* 
         System.out.println("  1. Name");
-        if (fields[2].equals("Other Staff")) {
+        if (fields[2].equalsIgnoreCase("(?i)pharmacist|administrator|nurse")) {
             System.out.println("  2. Role");
         }
         System.out.println("  3. Gender");
         System.out.println("  4. Age");
-        if (fields[2].equals("Doctor")) {
+        if (fields[2].equals("(?i)Doctor|DOCTOR|doctor")) {
             System.out.println("  5. Specialisation");
-        }
-        System.out.println("===========================================");
+        }*/
+        /*System.out.println("===========================================");
         System.out.print("Enter your choice: ");
 
         int choice = scanner.nextInt();
@@ -320,7 +405,7 @@ public class AdministratorView {
         System.out.println("===========================================");
 
         return String.join(",", fields);
-    }
+    }*/
 
     public String promptIDInput() {
         Screen.clearConsole();
@@ -445,7 +530,7 @@ public class AdministratorView {
             String statusFilter) {
         Screen.clearConsole();
         System.out.println("==========================================================");
-        System.out.println("                 Filtered Appointments                    ");
+        System.out.println("                  Appointments                    ");
         System.out.println("==========================================================");
 
         boolean found = false;
