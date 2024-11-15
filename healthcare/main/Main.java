@@ -4,7 +4,6 @@ import healthcare.records.*;
 import healthcare.users.controllers.*;
 import healthcare.users.models.*;
 import healthcare.users.view.*;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -496,5 +495,4 @@ public class Main {
                 break;
         }
     }
-
 }
