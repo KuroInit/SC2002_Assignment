@@ -4,7 +4,7 @@
 
 NTU AY2023/24 Semester 1 SC2002 Group Project - Hospital Management System (HMS).
 
-Hospital Management System (FYPMS) is a Java console application that utilizes object-oriented concepts to efficiently manage final year project settings. The program is designed with a focus on reusability, extensibility, and maintainability, allowing for easy upgrades and future development. It provides flexibility to accommodate different user types and their requirements.
+Hospital Management System (HMS) is a Java console application that utilizes object-oriented concepts to efficiently manage final year project settings. The program is designed with a focus on reusability, extensibility, and maintainability, allowing for easy upgrades and future development. It provides flexibility to accommodate different user types and their requirements.
 
 The initial password for every user is `password`.
 
@@ -23,7 +23,7 @@ We are a group 2 from tutorial group SCS5, Nanyang Technological University, Sin
 | Name                   | Github Account                                                  | Email                                                       |
 | ---------------------- | --------------------------------------------------------------- | ----------------------------------------------------------- |
 | Vinod Jain Vishesh     | [CUSTEDLOL](https://github.com/custedlol)                       | [VISHESH001@e.ntu.edu.sg](mailto:VISHESH001@e.ntu.edu.sg)   |
-| Venkatesh Arun mOorthy | [ArunMoorthyVenkatesh](https://github.com/ArunmOorthyVenkatesh) | [ARUNMOOR001@e.ntu.edu.sg](mailto:ARUNMOOR001@e.ntu.edu.sg) |
+| Venkatesh Arun Moorthy | [ArunMoorthyVenkatesh](https://github.com/ArunmOorthyVenkatesh) | [ARUNMOOR001@e.ntu.edu.sg](mailto:ARUNMOOR001@e.ntu.edu.sg) |
 | Chawla Preet Singh     | [PreetSingh0804](https://github.com/PreetSingh0804)             | [PREETSIN001@e.ntu.edu.sg](mailto:PREETSIN001@e.ntu.edu.sg) |
 | Ashwin Suresh          | [KuroInit](https://github.com/KuroInit)                         | [ASHWIN012@e.ntu.edu.sg](mailto:ASHWIN012@e.ntu.edu.sg)     |
 
