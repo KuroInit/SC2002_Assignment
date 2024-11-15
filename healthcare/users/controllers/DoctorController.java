@@ -21,12 +21,22 @@ public class DoctorController {
 
     public void showMenu() {
         Scanner scanner = new Scanner(System.in);
-        int choice;
+        int choice = 0;
         do {
             view.showDoctorMenu();
             System.out.print("Enter your choice: ");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number between 1 and 8.");
+                scanner.next(); // consume invalid input
+                System.out.print("Enter your choice: ");
+            }
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
+
+            if (choice < 1 || choice > 8) {
+                view.displayMessage("Invalid choice. Please choose a valid option between 1 and 8.");
+                continue;
+            }
 
             switch (choice) {
                 case 1 -> viewPatientMedicalRecords();
@@ -47,8 +57,14 @@ public class DoctorController {
 
     private void viewPatientMedicalRecords() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the Patient ID to view details: ");
-        String patientID = scanner.nextLine();
+        String patientID = "";
+        do {
+            System.out.print("Enter the Patient ID to view details: ");
+            patientID = scanner.nextLine().trim();
+            if (patientID.isEmpty()) {
+                System.out.println("Patient ID cannot be empty. Please enter a valid Patient ID.");
+            }
+        } while (patientID.isEmpty());
 
         try {
             List<String> patientList = model.readCSV("Patient_List.csv");
@@ -86,6 +102,8 @@ public class DoctorController {
                     hasHistory = true;
                 }
             }
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
 
             if (!hasHistory) {
                 view.displayMessage("No medical history found for this patient.");
@@ -103,20 +121,54 @@ public class DoctorController {
     private void addPatientMedicalRecord() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the Patient ID: ");
-        String patientID = scanner.nextLine();
+        String patientID = "";
+        do {
+            System.out.print("Enter the Patient ID: ");
+            patientID = scanner.nextLine().trim();
+            if (patientID.isEmpty()) {
+                System.out.println("Patient ID cannot be empty. Please enter a valid Patient ID.");
+            }
+        } while (patientID.isEmpty());
 
-        System.out.print("Enter Date of Record (YYYY-MM-DD): ");
-        String dateOfRecord = scanner.nextLine();
+        String dateOfRecord = "";
+        LocalDate date = null;
+        do {
+            System.out.print("Enter Date of Record (YYYY-MM-DD): ");
+            dateOfRecord = scanner.nextLine().trim();
+            try {
+                date = LocalDate.parse(dateOfRecord, DateTimeFormatter.ISO_LOCAL_DATE);
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Please enter in YYYY-MM-DD format.");
+                date = null;
+            }
+        } while (date == null);
 
-        System.out.print("Enter Diagnosis: ");
-        String diagnosis = scanner.nextLine();
+        String diagnosis = "";
+        do {
+            System.out.print("Enter Diagnosis: ");
+            diagnosis = scanner.nextLine().trim();
+            if (diagnosis.isEmpty()) {
+                System.out.println("Diagnosis cannot be empty. Please enter the diagnosis.");
+            }
+        } while (diagnosis.isEmpty());
 
-        System.out.print("Enter Treatment Plan: ");
-        String treatmentPlan = scanner.nextLine();
+        String treatmentPlan = "";
+        do {
+            System.out.print("Enter Treatment Plan: ");
+            treatmentPlan = scanner.nextLine().trim();
+            if (treatmentPlan.isEmpty()) {
+                System.out.println("Treatment Plan cannot be empty. Please enter the treatment plan.");
+            }
+        } while (treatmentPlan.isEmpty());
 
-        System.out.print("Enter Prescribed Medicine: ");
-        String prescribedMedicine = scanner.nextLine();
+        String prescribedMedicine = "";
+        do {
+            System.out.print("Enter Prescribed Medicine: ");
+            prescribedMedicine = scanner.nextLine().trim();
+            if (prescribedMedicine.isEmpty()) {
+                System.out.println("Prescribed Medicine cannot be empty. Please enter the prescribed medicine.");
+            }
+        } while (prescribedMedicine.isEmpty());
 
         String newRecord = patientID + "," + dateOfRecord + "," + diagnosis + "," + treatmentPlan + ","
                 + prescribedMedicine;
@@ -159,8 +211,6 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error reading CSV file.");
         }
-        System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine();
     }
 
     private void viewAvailableAppointments() {
@@ -216,18 +266,21 @@ public class DoctorController {
     private void selectAvailableSlot() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the date (YYYY-MM-DD): ");
-        String dateInput = scanner.nextLine();
-
-        LocalDate date;
-        try {
-            date = LocalDate.parse(dateInput, DateTimeFormatter.ISO_LOCAL_DATE);
-        } catch (Exception e) {
-            view.displayMessage("Invalid date format. Please enter in YYYY-MM-DD format.");
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
-            return;
-        }
+        LocalDate date = null;
+        do {
+            System.out.print("Enter the date (YYYY-MM-DD): ");
+            String dateInput = scanner.nextLine();
+            try {
+                date = LocalDate.parse(dateInput, DateTimeFormatter.ISO_LOCAL_DATE);
+                if (date.isBefore(LocalDate.now())) {
+                    System.out.println("Cannot select a date in the past. Please select a future date.");
+                    date = null;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Please enter in YYYY-MM-DD format.");
+                date = null;
+            }
+        } while (date == null);
 
         if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
             view.displayMessage("Selected date is a Sunday. No available slots.");
@@ -264,7 +317,8 @@ public class DoctorController {
                         view.displayMessage("Slot already marked as booked or unavailable.");
                     }
                 } else {
-                    view.displayMessage("Invalid slot number. Try again.");
+                    view.displayMessage(
+                            "Invalid slot number. Please enter a number between 1 and " + allSlots.size() + ".");
                 }
             } catch (NumberFormatException e) {
                 view.displayMessage("Invalid input. Please enter a slot number or 'done'.");
@@ -354,26 +408,38 @@ public class DoctorController {
 
     private void updateAppointmentStatus() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the Appointment ID to update: ");
-        String appointmentId = scanner.nextLine();
+        String appointmentId = "";
+        do {
+            System.out.print("Enter the Appointment ID to update: ");
+            appointmentId = scanner.nextLine().trim();
+            if (appointmentId.isEmpty()) {
+                System.out.println("Appointment ID cannot be empty. Please enter a valid Appointment ID.");
+            }
+        } while (appointmentId.isEmpty());
 
-        System.out.println("Choose an option:");
-        System.out.println("1. Confirm Appointment");
-        System.out.println("2. Cancel Appointment");
-        System.out.print("Enter your choice (1 or 2): ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        int choice = 0;
+        do {
+            System.out.println("Choose an option:");
+            System.out.println("1. Confirm Appointment");
+            System.out.println("2. Cancel Appointment");
+            System.out.print("Enter your choice (1 or 2): ");
+            String choiceInput = scanner.nextLine();
+            try {
+                choice = Integer.parseInt(choiceInput);
+                if (choice != 1 && choice != 2) {
+                    System.out.println("Invalid choice. Please enter 1 or 2.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter 1 or 2.");
+                choice = 0; // invalid choice
+            }
+        } while (choice != 1 && choice != 2);
 
         String newStatus;
         if (choice == 1) {
             newStatus = "CONFIRMED";
-        } else if (choice == 2) {
-            newStatus = "CANCELLED";
         } else {
-            view.displayMessage("Invalid choice. Please enter 1 or 2.");
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
-            return;
+            newStatus = "CANCELLED";
         }
 
         try {
@@ -406,17 +472,58 @@ public class DoctorController {
 
     private void recordAppointmentOutcome() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the Appointment ID for which you want to record the outcome: ");
-        String appointmentId = scanner.nextLine();
 
-        System.out.print("Enter Type of Service: ");
-        String typeOfService = scanner.nextLine();
-        System.out.print("Enter Consultation Notes: ");
-        String consultationNotes = scanner.nextLine();
-        System.out.print("Enter Prescribed Medications: ");
-        String prescribedMedications = scanner.nextLine();
-        System.out.print("Enter Quantity of Medications: ");
-        String quantity = scanner.nextLine();
+        String appointmentId = "";
+        do {
+            System.out.print("Enter the Appointment ID for which you want to record the outcome: ");
+            appointmentId = scanner.nextLine().trim();
+            if (appointmentId.isEmpty()) {
+                System.out.println("Appointment ID cannot be empty. Please enter a valid Appointment ID.");
+            }
+        } while (appointmentId.isEmpty());
+
+        String typeOfService = "";
+        do {
+            System.out.print("Enter Type of Service: ");
+            typeOfService = scanner.nextLine().trim();
+            if (typeOfService.isEmpty()) {
+                System.out.println("Type of Service cannot be empty. Please enter the type of service.");
+            }
+        } while (typeOfService.isEmpty());
+
+        String consultationNotes = "";
+        do {
+            System.out.print("Enter Consultation Notes: ");
+            consultationNotes = scanner.nextLine().trim();
+            if (consultationNotes.isEmpty()) {
+                System.out.println("Consultation Notes cannot be empty. Please enter the consultation notes.");
+            }
+        } while (consultationNotes.isEmpty());
+
+        String prescribedMedications = "";
+        do {
+            System.out.print("Enter Prescribed Medications: ");
+            prescribedMedications = scanner.nextLine().trim();
+            if (prescribedMedications.isEmpty()) {
+                System.out.println("Prescribed Medications cannot be empty. Please enter the prescribed medications.");
+            }
+        } while (prescribedMedications.isEmpty());
+
+        int quantity = 0;
+        do {
+            System.out.print("Enter Quantity of Medications: ");
+            String quantityInput = scanner.nextLine();
+            try {
+                quantity = Integer.parseInt(quantityInput);
+                if (quantity <= 0) {
+                    System.out.println("Quantity must be a positive integer. Please enter a valid quantity.");
+                    quantity = 0;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number for quantity.");
+                quantity = 0;
+            }
+        } while (quantity == 0);
 
         String medicationStatus = "PENDING";
 
@@ -433,7 +540,7 @@ public class DoctorController {
                     fields[6] = typeOfService;
                     fields[7] = consultationNotes;
                     fields[8] = prescribedMedications;
-                    fields[9] = quantity;
+                    fields[9] = String.valueOf(quantity);
                     fields[10] = medicationStatus;
                     line = String.join(",", fields);
                     updated = true;

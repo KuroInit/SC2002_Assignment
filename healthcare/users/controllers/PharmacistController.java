@@ -226,8 +226,6 @@ public class PharmacistController {
         }
         inventoryDetails.append("---------------------------------------------------------\n");
         pharmacistView.displayMedicationInventory(inventoryDetails.toString());
-        System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine();
     }
 
     private void submitReplenishmentRequest(Scanner scanner) {
