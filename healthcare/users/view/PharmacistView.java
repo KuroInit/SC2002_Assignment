@@ -1,5 +1,7 @@
 package healthcare.users.view;
 
+import java.util.Scanner;
+
 public class PharmacistView {
 
     public void displayPharmacistMenu() {
@@ -59,7 +61,8 @@ public class PharmacistView {
         System.out.println(inventoryDetails);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine(); // Wait for Enter
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine(); // Wait for Enter
     }
 
 }
