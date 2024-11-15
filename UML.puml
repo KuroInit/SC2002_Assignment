@@ -310,16 +310,65 @@ package healthcare.users.controllers {
 }
 
 ' Views package
+
 package healthcare.users.view {
-    class AdministratorView {
-        + void showAdminMenu()
+    class Screen {
+        + void clearConsole()
     }
 
-    class DoctorView {
-        + void showDoctorMenu()
+    class AdministratorView {
+        + AdministratorView()
+        + void showAdminMenu()
+        + void displayStaffManagementMenu()
+        + void displayViewStaffOptions()
+        + void displayFilterOptions()
+        + void displayRoleSelectionMenu()
+        + void displayGenderSelectionMenu()
+        + void displayAddStaffMenu()
+        + void displayUpdateStaffMenu()
+        + void displayAppointmentOptions()
+        + void displayAppointmentFilterOptions()
+        + void inventoryMenu()
+        + void displayReplenishmentMenu()
+        + void displayFilteredDoctors(List<String> doctors, String filterType, String filterValue)
+        + void displayFilteredStaff(List<String> staff, String filterType, String filterValue)
+        + void displayAppointments(List<String> appointments, String filterType, String filterValue, String statusFilter)
+        + void displayInventory(List<String> inventory)
+        + void displayReplenishmentRequests(List<String> requests)
+        + void promptAgeInput()
+        + String collectStaffDetails(int staffType)
+        + String collectUpdatedStaffDetails(String[] details, int staffType)
+        + String promptIDInput()
+        + void promptIsDoctor()
+        + void promptPatientIDInput()
+        + void promptDoctorIDInput()
+        + void promptDateInput()
+        + void promptMedicineName()
+        + void promptStockQuantity()
+        + void promptLowStockIndicator()
+        + void promptIncomingStock()
+        - boolean matchesFilter(String[] details, String filterType, String filterValue)
+        - boolean matchesAppointmentFilter(String[] details, String filterType, String filterValue, String statusFilter)
+        + String getRoleFromChoice(int choice)
+        + String getGenderFromChoice(int choice)
+        + String getStatusFromChoice(int choice)
+        + void displaySuccessMessage(String message)
+        + void displayErrorMessage(String message)
+        + void displayExitMessage(String context)
+        + void displayInvalidOption()
+    }
+
+    class UserView {
+        color:Red
         + void displayMessage(String message)
-        + void displayPatientDetails(String[] details)
-        + void displayAppointmentDetails(String[] details)
+        + void displayUserDetails(String userId, String name, String role)
+    }
+
+    class PharmacistView {
+        + void displayPharmacistMenu()
+        + void displayInventoryList(List<String> inventory)
+        + void displayReplenishmentRequestForm()
+        + void showReplenishmentStatus(List<String[]> status)
     }
 
     class PatientView {
@@ -328,21 +377,28 @@ package healthcare.users.view {
         + void showScheduledAppointments(List<Appointment> appointments)
         + void showCompletedAppointments(List<Appointment> appointments)
         + void showAvailableAppointments(Map<LocalDate, List<LocalTime>> availableAppointments)
+        + void displayPatientDetails(PatientModel patient)
+        + void promptForFeedback(Scanner scanner)
+        + void displayFeedbackMessage(String feedback)
     }
 
-    class PharmacistView {
-        + void displayPharmacistMenu()
-    }
-
-    class UserView {
+    class DoctorView {
+        + void showDoctorMenu()
         + void displayMessage(String message)
+        + void displayPatientDetails(String[] details)
+        + void displayAppointmentDetails(String[] details)
+        + void showDoctorSchedule(List<LocalDate> dates)
+        + void promptForAppointmentOutcome(Scanner scanner)
+        + void displayAvailableSlots(List<LocalTime> slots)
+        + void showPendingAppointments(List<String[]> appointments)
+        + void displayError(String message)
     }
-
-    AdministratorController --> AdministratorView : uses
-    DoctorController --> DoctorView : uses
-    PatientController --> PatientView : uses
-    PharmacistController --> PharmacistView : uses
-    UserController --> UserView : uses
 }
+
+Screen <|-- AdministratorView : uses
+Screen <|-- UserView : uses
+Screen <|-- PharmacistView : uses
+Screen <|-- PatientView : uses
+Screen <|-- DoctorView : uses
 
 @enduml
