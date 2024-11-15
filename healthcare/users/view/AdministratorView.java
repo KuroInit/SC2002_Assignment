@@ -615,12 +615,12 @@ public class AdministratorView {
 
     public void displayInventory(List<String> inventory) {
         Screen.clearConsole();
-        System.out.println("==============================================================");
+        System.out.println("=========================================================================");
         System.out.println("                  Medicine Inventory                          ");
-        System.out.println("==============================================================");
+        System.out.println("=========================================================================");
         System.out.printf("| %-15s | %-10s | %-20s | %-15s |%n", "Medicine Name", "Stock", "Low Stock Indicator",
                 "Stock Status");
-        System.out.println("--------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------");
 
         if (inventory.isEmpty()) {
             System.out.println("|                 No medicines available                     |");
@@ -632,7 +632,7 @@ public class AdministratorView {
             }
         }
 
-        System.out.println("--------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
         Scanner scanner = new Scanner(System.in);
         scanner.nextLine();
@@ -652,11 +652,18 @@ public class AdministratorView {
 
         // Collect quantity
         System.out.print("   Enter Quantity: ");
-        details.append(scanner.nextInt()).append(",");
+        String quantity =scanner.nextLine();
+        details.append(quantity).append(",");
 
         // Collect low stock indicator
         System.out.print("   Enter Low Stock Indicator: ");
-        details.append(scanner.nextInt()).append(",In Stock");
+        String lowstock =scanner.nextLine();
+        if (Integer.parseInt(quantity) < Integer.parseInt(lowstock)){
+            details.append(lowstock).append(",Low Stock");
+        }
+        else{
+            details.append(lowstock).append(",In Stock");
+        }
 
         scanner.nextLine(); // Consume newline
 
@@ -712,12 +719,12 @@ public class AdministratorView {
 
     public void displayReplenishmentRequests(List<String> requests) {
         Screen.clearConsole();
-        System.out.println("=============================================================");
+        System.out.println("=========================================================================");
         System.out.println("               Replenishment Requests                        ");
-        System.out.println("=============================================================");
-        System.out.printf("| %-15s | %-10s | %-15s | %-20s |%n", "Medicine Name", "Stock", "Date",
+        System.out.println("=========================================================================");
+        System.out.printf("| %-15s | %-10s | %-15s | %-19s |%n", "Medicine Name", "Stock", "Date",
                 "Replenishment Request");
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------");
 
         if (requests.isEmpty()) {
             System.out.println("|                   No replenishment requests found          |");
@@ -729,7 +736,9 @@ public class AdministratorView {
             }
         }
 
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------");
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine(); // Wait for Enter key
     }
 
     public void displaySuccessMessage(String message) {

@@ -5,9 +5,7 @@ import healthcare.users.controllers.*;
 import healthcare.users.models.*;
 import healthcare.users.view.*;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -160,13 +158,12 @@ public class Main {
         System.out.println("3. Exit");
         System.out.println("=================================================");
         System.out.print("Choose an option: ");
-        int choice = sc.nextInt();
-        sc.nextLine(); // Consume newline
+        String choice = sc.nextLine();
+        
         switch (choice) {
-            case 1 -> registerUser();
-            case 2 -> showLoginScreen();
-            case 3 -> exitApp();
-            case 4 -> registerAdmin();
+            case "1" -> registerUser();
+            case "2" -> showLoginScreen();
+            case "3" -> exitApp();
             default -> System.out.println("Invalid option. Please try again.");
         }
     }
@@ -320,7 +317,7 @@ public class Main {
         }
     }
 
-    private static void registerAdmin() {
+    /*private static void registerAdmin() {
         try {
             System.out.println("===========================================");
             System.out.println("           Register a New Patient          ");
@@ -371,7 +368,7 @@ public class Main {
             System.out.println("Error during registration: " + e.getMessage());
             System.out.println("===========================================");
         }
-    }
+    }*/
 
     private static void showLoginScreen() throws IOException {
         boolean loginSuccessful = false;
