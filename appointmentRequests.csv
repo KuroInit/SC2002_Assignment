@@ -8,3 +8,4 @@ AppointmentID,DoctorID,PatientID,AppointmentDate,AppointmentTime,AppointmentStat
 3762,D003,P1004,2024-11-13,11:00,COMPLETED,Consultation,Fever,Crocin,6,DISPENSED
 7055,D003,P1004,2024-11-15,16:00,CONFIRMED,N/A,N/A,N/A,N/A,N/A
 7551,D003,P1001,2024-11-15,15:00,COMPLETED,Consultation,Fractured Arm,Paracetamol;Cetrizine,2,PENDING
+5571,D003,P1001,2024-11-15,14:00,CONFIRMED,N/A,N/A,N/A,N/A,N/A

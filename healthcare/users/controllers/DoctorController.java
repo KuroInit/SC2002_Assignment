@@ -329,7 +329,7 @@ public class DoctorController {
             }
         }
 
-        saveAvailableSlots(date, allSlots, unavailableSlots, bookedSlots);
+        saveAvailableSlots(date, allSlots, unavailableSlots, bookedSlots, model.getDoctorID());
 
         System.out.println("Available slots updated successfully for " + date.toString());
         System.out.println("\nPress Enter to continue...");
@@ -366,9 +366,8 @@ public class DoctorController {
     }
 
     private void saveAvailableSlots(LocalDate date, List<LocalTime> allSlots, List<LocalTime> unavailableSlots,
-            HashSet<LocalTime> bookedSlots) {
+            HashSet<LocalTime> bookedSlots, String doctorID) {
         String appointmentsPath = "availableAppointments.csv";
-        String doctorID = "D001";
 
         List<String> updatedAppointments = new ArrayList<>();
 
