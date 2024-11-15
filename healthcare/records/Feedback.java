@@ -27,13 +27,19 @@ public class Feedback {
     }
 
     public static void collectFeedback(Scanner scanner) {
-        System.out.println("\n----- Submit Feedback -----");
+        System.out.println("===========================================");
+        System.out.println("               Submit Feedback             ");
+        System.out.println("===========================================");
+
+        // Collect patient name
         System.out.print("Enter patient name: ");
         String patientName = scanner.nextLine();
 
+        // Collect feedback message
         System.out.print("Enter feedback message: ");
         String feedbackMessage = scanner.nextLine();
 
+        // Collect rating with validation
         int rating = 0;
         boolean validRating = false;
         while (!validRating) {
@@ -50,8 +56,13 @@ public class Feedback {
             }
         }
 
+        // Create feedback instance and write to CSV
         Feedback feedback = new Feedback(patientName, feedbackMessage, rating);
         feedback.writeFeedbackToCSV();
+
+        // Display confirmation message
+        System.out.println("===========================================");
         System.out.println("Thank you! Your feedback has been recorded.");
+        System.out.println("===========================================");
     }
 }

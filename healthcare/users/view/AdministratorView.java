@@ -634,6 +634,8 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("   " + message);
         System.out.println("===========================================");
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine(); // Wait for Enter key
     }
 
     public void displayErrorMessage(String message) {
@@ -642,6 +644,8 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("   " + message);
         System.out.println("===========================================");
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine(); // Wait for Enter key
     }
 
     public void displayExitMessage(String context) {
@@ -650,6 +654,8 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("   Exiting " + context + ".");
         System.out.println("===========================================");
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine(); // Wait for Enter key
     }
 
     public void displayInvalidOption() {
@@ -658,6 +664,8 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("   Invalid option. Please try again.");
         System.out.println("===========================================");
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine(); // Wait for Enter key
     }
 
 }

@@ -1,4 +1,5 @@
-Patient ID,Name,Date of Birth,Gender,Blood Group,Email Address,Contact Number
 P1001,Alice Brown,1980-05-14,Female,A+,alice.brown@example.com,93326577
 P1002,Bob Stone,1975-11-22,Male,B+,bob.stone@example.com,88245201
 P1003,Ash,2001-11-02,Malwe,O,ashwin@gmail.com,99292929
+P1004,Ashwin,1999-09-01,Male,O+,gmail@gmail.com,99999999
+P1005,Ashwin,1999-11-01,Male,O+,ash@gmail.com,99999999

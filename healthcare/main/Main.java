@@ -16,6 +16,7 @@ import healthcare.users.view.DoctorView;
 import healthcare.users.view.PatientView;
 import healthcare.users.view.PharmacistView;
 import healthcare.users.view.UserView;
+import healthcare.users.view.Screen;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -154,6 +155,7 @@ public class Main {
     }
 
     private static void showMainMenu() throws IOException {
+        Screen.clearConsole();
         System.out.println("=================================================");
         System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓██████████████▓▒░ ░▒▓███████▓▒░");
         System.out.println("░▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒░        ");
@@ -174,10 +176,23 @@ public class Main {
         switch (choice) {
             case 1 -> registerUser();
             case 2 -> showLoginScreen();
-            case 3 -> System.exit(0);
+            case 3 -> exitApp();
             case 4 -> registerAdmin();
             default -> System.out.println("Invalid option. Please try again.");
         }
+    }
+
+    private static void exitApp() {
+        System.out.println("===========================================");
+        System.out.println("               EXITING APP                 ");
+        System.out.println("===========================================");
+        System.out.println("   Thank you for using the application!");
+        System.out.println("===========================================");
+        System.out.println("\nPress Enter to exit...");
+        new Scanner(System.in).nextLine();
+
+        // Exit the application
+        System.exit(0);
     }
 
     private static void registerUser() {
@@ -249,38 +264,54 @@ public class Main {
 
     private static void registerAdmin() {
         try {
-            System.out.println("Registering a new patient:");
+            System.out.println("===========================================");
+            System.out.println("           Register a New Patient          ");
+            System.out.println("===========================================");
+
+            // Collecting user details
             System.out.print("Enter ID: ");
             String id = sc.nextLine();
+
             System.out.print("Enter Name: ");
             String name = sc.nextLine();
+
             System.out.print("Enter Role: ");
             String dob = sc.nextLine();
+
             System.out.print("Enter Gender: ");
             String gender = sc.nextLine();
+
             System.out.print("Enter Age: ");
             String bloodType = sc.nextLine();
 
+            // Creating new entry for the staff list
             String newEntry = id + "," + name + "," + dob + "," + gender + "," + bloodType;
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(staffListFile, true))) {
                 writer.write(newEntry);
                 writer.newLine();
+                System.out.println("===========================================");
                 System.out.println("Registration successful! Your Patient ID is: " + id);
             }
 
+            // Creating a default password and storing it in the password file
             String defaultPassword = "password";
             String hashedPassword = hashPassword(defaultPassword);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(staffPasswordsFile, true))) {
                 writer.write(id + "," + hashedPassword + "," + dob);
                 writer.newLine();
                 System.out.println("Your account has been created with the default password.");
+                System.out.println("===========================================");
             }
 
+            // Reloading user data
             UserController.initializeUsers();
             System.out.println("User data reloaded successfully.");
+            System.out.println("===========================================");
 
         } catch (IOException e) {
+            System.out.println("===========================================");
             System.out.println("Error during registration: " + e.getMessage());
+            System.out.println("===========================================");
         }
     }
 
@@ -290,6 +321,9 @@ public class Main {
         UserController.initializeUsers(); // Initialize users at the start
 
         while (!loginSuccessful) {
+            System.out.println("===========================================");
+            System.out.println("              Login Screen                ");
+            System.out.println("===========================================");
             System.out.print("Enter Hospital ID: ");
             if (!sc.hasNextLine()) {
                 System.out.println("No input found. Exiting program.");
@@ -317,19 +351,19 @@ public class Main {
 
             // Check if the hashed password matches the stored hashed password for the user
             if ((UserModel.userPasswordStaffMap.containsKey(hospitalId)
-                    && UserModel.userPasswordStaffMap.get(hospitalId).equals(hashedPassword)) ||
-                    (UserModel.userPasswordPatientMap.containsKey(hospitalId)
+                    && UserModel.userPasswordStaffMap.get(hospitalId).equals(hashedPassword))
+                    || (UserModel.userPasswordPatientMap.containsKey(hospitalId)
                             && UserModel.userPasswordPatientMap.get(hospitalId).equals(hashedPassword))) {
                 loginSuccessful = true;
                 System.out.println("Login successful!");
             } else {
                 System.out.println("Incorrect password. Please try again.");
             }
-
         }
 
         // Retrieve and display the user's name
-        String name = UserModel.userNameMapStaff.containsKey(hospitalId) ? UserModel.userNameMapStaff.get(hospitalId)
+        String name = UserModel.userNameMapStaff.containsKey(hospitalId)
+                ? UserModel.userNameMapStaff.get(hospitalId)
                 : UserModel.userNameMapPatient.get(hospitalId);
         System.out.println("Good Day " + name + "!");
 
@@ -359,8 +393,10 @@ public class Main {
         Map<String, PatientController> patientMap = loadPatientsFromCSV();
 
         // Determine the role of the user and display the appropriate menu
-        String role = UserModel.userRoleStaffMap.containsKey(hospitalId) ? UserModel.userRoleStaffMap.get(hospitalId)
+        String role = UserModel.userRoleStaffMap.containsKey(hospitalId)
+                ? UserModel.userRoleStaffMap.get(hospitalId)
                 : UserModel.userRolePatientMap.get(hospitalId);
+
         switch (role) {
             case "Patient":
                 PatientController patient = patientMap.get(hospitalId);
@@ -399,4 +435,5 @@ public class Main {
                 break;
         }
     }
+
 }

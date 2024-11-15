@@ -13,7 +13,7 @@ import java.util.*;
 public class DoctorController {
     private DoctorModel model;
     private DoctorView view;
-    
+
     public DoctorController(DoctorModel model, DoctorView view) {
         this.model = model;
         this.view = view;
@@ -66,6 +66,8 @@ public class DoctorController {
 
             if (!foundPatient) {
                 view.displayMessage("No details found for this patient ID.");
+                System.out.println("\nPress Enter to continue...");
+                scanner.nextLine();
                 return;
             }
 
@@ -87,10 +89,14 @@ public class DoctorController {
 
             if (!hasHistory) {
                 view.displayMessage("No medical history found for this patient.");
+                System.out.println("\nPress Enter to continue...");
+                scanner.nextLine();
             }
 
         } catch (IOException e) {
             view.displayMessage("An error occurred while accessing the files.");
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
         }
     }
 
@@ -121,6 +127,8 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error saving the medical record.");
         }
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 
     private void viewSchedule() {
@@ -151,6 +159,8 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error reading CSV file.");
         }
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     private void viewAvailableAppointments() {
@@ -172,6 +182,8 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error reading CSV file.");
         }
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     private void viewUpcomingAppointments() {
@@ -197,6 +209,8 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error reading appointments.");
         }
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     private void selectAvailableSlot() {
@@ -210,11 +224,15 @@ public class DoctorController {
             date = LocalDate.parse(dateInput, DateTimeFormatter.ISO_LOCAL_DATE);
         } catch (Exception e) {
             view.displayMessage("Invalid date format. Please enter in YYYY-MM-DD format.");
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
             return;
         }
 
         if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
             view.displayMessage("Selected date is a Sunday. No available slots.");
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
             return;
         }
 
@@ -254,6 +272,8 @@ public class DoctorController {
         }
 
         saveAvailableSlots(date, allSlots, unavailableSlots, bookedSlots);
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 
     private HashSet<LocalTime> getBookedSlots(LocalDate date) {
@@ -303,6 +323,8 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error writing to CSV file.");
         }
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     private void viewPendingAppointments() {
@@ -326,6 +348,8 @@ public class DoctorController {
         if (!found) {
             view.displayMessage("No pending appointments found.");
         }
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     private void updateAppointmentStatus() {
@@ -347,6 +371,8 @@ public class DoctorController {
             newStatus = "CANCELLED";
         } else {
             view.displayMessage("Invalid choice. Please enter 1 or 2.");
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
             return;
         }
 
@@ -374,6 +400,8 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error updating appointments.");
         }
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 
     private void recordAppointmentOutcome() {
@@ -422,5 +450,7 @@ public class DoctorController {
         } catch (IOException e) {
             view.displayMessage("Error saving updated appointments.");
         }
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 }
