@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,15 +16,71 @@
     gtag('config', 'G-PYVRSFMDRL');
   </script>
 
-  <!-- Link CSS files via CDN -->
+  <!-- CSS Files -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="icon" href="./static/images/favicon.svg">
 
-  <!-- Link jQuery via CDN -->
+  <!-- jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+  <style>
+    .circular-button {
+      width: 50px;
+      height: 50px;
+      min-width: 50px;
+      border-radius: 50%;
+      background-color: #007aff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: width 0.3s, border-radius 0.3s, background-color 0.3s;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 0 10px;
+    }
+
+    .circular-button .label {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      margin-left: 10px;
+    }
+
+    .circular-button:hover {
+      width: auto; /* Expand width based on label size */
+      border-radius: 10px; /* Change to rounded rectangle */
+      background-color: #007aff; /* Darker blue */
+    }
+
+    .circular-button:hover .label {
+      display: inline;
+      opacity: 1;
+      color: #fff;
+    }
+
+    .circular-button:hover .icon {
+      margin-right: 5px;
+    }
+
+    .circular-button .icon {
+      transition: margin-right 0.3s;
+    }
+
+    .team-section {
+      font-size: 0.9rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #f5f5f5;
+      padding: 10px 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -34,42 +90,81 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <h1 class="title is-1">Hospital Management System 2024</h1>
-          <div class="publication-links">
-            <!-- Button Links -->
-            <span class="link-block">
-              <a href="#" class="external-link button is-normal is-rounded is-dark">
+          <div class="publication-links has-text-centered">
+            <!-- Centered Button Links -->
+            <div class="buttons are-medium is-flex is-justify-content-center">
+              <a href="#" class="button is-dark is-rounded">
                 <span class="icon">
                   <i class="fas fa-file-pdf"></i>
                 </span>
                 <span>Report</span>
               </a>
-            </span>
-            <span class="link-block">
-              <a href="#" class="external-link button is-normal is-rounded is-dark">
+              <a href="#" class="button is-dark is-rounded">
                 <span class="icon">
                   <i class="fab fa-youtube"></i>
                 </span>
                 <span>Video</span>
               </a>
-            </span>
-            <span class="link-block">
-              <a href="https://github.com/KuroInit/SC2002_Assignment" class="external-link button is-normal is-rounded is-dark">
+              <a href="https://github.com/KuroInit/SC2002_Assignment" class="button is-dark is-rounded" target="_blank">
                 <span class="icon">
                   <i class="fab fa-github"></i>
                 </span>
                 <span>Code</span>
               </a>
-            </span>
-            <span class="link-block">
-              <a href="javadoc.html" class="external-link button is-normal is-rounded is-dark">
+              <a href="javadoc.html" class="button is-dark is-rounded">
                 <span class="icon">
                   <i class="far fa-images"></i>
                 </span>
                 <span>Documentation</span>
               </a>
-            </span>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team GitHub Accounts Section -->
+<section class="team-section has-text-centered">
+  <div class="container">
+    <h2 class="title is-5">Team GitHub Accounts</h2>
+    <div class="columns is-multiline is-centered">
+      <!-- GitHub Account 1 -->
+      <div class="column is-narrow">
+        <a href="https://github.com/KuroInit" class="circular-button" target="_blank">
+          <span class="icon">
+            <i class="fab fa-github"></i>
+          </span>
+          <span class="label">Ashwin Suresh</span>
+        </a>
+      </div>
+      <!-- GitHub Account 2 -->
+      <div class="column is-narrow">
+        <a href="https://github.com/custedlol" class="circular-button" target="_blank">
+          <span class="icon">
+            <i class="fab fa-github"></i>
+          </span>
+          <span class="label">Vinod Jain Vishesh</span>
+        </a>
+      </div>
+      <!-- GitHub Account 3 -->
+      <div class="column is-narrow">
+        <a href="https://github.com/PreetSingh0804" class="circular-button" target="_blank">
+          <span class="icon">
+            <i class="fab fa-github"></i>
+          </span>
+          <span class="label">Chawla Preet Singh</span>
+        </a>
+      </div>
+      <!-- GitHub Account 4 -->
+      <div class="column is-narrow">
+        <a href="https://github.com/ArunmOorthyVenkatesh" class="circular-button" target="_blank">
+          <span class="icon">
+            <i class="fab fa-github"></i>
+          </span>
+          <span class="label">Venkatesh Arun Moorthy</span>
+        </a>
       </div>
     </div>
   </div>
