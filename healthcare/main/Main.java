@@ -253,23 +253,25 @@ public class Main {
             String hashedPassword = Obfuscation.hashPassword(defaultPassword);
             String role = "Patient";
 
-            PatientModel patientModel = new PatientModel(newPatientID, name, dob, gender, bloodType, email, phoneNumber);
+            PatientModel patientModel = new PatientModel(newPatientID, name, dob, gender, bloodType, email,
+                    phoneNumber);
             PatientView view = new PatientView();
             PatientController controller = new PatientController(patientModel, view);
 
-// Update the in-memory patient map immediately
+            // Update the in-memory patient map immediately
             patientMap.put(newPatientID, controller);
             patientMap = loadPatientsFromCSV();
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(patientListFile, true))) {
-                String patientDetails = newPatientID + "," + name + "," + dob + "," + gender + "," + bloodType + "," + email + "," + phoneNumber;
+                String patientDetails = newPatientID + "," + name + "," + dob + "," + gender + "," + bloodType + ","
+                        + email + "," + phoneNumber;
                 writer.write(patientDetails);
                 writer.newLine();
             } catch (IOException e) {
                 System.out.println("Error writing to Patient_List.csv: " + e.getMessage());
                 return;
             }
-    
+
             // Write patient password to Patient_Passwords.csv
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("Patient_Passwords.csv", true))) {
                 String passwordDetails = newPatientID + "," + hashedPassword + ",Patient";
@@ -289,7 +291,6 @@ public class Main {
             UserModel.userNameMapPatient.put(newPatientID, name);
 
             // Store new user data
-            
 
             Screen.clearConsole();
             System.out.println("===============================================");
@@ -405,7 +406,9 @@ public class Main {
     private static void showLoginScreen() throws IOException {
         boolean loginSuccessful = false;
         String hospitalId = "";
+        String name;
         UserController.initializeUsers(); // Initialize users at the start
+        String role;
 
         while (!loginSuccessful) {
             Screen.clearConsole();
@@ -420,8 +423,10 @@ public class Main {
             hospitalId = sc.nextLine().toUpperCase();
 
             // Check if the hospital ID exists in either staff or patient maps
-            if (!UserModel.userPasswordStaffMap.containsKey(hospitalId)
-                    && !UserModel.userPasswordPatientMap.containsKey(hospitalId)) {
+            if ((!UserModel.userPasswordStaffMap.containsKey(hospitalId)
+                    && !UserModel.userPasswordPatientMap.containsKey(hospitalId))
+                    && (!UserModel.userNameMapDoctor.containsKey(hospitalId)
+                            && !UserModel.userPasswordDoctorMap.containsKey(hospitalId))) {
                 System.out.println("Invalid Hospital ID. Please try again.");
                 continue;
             }
@@ -441,7 +446,9 @@ public class Main {
             if ((UserModel.userPasswordStaffMap.containsKey(hospitalId)
                     && UserModel.userPasswordStaffMap.get(hospitalId).equals(hashedPassword))
                     || (UserModel.userPasswordPatientMap.containsKey(hospitalId)
-                            && UserModel.userPasswordPatientMap.get(hospitalId).equals(hashedPassword))) {
+                            && UserModel.userPasswordPatientMap.get(hospitalId).equals(hashedPassword))
+                    || (UserModel.userPasswordDoctorMap.containsKey(hospitalId)
+                            && (UserModel.userPasswordDoctorMap.get(hospitalId).equals(hashedPassword)))) {
                 loginSuccessful = true;
                 System.out.println("Login successful!");
                 Screen.clearConsole();
@@ -450,10 +457,14 @@ public class Main {
             }
         }
 
-        // Retrieve and display the user's name
-        String name = UserModel.userNameMapStaff.containsKey(hospitalId)
-                ? UserModel.userNameMapStaff.get(hospitalId)
-                : UserModel.userNameMapPatient.get(hospitalId);
+        if (UserModel.userNameMapStaff.containsKey(hospitalId)) {
+            name = UserModel.userNameMapStaff.get(hospitalId);
+        } else if (UserModel.userNameMapPatient.containsKey(hospitalId)) {
+            name = UserModel.userNameMapPatient.get(hospitalId);
+        } else {
+            name = UserModel.userNameMapDoctor.get(hospitalId);
+        }
+
         System.out.println("Good Day " + name + "!");
 
         // Offer the option to change the password
@@ -482,9 +493,13 @@ public class Main {
         Map<String, PatientController> patientMap = loadPatientsFromCSV();
 
         // Determine the role of the user and display the appropriate menu
-        String role = UserModel.userRoleStaffMap.containsKey(hospitalId)
-                ? UserModel.userRoleStaffMap.get(hospitalId)
-                : UserModel.userRolePatientMap.get(hospitalId);
+        if (UserModel.userNameMapStaff.containsKey(hospitalId)) {
+            role = UserModel.userRoleStaffMap.get(hospitalId);
+        } else if (UserModel.userNameMapPatient.containsKey(hospitalId)) {
+            role = UserModel.userRolePatientMap.get(hospitalId);
+        } else {
+            role = UserModel.userRoleDoctorMap.get(hospitalId);
+        }
 
         switch (role) {
             case "Patient":
