@@ -546,10 +546,11 @@ public class AdministratorController {
         }
     }
 
+
     public void viewFeedback() {
         Screen.clearConsole();
         List<String[]> feedbackList = model.getFeedback();
-
+    
         if (!feedbackList.isEmpty()) {
             System.out.println("===========================================");
             System.out.println("            Patient Feedback               ");
@@ -557,10 +558,15 @@ public class AdministratorController {
             for (String[] feedback : feedbackList) {
                 System.out.printf("Patient ID: %s%n", feedback[0]);
                 System.out.printf("Feedback: %s%n", feedback[1]);
+                System.out.printf("Rating: %s%n", feedback[2]);
                 System.out.println("-------------------------------------------");
             }
         } else {
             System.out.println("No feedback found.");
         }
+        System.out.println("\nPress Enter to continue...");
+        new Scanner(System.in).nextLine();
+        administratorMenu();
+
     }
 }
