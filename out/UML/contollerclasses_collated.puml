@@ -76,7 +76,7 @@ package healthcare.users.controllers {
 
     ' UserController Class
     class UserController {
-        - User model
+        - UserModel model
         - UserView view
 
         - static final String DOCTOR_PASSWORDS_FILE
