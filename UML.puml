@@ -1,4 +1,5 @@
 @startuml
+scale 0.6
 ' Main package
 package healthcare.main {
     package healthcare.main {
