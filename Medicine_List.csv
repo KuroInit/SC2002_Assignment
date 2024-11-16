@@ -1,11 +1,10 @@
 Medicine Name,Stock,Low Stock Indicator,Stock Level
-Paracetamol,24,25,Low Stock
+Paracetamol,20,40,Low Stock
 Amoxicillin,60,15,In Stock
 Crocin,17,20,Low Stock
-Cetrizine,40,20,In Stock
+Cetrizine,50,50,In Stock
 Panadol Cold,38,20,In Stock
 Gabapantin,42,20,In Stock
 Cyclopam,30,20,In Stock
 Tiger Balm,15,20,Low Stock
-Prospan,25,30,Low Stock
-Band-Aids,100,120,Low Stock
+Band-Aid,200,120,In Stock

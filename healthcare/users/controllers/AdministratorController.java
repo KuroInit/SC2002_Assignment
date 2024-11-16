@@ -34,7 +34,7 @@ public class AdministratorController {
                 case 6 -> System.out.println("Logging out...");
                 default -> System.out.println("Invalid choice. Please select a valid option.");
             }
-        } while (choice != 5);
+        } while (choice != 6);
     }
 
     public void manageStaff() {
