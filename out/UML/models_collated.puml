@@ -1,0 +1,153 @@
+@startuml
+package healthcare.users.models {
+
+    ' AdministratorModel Class
+    class AdministratorModel {
+        - String administratorID
+        - static final String staffListPath
+        - static final String doctorListPath
+        - static final String appointmentRequestsPath
+        - static final String medicineListPath
+        - static final String replenishmentRequestsPath
+        - static final String staffPasswordsFile
+        - static final String doctorPasswordsFile
+
+        - static final String DOCTOR_HEADER
+        - static final String STAFF_HEADER
+        - static final String MEDICINE_HEADER
+        - static final String REPLENISHMENT_HEADER
+
+        + AdministratorModel(String administratorID)
+        + String getAdministratorID()
+        + List<String> readDataFromFile(String filePath)
+        + void writeDataToFile(String filePath, List<String> data)
+        + boolean appendDataToFile(String filePath, String entry)
+        + List<String> filterData(List<String> data, int fieldIndex, String filterValue)
+        + boolean updateEntry(String filePath, String id, int idIndex, String updatedEntry, String header)
+        + String[] getEntryById(String filePath, String id)
+        + boolean removeEntry(String filePath, String id, String header)
+        + String getFilePathForStaffType(String staffType)
+
+        + static String getStaffListPath()
+        + static String getStaffPasswordsPath()
+        + static String getDoctorPasswordsPath()
+        + static String getDoctorListPath()
+        + static String getAppointmentRequestsPath()
+        + static String getMedicineListPath()
+        + static String getReplenishmentRequestsPath()
+        + static String getDoctorHeader()
+        + static String getStaffHeader()
+        + static String getMedicineHeader()
+        + static String getReplenishmentRequestsHeader()
+    }
+
+    AdministratorModel --> List : uses
+    AdministratorModel --> BufferedReader : uses
+    AdministratorModel --> BufferedWriter : uses
+    AdministratorModel --> FileReader : uses
+    AdministratorModel --> FileWriter : uses
+    AdministratorModel --> IOException : uses
+
+    ' DoctorModel Class
+    class DoctorModel {
+        - String doctorID
+        - String name
+        - String gender
+        - String age
+        - List<Appointment> appointments
+        - List<LocalDate> availableDates
+
+        + DoctorModel(String doctorID, String name, String gender, String age)
+        + String getDoctorID()
+        + String getName()
+        + List<Appointment> getAppointments()
+        + List<LocalDate> getAvailableDates()
+        + List<String> readCSV(String filePath) throws IOException
+        + void writeCSV(String filePath, List<String> data) throws IOException
+        + void appendToCSV(String filePath, String data) throws IOException
+        + void removeAvailability(LocalDate date)
+    }
+
+    DoctorModel --> Appointment : uses
+    DoctorModel --> List : uses
+    DoctorModel --> BufferedWriter : uses
+    DoctorModel --> FileWriter : uses
+    DoctorModel --> IOException : uses
+    DoctorModel --> Files : uses
+    DoctorModel --> Paths : uses
+    DoctorModel --> LocalDate : uses
+    DoctorModel --> LocalDateTime : uses
+    DoctorModel --> LocalTime : uses
+    DoctorModel --> DateTimeFormatter : uses
+
+    ' PatientModel Class
+    class PatientModel {
+        - String patientID
+        - String name
+        - String dateOfBirth
+        - String gender
+        - String bloodType
+        - String email
+        - String contactNumber
+
+        + PatientModel(String patientID, String name, String dateOfBirth, String gender, String bloodType, String email, String contactNumber)
+        + String getPatientID()
+        + void setPatientID(String patientID)
+        + String getName()
+        + void setName(String name)
+        + String getDateOfBirth()
+        + void setDateOfBirth(String dateOfBirth)
+        + String getGender()
+        + void setGender(String gender)
+        + String getBloodType()
+        + void setBloodType(String bloodType)
+        + String getEmail()
+        + void setEmail(String email)
+        + String getContactNumber()
+        + void setContactNumber(String contactNumber)
+    }
+
+    ' PharmacistModel Class
+    class PharmacistModel {
+        - String pharmacistID
+        - String name
+        - String gender
+        - String age
+
+        + PharmacistModel(String pharmacistID, String name, String gender, String age)
+        + String getPharmacistID()
+        + void setPharmacistID(String pharmacistID)
+        + String getName()
+        + void setName(String name)
+        + String getGender()
+        + void setGender(String gender)
+        + String getAge()
+        + void setAge(String age)
+    }
+
+    ' User Class
+    class User {
+        + static Map<String, String> userPasswordStaffMap
+        + static Map<String, String> userPasswordPatientMap
+        + static Map<String, String> userRoleStaffMap
+        + static Map<String, String> userRolePatientMap
+        + static Map<String, String> userNameMapStaff
+        + static Map<String, String> userNameMapPatient
+
+        - String userId
+        - String password
+        - String role
+        - String name
+
+        + User(String userId, String password, String role, String name)
+        + String getUserId()
+        + void setUserId(String userId)
+        + String getPassword()
+        + void setPassword(String password)
+        + String getRole()
+        + void setRole(String role)
+        + String getName()
+        + void setName(String name)
+    }
+}
+@enduml

@@ -1,0 +1,86 @@
+@startuml
+package healthcare.main {
+    class Main {
+        + void main(String[] args)
+        - Scanner sc
+        - String patientListFile
+        - String doctorListFile
+        - String staffListFile
+        - String staffPasswordsFile
+        - static Map<String, PatientController> patientMap
+        - static Map<String, DoctorController> doctorMap
+        - static Map<String, PharmacistController> pharmacistMap
+        - static Map<String, AdministratorController> administratorMap
+        + static String hashPassword(String password)
+        + static void loadAllData() throws IOException
+        + static Map<String, PatientController> loadPatientsFromCSV() throws IOException
+        + static Map<String, DoctorController> loadDoctorsFromCSV() throws IOException
+        + static Map<String, PharmacistController> loadPharmacistsFromCSV() throws IOException
+        + static Map<String, AdministratorController> loadAdministratorsFromCSV() throws IOException
+        + static void showMainMenu() throws IOException
+        + static void exitApp()
+        + static void registerUser()
+        + static boolean isValidDate(String date)
+        + static void displayMenu()
+        + static void registerAdmin()
+        + static void showLoginScreen() throws IOException
+    }
+}
+
+package healthcare.records {
+    class Appointment
+}
+
+package healthcare.users.controllers {
+    class UserController {
+        + static void initializeUsers()
+        + static void changeUserPassword(String hospitalId, String newPassword) throws IOException
+    }
+    class PatientController {
+        + void showPatientMenu()
+    }
+    class DoctorController {
+        + void showMenu()
+    }
+    class PharmacistController {
+        + void showMenu()
+    }
+    class AdministratorController {
+        + void administratorMenu()
+    }
+}
+
+package healthcare.users.models {
+    class PatientModel
+    class DoctorModel
+    class PharmacistModel
+    class AdministratorModel
+}
+
+package healthcare.users.view {
+    class UserView
+    class PatientView
+    class DoctorView
+    class PharmacistView
+    class AdministratorView
+}
+
+' Relationships
+Main --> UserController
+Main --> PatientController
+Main --> DoctorController
+Main --> PharmacistController
+Main --> AdministratorController
+
+Main --> PatientModel
+Main --> DoctorModel
+Main --> PharmacistModel
+Main --> AdministratorModel
+
+Main --> UserView
+Main --> PatientView
+Main --> DoctorView
+Main --> PharmacistView
+Main --> AdministratorView
+
+@enduml

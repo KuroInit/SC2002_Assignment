@@ -1,0 +1,504 @@
+@startuml
+package healthcare.main {
+    class Main {
+        + void main(String[] args)
+        - Scanner sc
+        - String patientListFile
+        - String doctorListFile
+        - String staffListFile
+        - String staffPasswordsFile
+        - static Map<String, PatientController> patientMap
+        - static Map<String, DoctorController> doctorMap
+        - static Map<String, PharmacistController> pharmacistMap
+        - static Map<String, AdministratorController> administratorMap
+        + static String hashPassword(String password)
+        + static void loadAllData() throws IOException
+        + static Map<String, PatientController> loadPatientsFromCSV() throws IOException
+        + static Map<String, DoctorController> loadDoctorsFromCSV() throws IOException
+        + static Map<String, PharmacistController> loadPharmacistsFromCSV() throws IOException
+        + static Map<String, AdministratorController> loadAdministratorsFromCSV() throws IOException
+        + static void showMainMenu() throws IOException
+        + static void exitApp()
+        + static void registerUser()
+        + static boolean isValidDate(String date)
+        + static void displayMenu()
+        + static void registerAdmin()
+        + static void showLoginScreen() throws IOException
+    }
+}
+
+package healthcare.records {
+    class Appointment {
+        - LocalDate appointmentDate
+        - TreatmentTypes treatment
+        - String appointmentID
+        - String doctorID
+        - String patientID
+        - List<Medication> prescribedMedication
+        - String consultationNotes
+        - AppointmentStatus appointmentStatus
+        - ServiceTypes serviceType
+
+        + Appointment(Date appointmentDate, TreatmentTypes type, String patientID, String doctorID)
+        + String toCSV()
+        + String getPatientID()
+        + String getAppointmentID()
+        + String getDoctorID()
+        + AppointmentStatus getAppointmentStatus()
+        + LocalDate getAppointmentDate()
+        + TreatmentTypes getTreatmentType()
+        + List<Medication> getPrescribedMedications()
+        + String getConsultationNotes()
+        + ServiceTypes getServiceType()
+        + void setServiceTypes(ServiceTypes serviceType)
+        + String printAppointments()
+        + void setStatus(AppointmentStatus appointmentStatus)
+        + void setConsultationNotes(String notes)
+        + void addMedication(String medName)
+        + void setAppointmentStatus(AppointmentStatus status)
+        + String toString()
+    }
+
+    class Medication {
+        - String medicationName
+        - AppointmentStatus medicationStatus
+
+        + Medication(String name)
+        + String getMedicationName()
+        + AppointmentStatus getMedicationStatus()
+        + void updateMedicationStatus(AppointmentStatus status)
+        + String toString()
+    }
+
+    enum AppointmentStatus {
+        PENDING
+        APPROVED
+        REJECTED
+        COMPLETED
+    }
+
+    enum TreatmentTypes {
+        DENTAL
+        MEDICAL
+        SURGICAL
+        CONSULTATION
+    }
+
+    enum ServiceTypes {
+        CONSULTATION
+        XRAY
+        BLOOD_TEST
+        SURGERY
+        OTHERS
+    }
+
+    Appointment "1" --> "*" Medication
+
+    class MedicalRecord {
+        - String diagnosis
+        - String treatment
+        - String appointmentOutcome
+        - static final String RECORD_FILE
+
+        + MedicalRecord(String diagnosis, String treatment, String appointmentOutcome)
+        + String getDiagnosis()
+        + String getTreatment()
+        + String getAppointmentOutcome()
+        + void saveRecordToCSV(int patientID)
+        + static List<MedicalRecord> loadRecordsByPatientID(int patientID)
+        + String toString()
+    }
+
+    MedicalRecord --> BufferedWriter : uses
+    MedicalRecord --> FileWriter : uses
+    MedicalRecord --> BufferedReader : uses
+    MedicalRecord --> FileReader : uses
+    MedicalRecord --> List : uses
+    MedicalRecord --> ArrayList : uses
+
+    class Feedback {
+        - String patientName
+        - String feedbackMessage
+        - int rating
+
+        + Feedback(String patientName, String feedbackMessage, int rating)
+        + void writeFeedbackToCSV()
+        + static void collectFeedback(Scanner scanner)
+    }
+
+    Feedback --> Scanner : uses
+    Feedback --> PrintWriter : uses
+    Feedback --> FileWriter : uses
+}
+
+package healthcare.users.controllers {
+    class AdministratorController {
+        - AdministratorModel model
+        - AdministratorView view
+
+        + AdministratorController(AdministratorModel model, AdministratorView view)
+        + void administratorMenu()
+        + void manageStaff()
+        + void viewStaff()
+        + void addStaff()
+        + void updateStaff()
+        + void removeStaff()
+        + void viewAppointments()
+        + void manageInventory()
+        + void manageReplenishmentRequests()
+    }
+
+    class DoctorController {
+        - DoctorModel model
+        - DoctorView view
+
+        + DoctorController(DoctorModel model, DoctorView view)
+        + void showMenu()
+        + void viewPatientMedicalRecords()
+        + void addPatientMedicalRecord()
+        + void viewSchedule()
+        + void viewBookedAppointments()
+        + void viewAvailableAppointments()
+        + void viewUpcomingAppointments()
+        + void selectAvailableSlot()
+        + void viewPendingAppointments()
+        + void updateAppointmentStatus()
+        + void recordAppointmentOutcome()
+    }
+
+    class PatientController {
+        - PatientModel patientModel
+        - PatientView patientView
+
+        + PatientController(PatientModel patientModel, PatientView patientView)
+        + void showPatientMenu()
+        + void viewMedicalRecords()
+        + void updatePersonalInfo(Scanner scanner)
+        + void viewAvailableAppointments(Scanner scanner)
+        + void scheduleAppointment(Scanner scanner)
+        + void rescheduleAppointment(Scanner scanner)
+        + void cancelAppointment(Scanner scanner)
+        + void viewScheduledAppointments()
+        + void viewCompletedAppointments()
+        + void feedback()
+        - void handleMenuChoice(int choice, Scanner scanner)
+        - void updatePatientFile(String newEmail, String newContactNumber)
+    }
+
+    class PharmacistController {
+        - PharmacistModel pharmacistModel
+        - PharmacistView pharmacistView
+
+        + PharmacistController(PharmacistModel pharmacistModel, PharmacistView pharmacistView)
+        + void showMenu()
+        + void viewAppointmentOutcomeRecord()
+        + void updateMedicationStatus(Scanner scanner)
+        + void viewMedicationInventory()
+        + void submitReplenishmentRequest(Scanner scanner)
+    }
+
+    class UserController {
+        - User model
+        - UserView view
+
+        - static final String DOCTOR_PASSWORDS_FILE
+        - static final String PATIENT_PASSWORDS_FILE
+        - static final String STAFF_PASSWORDS_FILE
+        - static final String DOCTOR_LIST_FILE
+        - static final String PATIENT_LIST_FILE
+        - static final String STAFF_LIST_FILE
+
+        + UserController(User model, UserView view)
+        + void changeUserPassword(String hospitalId, String newPassword) throws IOException
+        + static void initializeUsers()
+        - static void loadPasswordsAndRoles()
+        - static void loadPasswordFile(String filePath, Map<String, String> passwordMap, Map<String, String> roleMap, String defaultRole)
+        - static void loadNames()
+        - static void loadNameFile(String filePath, Map<String, String> nameMap)
+        - void updatePasswordInFile(String filePath, String hospitalId, String newPassword) throws IOException
+    }
+
+    AdministratorController --> AdministratorModel : uses
+    AdministratorController --> AdministratorView : uses
+    AdministratorController --> Scanner : uses
+    AdministratorController --> Main : uses
+    AdministratorController --> List : uses
+
+    DoctorController --> DoctorModel : uses
+    DoctorController --> DoctorView : uses
+    DoctorController --> Scanner : uses
+    DoctorController --> List : uses
+    DoctorController --> IOException : uses
+    DoctorController --> HashSet : uses
+    DoctorController --> LocalDate : uses
+    DoctorController --> LocalDateTime : uses
+    DoctorController --> LocalTime : uses
+    DoctorController --> DateTimeFormatter : uses
+
+    PatientController --> PatientModel : uses
+    PatientController --> PatientView : uses
+    PatientController --> Feedback : uses
+    PatientController --> BufferedReader : uses
+    PatientController --> BufferedWriter : uses
+    PatientController --> FileReader : uses
+    PatientController --> FileWriter : uses
+    PatientController --> List : uses
+    PatientController --> Map : uses
+    PatientController --> Scanner : uses
+    PatientController --> Random : uses
+
+    PharmacistController --> PharmacistModel : uses
+    PharmacistController --> PharmacistView : uses
+    PharmacistController --> Scanner : uses
+    PharmacistController --> BufferedReader : uses
+    PharmacistController --> BufferedWriter : uses
+    PharmacistController --> FileReader : uses
+    PharmacistController --> FileWriter : uses
+    PharmacistController --> Files : uses
+    PharmacistController --> Paths : uses
+    PharmacistController --> List : uses
+
+    UserController --> User : uses
+    UserController --> UserView : uses
+    UserController --> Map : uses
+    UserController --> List : uses
+    UserController --> BufferedReader : uses
+    UserController --> BufferedWriter : uses
+    UserController --> FileReader : uses
+    UserController --> FileWriter : uses
+    UserController --> IOException : uses
+    UserController --> Files : uses
+    UserController --> Paths : uses
+}
+
+package healthcare.users.models {
+    class AdministratorModel {
+        - String administratorID
+        - static final String staffListPath
+        - static final String doctorListPath
+        - static final String appointmentRequestsPath
+        - static final String medicineListPath
+        - static final String replenishmentRequestsPath
+        - static final String staffPasswordsFile
+        - static final String doctorPasswordsFile
+
+        - static final String DOCTOR_HEADER
+        - static final String STAFF_HEADER
+        - static final String MEDICINE_HEADER
+        - static final String REPLENISHMENT_HEADER
+
+        + AdministratorModel(String administratorID)
+        + String getAdministratorID()
+        + List<String> readDataFromFile(String filePath)
+        + void writeDataToFile(String filePath, List<String> data)
+        + boolean appendDataToFile(String filePath, String entry)
+        + List<String> filterData(List<String> data, int fieldIndex, String filterValue)
+        + boolean updateEntry(String filePath, String id, int idIndex, String updatedEntry, String header)
+        + String[] getEntryById(String filePath, String id)
+        + boolean removeEntry(String filePath, String id, String header)
+        + String getFilePathForStaffType(String staffType)
+
+        + static String getStaffListPath()
+        + static String getStaffPasswordsPath()
+        + static String getDoctorPasswordsPath()
+        + static String getDoctorListPath()
+        + static String getAppointmentRequestsPath()
+        + static String getMedicineListPath()
+        + static String getReplenishmentRequestsPath()
+        + static String getDoctorHeader()
+        + static String getStaffHeader()
+        + static String getMedicineHeader()
+        + static String getReplenishmentRequestsHeader()
+    }
+
+    AdministratorModel --> List : uses
+    AdministratorModel --> BufferedReader : uses
+    AdministratorModel --> BufferedWriter : uses
+    AdministratorModel --> FileReader : uses
+    AdministratorModel --> FileWriter : uses
+    AdministratorModel --> IOException : uses
+
+    class DoctorModel {
+        - String doctorID
+        - String name
+        - String gender
+        - String age
+        - List<Appointment> appointments
+        - List<LocalDate> availableDates
+
+        + DoctorModel(String doctorID, String name, String gender, String age)
+        + String getDoctorID()
+        + String getName()
+        + List<Appointment> getAppointments()
+        + List<LocalDate> getAvailableDates()
+        + List<String> readCSV(String filePath) throws IOException
+        + void writeCSV(String filePath, List<String> data) throws IOException
+        + void appendToCSV(String filePath, String data) throws IOException
+        + void removeAvailability(LocalDate date)
+    }
+
+    DoctorModel --> Appointment : uses
+    DoctorModel --> List : uses
+    DoctorModel --> BufferedWriter : uses
+    DoctorModel --> FileWriter : uses
+    DoctorModel --> IOException : uses
+    DoctorModel --> Files : uses
+    DoctorModel --> Paths : uses
+    DoctorModel --> LocalDate : uses
+    DoctorModel --> LocalDateTime : uses
+    DoctorModel --> LocalTime : uses
+    DoctorModel --> DateTimeFormatter : uses
+
+    class PatientModel {
+        - String patientID
+        - String name
+        - String dateOfBirth
+        - String gender
+        - String bloodType
+        - String email
+        - String contactNumber
+
+        + PatientModel(String patientID, String name, String dateOfBirth, String gender, String bloodType, String email, String contactNumber)
+        + String getPatientID()
+        + void setPatientID(String patientID)
+        + String getName()
+        + void setName(String name)
+        + String getDateOfBirth()
+        + void setDateOfBirth(String dateOfBirth)
+        + String getGender()
+        + void setGender(String gender)
+        + String getBloodType()
+        + void setBloodType(String bloodType)
+        + String getEmail()
+        + void setEmail(String email)
+        + String getContactNumber()
+        + void setContactNumber(String contactNumber)
+    }
+
+    class PharmacistModel {
+        - String pharmacistID
+        - String name
+        - String gender
+        - String age
+
+        + PharmacistModel(String pharmacistID, String name, String gender, String age)
+        + String getPharmacistID()
+        + void setPharmacistID(String pharmacistID)
+        + String getName()
+        + void setName(String name)
+        + String getGender()
+        + void setGender(String gender)
+        + String getAge()
+        + void setAge(String age)
+    }
+
+    class User {
+        + static Map<String, String> userPasswordStaffMap
+        + static Map<String, String> userPasswordPatientMap
+        + static Map<String, String> userRoleStaffMap
+        + static Map<String, String> userRolePatientMap
+        + static Map<String, String> userNameMapStaff
+        + static Map<String, String> userNameMapPatient
+
+        - String userId
+        - String password
+        - String role
+        - String name
+
+        + User(String userId, String password, String role, String name)
+        + String getUserId()
+        + void setUserId(String userId)
+        + String getPassword()
+        + void setPassword(String password)
+        + String getRole()
+        + void setRole(String role)
+        + String getName()
+        + void setName(String name)
+    }
+}
+
+package healthcare.users.view {
+    class AdministratorView {
+        + void showAdminMenu()
+        + void displayStaffManagementMenu()
+        + void displayViewStaffOptions()
+        + void displayFilterOptions()
+        + void displayRoleSelectionMenu()
+        + void displayGenderSelectionMenu()
+        + String getRoleFromChoice(int choice)
+        + String getGenderFromChoice(int choice)
+        + void promptAgeInput()
+        + void displayFilteredDoctors(List<String> doctorData, String filterField, String filterValue)
+        + void displayFilteredStaff(List<String> staffData, String filterField, String filterValue)
+        - boolean matchesFilter(String[] details, String filterField, String filterValue)
+        + void displayAddStaffMenu()
+        + String collectStaffDetails(int staffType)
+        + void displayUpdateStaffMenu()
+        + String collectUpdatedStaffDetails(String[] existingFields, int idIndex)
+        + String promptIDInput()
+        + void promptIsDoctor()
+        + void displayAppointmentOptions()
+        + void displayAppointmentFilterOptions()
+        + void promptPatientIDInput()
+        + void promptDoctorIDInput()
+        + void promptDateInput()
+        + void displayStatusFilterOptions()
+        + void displayStatusTypeOptions()
+        + String getStatusFromChoice(int choice)
+        + void displayAppointments(List<String> appointments, String filterField, String filterValue, String statusFilter)
+        - boolean matchesAppointmentFilter(String[] details, String filterField, String filterValue, String statusFilter)
+        + void inventoryMenu()
+        + void displayInventory(List<String> inventory)
+        + String collectMedicineDetails(Scanner scanner)
+        + void promptMedicineName()
+        + void promptStockQuantity()
+        + void promptLowStockIndicator()
+        + void promptIncomingStock()
+        + void displayReplenishmentMenu()
+        + void displayReplenishmentRequests(List<String> requests)
+        + void displaySuccessMessage(String message)
+        + void displayErrorMessage(String message)
+        + void displayExitMessage(String context)
+        + void displayInvalidOption()
+    }
+
+    AdministratorView --> Scanner : uses
+    AdministratorView --> List : uses
+
+    class DoctorView {
+        + void showDoctorMenu()
+        + void displayMessage(String message)
+        + void displayList(List<String> list)
+        + void displayPatientDetails(String[] details)
+        + void displayAppointmentDetails(String[] appointmentDetails)
+    }
+
+    DoctorView --> List : uses
+
+    class PatientView {
+        + void displayPatientMenu()
+        + void displayPatientDetails(PatientModel patient)
+        + void displayUpdateInfoOptions()
+        + void displayInvalidChoiceMessage()
+        + void displayLogoutMessage()
+        + void promptForEmail()
+        + void promptForContactNumber()
+    }
+
+    PatientView --> PatientModel : uses
+
+    class PharmacistView {
+        + void displayPharmacistMenu()
+        + void displayMessage(String message)
+        + void displayError(String errorMessage)
+        + void displayAppointmentOutcome(String appointmentDetails)
+        + void displayMedicationInventory(String inventoryDetails)
+    }
+
+    class UserView {
+        + void displayMessage(String message)
+        + void displayUserDetails(String userId, String name, String role)
+    }
+}
+
+@enduml

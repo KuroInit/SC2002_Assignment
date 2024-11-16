@@ -1,0 +1,85 @@
+@startuml name
+
+package healthcare.users.view {
+
+    class AdministratorView {
+        + void showAdminMenu()
+        + void displayStaffManagementMenu()
+        + void displayViewStaffOptions()
+        + void displayFilterOptions()
+        + void displayRoleSelectionMenu()
+        + void displayGenderSelectionMenu()
+        + String getRoleFromChoice(int choice)
+        + String getGenderFromChoice(int choice)
+        + void promptAgeInput()
+        + void displayFilteredDoctors(List<String> doctorData, String filterField, String filterValue)
+        + void displayFilteredStaff(List<String> staffData, String filterField, String filterValue)
+        - boolean matchesFilter(String[] details, String filterField, String filterValue)
+        + void displayAddStaffMenu()
+        + String collectStaffDetails(int staffType)
+        + void displayUpdateStaffMenu()
+        + String collectUpdatedStaffDetails(String[] existingFields, int idIndex)
+        + String promptIDInput()
+        + void promptIsDoctor()
+        + void displayAppointmentOptions()
+        + void displayAppointmentFilterOptions()
+        + void promptPatientIDInput()
+        + void promptDoctorIDInput()
+        + void promptDateInput()
+        + void displayStatusFilterOptions()
+        + void displayStatusTypeOptions()
+        + String getStatusFromChoice(int choice)
+        + void displayAppointments(List<String> appointments, String filterField, String filterValue, String statusFilter)
+        - boolean matchesAppointmentFilter(String[] details, String filterField, String filterValue, String statusFilter)
+        + void inventoryMenu()
+        + void displayInventory(List<String> inventory)
+        + String collectMedicineDetails(Scanner scanner)
+        + void promptMedicineName()
+        + void promptStockQuantity()
+        + void promptLowStockIndicator()
+        + void promptIncomingStock()
+        + void displayReplenishmentMenu()
+        + void displayReplenishmentRequests(List<String> requests)
+        + void displaySuccessMessage(String message)
+        + void displayErrorMessage(String message)
+        + void displayExitMessage(String context)
+        + void displayInvalidOption()
+    }
+
+    class DoctorView {
+        + void showDoctorMenu()
+        + void displayMessage(String message)
+        + void displayList(List<String> list)
+        + void displayPatientDetails(String[] details)
+        + void displayAppointmentDetails(String[] appointmentDetails)
+    }
+
+    class PatientView {
+        + void displayPatientMenu()
+        + void displayPatientDetails(PatientModel patient)
+        + void displayUpdateInfoOptions()
+        + void displayInvalidChoiceMessage()
+        + void displayLogoutMessage()
+        + void promptForEmail()
+        + void promptForContactNumber()
+    }
+
+    class PharmacistView {
+        + void displayPharmacistMenu()
+        + void displayMessage(String message)
+        + void displayError(String errorMessage)
+        + void displayAppointmentOutcome(String appointmentDetails)
+        + void displayMedicationInventory(String inventoryDetails)
+    }
+
+    class UserView {
+        + void displayMessage(String message)
+        + void displayUserDetails(String userId, String name, String role)
+    }
+
+    AdministratorView --> Scanner : uses
+    AdministratorView --> List : uses
+    DoctorView --> List : uses
+    PatientView --> PatientModel : uses
+}
+@enduml

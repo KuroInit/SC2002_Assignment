@@ -1,0 +1,123 @@
+@startuml
+package healthcare.records {
+
+    ' Appointment Class
+    class Appointment {
+        - LocalDate appointmentDate
+        - TreatmentTypes treatment
+        - String appointmentID
+        - String doctorID
+        - String patientID
+        - List<Medication> prescribedMedication
+        - String consultationNotes
+        - AppointmentStatus appointmentStatus
+        - ServiceTypes serviceType
+
+        + Appointment(Date appointmentDate, TreatmentTypes type, String patientID, String doctorID)
+        + String toCSV()
+        + String getPatientID()
+        + String getAppointmentID()
+        + String getDoctorID()
+        + AppointmentStatus getAppointmentStatus()
+        + LocalDate getAppointmentDate()
+        + TreatmentTypes getTreatmentType()
+        + List<Medication> getPrescribedMedications()
+        + String getConsultationNotes()
+        + ServiceTypes getServiceType()
+        + void setServiceTypes(ServiceTypes serviceType)
+        + String printAppointments()
+        + void setStatus(AppointmentStatus appointmentStatus)
+        + void setConsultationNotes(String notes)
+        + void addMedication(String medName)
+        + void setAppointmentStatus(AppointmentStatus status)
+        + String toString()
+    }
+
+    ' Medication Class
+    class Medication {
+        - String medicationName
+        - AppointmentStatus medicationStatus
+
+        + Medication(String name)
+        + String getMedicationName()
+        + AppointmentStatus getMedicationStatus()
+        + void updateMedicationStatus(AppointmentStatus status)
+        + String toString()
+    }
+
+    ' AppointmentStatus Enum
+    enum AppointmentStatus {
+        PENDING
+        APPROVED
+        REJECTED
+        COMPLETED
+    }
+
+    ' TreatmentTypes Enum
+    enum TreatmentTypes {
+        DENTAL
+        MEDICAL
+        SURGICAL
+        CONSULTATION
+    }
+
+    ' ServiceTypes Enum
+    enum ServiceTypes {
+        CONSULTATION
+        XRAY
+        BLOOD_TEST
+        SURGERY
+        OTHERS
+    }
+
+    Appointment "1" --> "*" Medication
+
+    ' Obfuscation Class
+    class Obfuscation {
+        + static String hashPassword(String password)
+        + static int compareHash(String hash, String plainText)
+        + static String getPasswordInput(String prompt)
+    }
+
+    Obfuscation --> MessageDigest : uses
+    Obfuscation --> Console : uses
+
+    ' MedicalRecord Class
+    class MedicalRecord {
+        - String diagnosis
+        - String treatment
+        - String appointmentOutcome
+        - static final String RECORD_FILE
+
+        + MedicalRecord(String diagnosis, String treatment, String appointmentOutcome)
+        + String getDiagnosis()
+        + String getTreatment()
+        + String getAppointmentOutcome()
+        + void saveRecordToCSV(int patientID)
+        + static List<MedicalRecord> loadRecordsByPatientID(int patientID)
+        + String toString()
+    }
+
+    MedicalRecord --> BufferedWriter : uses
+    MedicalRecord --> FileWriter : uses
+    MedicalRecord --> BufferedReader : uses
+    MedicalRecord --> FileReader : uses
+    MedicalRecord --> List : uses
+    MedicalRecord --> ArrayList : uses
+
+    ' Feedback Class
+    class Feedback {
+        - String patientName
+        - String feedbackMessage
+        - int rating
+
+        + Feedback(String patientName, String feedbackMessage, int rating)
+        + void writeFeedbackToCSV()
+        + static void collectFeedback(Scanner scanner)
+    }
+
+    Feedback --> Scanner : uses
+    Feedback --> PrintWriter : uses
+    Feedback --> FileWriter : uses
+}
+@enduml

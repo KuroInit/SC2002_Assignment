@@ -1,0 +1,148 @@
+@startuml
+package healthcare.users.controllers {
+
+    ' AdministratorController Class
+    class AdministratorController {
+        - AdministratorModel model
+        - AdministratorView view
+
+        + AdministratorController(AdministratorModel model, AdministratorView view)
+        + void administratorMenu()
+        + void manageStaff()
+        + void viewStaff()
+        + void addStaff()
+        + void updateStaff()
+        + void removeStaff()
+        + void viewAppointments()
+        + void manageInventory()
+        + void manageReplenishmentRequests()
+    }
+
+    ' DoctorController Class
+    class DoctorController {
+        - DoctorModel model
+        - DoctorView view
+
+        + DoctorController(DoctorModel model, DoctorView view)
+        + void showMenu()
+        + void viewPatientMedicalRecords()
+        + void addPatientMedicalRecord()
+        + void viewSchedule()
+        + void viewBookedAppointments()
+        + void viewAvailableAppointments()
+        + void viewUpcomingAppointments()
+        + void selectAvailableSlot()
+        + void viewPendingAppointments()
+        + void updateAppointmentStatus()
+        + void recordAppointmentOutcome()
+    }
+
+    ' PatientController Class
+    class PatientController {
+        - PatientModel patientModel
+        - PatientView patientView
+
+        + PatientController(PatientModel patientModel, PatientView patientView)
+        + void showPatientMenu()
+        + void viewMedicalRecords()
+        + void updatePersonalInfo(Scanner scanner)
+        + void viewAvailableAppointments(Scanner scanner)
+        + void scheduleAppointment(Scanner scanner)
+        + void rescheduleAppointment(Scanner scanner)
+        + void cancelAppointment(Scanner scanner)
+        + void viewScheduledAppointments()
+        + void viewCompletedAppointments()
+        + void feedback()
+        - void handleMenuChoice(int choice, Scanner scanner)
+        - void updatePatientFile(String newEmail, String newContactNumber)
+    }
+
+    ' PharmacistController Class
+    class PharmacistController {
+        - PharmacistModel pharmacistModel
+        - PharmacistView pharmacistView
+
+        + PharmacistController(PharmacistModel pharmacistModel, PharmacistView pharmacistView)
+        + void showMenu()
+        + void viewAppointmentOutcomeRecord()
+        + void updateMedicationStatus(Scanner scanner)
+        + void viewMedicationInventory()
+        + void submitReplenishmentRequest(Scanner scanner)
+    }
+
+    ' UserController Class
+    class UserController {
+        - User model
+        - UserView view
+
+        - static final String DOCTOR_PASSWORDS_FILE
+        - static final String PATIENT_PASSWORDS_FILE
+        - static final String STAFF_PASSWORDS_FILE
+        - static final String DOCTOR_LIST_FILE
+        - static final String PATIENT_LIST_FILE
+        - static final String STAFF_LIST_FILE
+
+        + UserController(User model, UserView view)
+        + void changeUserPassword(String hospitalId, String newPassword) throws IOException
+        + static void initializeUsers()
+        - static void loadPasswordsAndRoles()
+        - static void loadPasswordFile(String filePath, Map<String, String> passwordMap, Map<String, String> roleMap, String defaultRole)
+        - static void loadNames()
+        - static void loadNameFile(String filePath, Map<String, String> nameMap)
+        - void updatePasswordInFile(String filePath, String hospitalId, String newPassword) throws IOException
+    }
+
+    ' Relationships
+    AdministratorController --> AdministratorModel : uses
+    AdministratorController --> AdministratorView : uses
+    AdministratorController --> Scanner : uses
+    AdministratorController --> Main : uses
+    AdministratorController --> List : uses
+
+    DoctorController --> DoctorModel : uses
+    DoctorController --> DoctorView : uses
+    DoctorController --> Scanner : uses
+    DoctorController --> List : uses
+    DoctorController --> IOException : uses
+    DoctorController --> HashSet : uses
+    DoctorController --> LocalDate : uses
+    DoctorController --> LocalDateTime : uses
+    DoctorController --> LocalTime : uses
+    DoctorController --> DateTimeFormatter : uses
+
+    PatientController --> PatientModel : uses
+    PatientController --> PatientView : uses
+    PatientController --> Feedback : uses
+    PatientController --> BufferedReader : uses
+    PatientController --> BufferedWriter : uses
+    PatientController --> FileReader : uses
+    PatientController --> FileWriter : uses
+    PatientController --> List : uses
+    PatientController --> Map : uses
+    PatientController --> Scanner : uses
+    PatientController --> Random : uses
+
+    PharmacistController --> PharmacistModel : uses
+    PharmacistController --> PharmacistView : uses
+    PharmacistController --> Scanner : uses
+    PharmacistController --> BufferedReader : uses
+    PharmacistController --> BufferedWriter : uses
+    PharmacistController --> FileReader : uses
+    PharmacistController --> FileWriter : uses
+    PharmacistController --> Files : uses
+    PharmacistController --> Paths : uses
+    PharmacistController --> List : uses
+
+    UserController --> User : uses
+    UserController --> UserView : uses
+    UserController --> Map : uses
+    UserController --> List : uses
+    UserController --> BufferedReader : uses
+    UserController --> BufferedWriter : uses
+    UserController --> FileReader : uses
+    UserController --> FileWriter : uses
+    UserController --> IOException : uses
+    UserController --> Files : uses
+    UserController --> Paths : uses
+}
+@enduml
