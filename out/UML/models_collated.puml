@@ -129,7 +129,7 @@ package healthcare.users.models {
         + void setAge(String age)
     }
 
-    ' UserModel Class
+    ' UserModel Class 
     class UserModel {
         + static Map<String, String> userPasswordStaffMap
         + static Map<String, String> userPasswordPatientMap
