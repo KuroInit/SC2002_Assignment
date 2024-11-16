@@ -173,7 +173,7 @@ public class DoctorController {
             }
         } while (prescribedMedicine.isEmpty());
 
-        String newRecord = patientID + "," + dateOfRecord + "," + diagnosis + "," + treatmentPlan + ","
+        String newRecord = "\n" + patientID + "," + dateOfRecord + "," + diagnosis + "," + treatmentPlan + ","
                 + prescribedMedicine;
 
         try {
@@ -187,7 +187,10 @@ public class DoctorController {
     }
 
     private void viewSchedule() {
+        Screen.clearConsole();
+        System.out.println("====================================================");
         view.displayMessage("Doctor " + model.getName() + "'s Schedule:");
+        System.out.println("======================================================");
         view.displayMessage("Booked Appointments:");
         viewBookedAppointments();
         view.displayMessage("\nAvailable Appointments:");

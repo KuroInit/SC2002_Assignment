@@ -17,7 +17,6 @@ public class PharmacistView {
         System.out.println("|  5. Logout                              |");
         System.out.println("|                                         |");
         System.out.println("===========================================");
-        System.out.print("Choose an option: ");
     }
 
     public void displayMessage(String message) {

@@ -70,11 +70,13 @@ public class PatientController {
     }
 
     private void feedback() {
+        Screen.clearConsole();
         Scanner s = new Scanner(System.in);
         Feedback.collectFeedback(s);
     }
 
     private void viewMedicalRecords() {
+        Screen.clearConsole();
         String patientListPath = "Patient_List.csv";
         String medicalRecordsPath = "medicalRecords.csv";
 
@@ -150,6 +152,7 @@ public class PatientController {
     }
 
     private void updatePersonalInfo(Scanner scanner) {
+        Screen.clearConsole();
         patientView.displayUpdateInfoOptions();
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -231,6 +234,7 @@ public class PatientController {
     }
 
     private void viewAvailableAppointments(Scanner scanner) {
+        Screen.clearConsole();
         String doctorListPath = "Doctor_List.csv";
         String appointmentsPath = "availableAppointments.csv";
         Map<String, String> doctors = new HashMap<>();
@@ -373,6 +377,7 @@ public class PatientController {
     }
 
     private void scheduleAppointment(Scanner scanner) {
+        Screen.clearConsole();
         String doctorListPath = "Doctor_List.csv";
         String appointmentsPath = "availableAppointments.csv";
         String appointmentRequestsPath = "appointmentRequests.csv";
@@ -606,6 +611,7 @@ public class PatientController {
     }
 
     private void rescheduleAppointment(Scanner scanner) {
+        Screen.clearConsole();
         String appointmentRequestsPath = "appointmentRequests.csv";
         String appointmentsPath = "availableAppointments.csv";
 
@@ -810,6 +816,7 @@ public class PatientController {
     }
 
     private void cancelAppointment(Scanner scanner) {
+        Screen.clearConsole();
         String appointmentRequestsPath = "appointmentRequests.csv";
         String appointmentsPath = "availableAppointments.csv";
 
@@ -920,6 +927,7 @@ public class PatientController {
     }
 
     private void viewScheduledAppointments() {
+        Screen.clearConsole();
         String appointmentRequestsPath = "appointmentRequests.csv";
         String doctorListPath = "Doctor_List.csv";
         Map<String, String> doctorNames = new HashMap<>();
@@ -977,6 +985,7 @@ public class PatientController {
     }
 
     private void viewCompletedAppointments() {
+        Screen.clearConsole();
         String appointmentRequestsPath = "appointmentRequests.csv";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(appointmentRequestsPath))) {
