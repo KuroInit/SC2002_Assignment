@@ -30,7 +30,8 @@ public class AdministratorController {
                 case 2 -> viewAppointments();
                 case 3 -> manageInventory();
                 case 4 -> manageReplenishmentRequests();
-                case 5 -> System.out.println("Logging out...");
+                case 5 -> viewFeedback();
+                case 6 -> System.out.println("Logging out...");
                 default -> System.out.println("Invalid choice. Please select a valid option.");
             }
         } while (choice != 5);
@@ -542,6 +543,24 @@ public class AdministratorController {
             model.updateEntry(model.getMedicineListPath(), medicineName, 0, updatedMedicineEntry, medicineHeader);
         } else {
             view.displayErrorMessage("Restock failed in the replenishment requests.");
+        }
+    }
+
+    public void viewFeedback() {
+        Screen.clearConsole();
+        List<String[]> feedbackList = model.getFeedback();
+
+        if (!feedbackList.isEmpty()) {
+            System.out.println("===========================================");
+            System.out.println("            Patient Feedback               ");
+            System.out.println("===========================================");
+            for (String[] feedback : feedbackList) {
+                System.out.printf("Patient ID: %s%n", feedback[0]);
+                System.out.printf("Feedback: %s%n", feedback[1]);
+                System.out.println("-------------------------------------------");
+            }
+        } else {
+            System.out.println("No feedback found.");
         }
     }
 }

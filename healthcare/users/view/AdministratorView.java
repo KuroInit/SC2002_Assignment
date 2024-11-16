@@ -16,7 +16,8 @@ public class AdministratorView {
         System.out.println("|  2. View Appointment Details            |");
         System.out.println("|  3. View and Manage Medication Inventory|");
         System.out.println("|  4. Approve Replenishment Requests      |");
-        System.out.println("|  5. Logout                              |");
+        System.out.println("|  5. View Patient Feedback               |");
+        System.out.println("|  6. Logout                              |");
         System.out.println("|                                         |");
         System.out.println("===========================================");
         System.out.print("Choose an option: ");

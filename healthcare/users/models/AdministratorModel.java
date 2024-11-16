@@ -145,6 +145,27 @@ public class AdministratorModel {
         return entryFound;
     }
 
+    private static final String FEEDBACK_FILE = "patient_feedback.csv";
+
+    // Method to read feedback from the file
+    public List<String[]> getFeedback() {
+        List<String[]> feedbackList = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(FEEDBACK_FILE))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] feedbackDetails = line.split(","); // Split by comma
+                feedbackList.add(feedbackDetails);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Feedback file not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error reading feedback file: " + e.getMessage());
+        }
+
+        return feedbackList;
+    }
+
     // Method to get file paths based on the type of staff
     public String getFilePathForStaffType(String staffType) {
         return switch (staffType.toLowerCase()) {
@@ -198,4 +219,5 @@ public class AdministratorModel {
     public static String getReplenishmentRequestsHeader() {
         return REPLENISHMENT_HEADER;
     }
+
 }
