@@ -202,7 +202,7 @@ package healthcare.users.controllers {
     }
 
     class UserController {
-        - User model
+        - UserModel model
         - UserView view
 
         - static final String DOCTOR_PASSWORDS_FILE
@@ -212,7 +212,7 @@ package healthcare.users.controllers {
         - static final String PATIENT_LIST_FILE
         - static final String STAFF_LIST_FILE
 
-        + UserController(User model, UserView view)
+        + UserController(UserModel model, UserView view)
         + void changeUserPassword(String hospitalId, String newPassword) throws IOException
         + static void initializeUsers()
         - static void loadPasswordsAndRoles()
@@ -262,7 +262,7 @@ package healthcare.users.controllers {
     PharmacistController --> Paths : uses
     PharmacistController --> List : uses
 
-    UserController --> User : uses
+    UserController --> UserModel: uses
     UserController --> UserView : uses
     UserController --> Map : uses
     UserController --> List : uses
@@ -396,7 +396,7 @@ package healthcare.users.models {
         + void setAge(String age)
     }
 
-    class User {
+    class UserModel {
         + static Map<String, String> userPasswordStaffMap
         + static Map<String, String> userPasswordPatientMap
         + static Map<String, String> userRoleStaffMap
