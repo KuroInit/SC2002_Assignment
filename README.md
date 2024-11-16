@@ -14,7 +14,7 @@ The initial password for every user is `password`.
 - [GitHub Repository](https://github.com/KuroInit/SC2002_Assignment)
 - [Documentation](https://github.com/KuroInit/SC2002_Assignment/tree/main/docs)
 - [Report](https://github.com/KuroInit/SC2002_Assignment/blob/main/SCS5-GROUP%203.pdf)
-- [Presentation Video]()
+- [Presentation Video](https://www.youtube.com/watch?v=mmMCV20Z7zc&t=8s)
 
 - ## Team Members
 
