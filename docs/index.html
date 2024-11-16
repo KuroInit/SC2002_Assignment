@@ -74,15 +74,62 @@
 
     .team-section {
       font-size: 0.9rem;
-      position: fixed;
-      bottom: 0;
       width: 100%;
       background-color: #f5f5f5;
-      padding: 10px 0;
+      padding: 20px 0;
+      position: relative; /* Changed from fixed to relative */
+      bottom: 0;
+    }
+
+    .team-section a {
+      margin-bottom: 10px;
+    }
+
+    /* Ensure enough space above the footer so it does not block content */
+    .content-wrapper {
+      padding-bottom: 100px; /* Add padding for footer */
+    }
+
+    .description-section, .features-section, .overview-section {
+      padding: 50px 20px;
+      text-align: center;
+      background-color: #f5f5f5;
+    }
+
+    .description-section h2, .features-section h2, .overview-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .description-section p, .features-section p {
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .features-section ul {
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .features-section ul li {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .features-section ul li strong {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
+
+<div class="content-wrapper">
 
 <section class="hero">
   <div class="hero-body">
@@ -123,6 +170,42 @@
       </div>
     </div>
   </div>
+</section>
+
+<!-- Project Overview Section -->
+<section class="overview-section">
+  <h2 class="title is-3">Project Overview</h2>
+  <p>
+    The Hospital Management System (HMS) is a full-featured healthcare management software developed in Java. It provides a robust platform for managing patients, staff, doctors, appointments, medical records, and patient feedback, with a focus on security, efficiency, and user accessibility. This system is designed using the MVC (Model-View-Controller) architecture to separate concerns, enabling easy maintainability and scalability. The project includes various advanced features like password encryption, feedback collection, and restrictions for weekend appointments.
+  </p>
+</section>
+
+<!-- Key Features Section -->
+<section class="features-section">
+  <h2 class="title is-3">Key Features</h2>
+  <ul>
+    <li><strong>1. User Authentication and Role Management:</strong>
+      <p>Supports multiple user roles like Administrator, Doctor, Pharmacist, and Patient with secure login and password encryption.</p>
+    </li>
+    <li><strong>2. Patient Registration:</strong>
+      <p>Allows patients to register and receive a unique ID with options to change the default password.</p>
+    </li>
+    <li><strong>3. Appointment Management:</strong>
+      <p>Doctors can manage schedules, while patients can book, reschedule, and cancel appointments, with restrictions on Sundays.</p>
+    </li>
+    <li><strong>4. Medical Records Management:</strong>
+      <p>Doctors can manage patient medical records, including diagnoses, treatments, and medication.</p>
+    </li>
+    <li><strong>5. Inventory and Replenishment Management:</strong>
+      <p>Manages medicine inventory, low stock alerts, and replenishment requests handled by pharmacists and administrators.</p>
+    </li>
+    <li><strong>6. Feedback Collection:</strong>
+      <p>Patients can provide feedback on their experience, stored in CSV files for future analysis.</p>
+    </li>
+    <li><strong>7. Password Security:</strong>
+      <p>SHA-256 encryption ensures the secure storage of user passwords.</p>
+    </li>
+  </ul>
 </section>
 
 <!-- Team GitHub Accounts Section -->
@@ -169,6 +252,8 @@
     </div>
   </div>
 </section>
+
+</div> <!-- End of content-wrapper -->
 
 </body>
 </html>
