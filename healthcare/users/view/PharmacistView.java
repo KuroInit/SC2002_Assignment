@@ -39,7 +39,7 @@ public class PharmacistView {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displayAppointmentOutcome(String appointmentDetails) {
@@ -51,7 +51,7 @@ public class PharmacistView {
         System.out.println(appointmentDetails);
         System.out.println("===========================================");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displayMedicationInventory(String inventoryDetails) {
@@ -64,7 +64,7 @@ public class PharmacistView {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
 }

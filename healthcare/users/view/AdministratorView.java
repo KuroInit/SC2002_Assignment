@@ -173,7 +173,7 @@ public class AdministratorView {
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     private boolean matchesFilter(String[] details, String filterField, String filterValue) {
@@ -261,7 +261,7 @@ public class AdministratorView {
         }
 
         System.out.println("===========================================");
-        scanner.close();
+
         return details.toString();
     }
 
@@ -351,7 +351,6 @@ public class AdministratorView {
 
         }
 
-        scanner.close();
         return String.join(",", fields);
 
     }
@@ -527,7 +526,7 @@ public class AdministratorView {
         System.out.println("\nPress Enter to continue...");
         Scanner scanner = new Scanner(System.in);
         scanner.nextLine();
-        scanner.close();
+
     }
 
     private boolean matchesAppointmentFilter(String[] details, String filterField, String filterValue,
@@ -586,7 +585,7 @@ public class AdministratorView {
         System.out.println("\nPress Enter to continue...");
         Scanner scanner = new Scanner(System.in);
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public String collectMedicineDetails(Scanner scanner) {
@@ -618,7 +617,7 @@ public class AdministratorView {
         scanner.nextLine(); // Consume newline
 
         System.out.println("===========================================");
-        scanner.close();
+
         return details.toString();
     }
 
@@ -691,7 +690,7 @@ public class AdministratorView {
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displaySuccessMessage(String message) {
@@ -703,7 +702,7 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displayErrorMessage(String message) {
@@ -715,7 +714,7 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displayExitMessage(String context) {
@@ -727,7 +726,7 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displayInvalidOption() {
@@ -739,7 +738,7 @@ public class AdministratorView {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
 }

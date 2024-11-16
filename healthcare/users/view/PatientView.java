@@ -40,7 +40,6 @@ public class PatientView {
         System.out.println("----------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
 
     }
 
@@ -67,18 +66,16 @@ public class PatientView {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displayLogoutMessage() {
         Screen.clearConsole();
-        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("              Logging Out...               ");
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        scanner.nextLine();
-        scanner.close();
+        new Scanner(System.in).nextLine();
     }
 
     public void promptForEmail() {

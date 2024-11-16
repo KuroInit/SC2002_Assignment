@@ -49,7 +49,7 @@ public class DoctorView {
         System.out.println("----------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        scanner.close();
+
     }
 
     public void displayAppointmentDetails(String[] appointmentDetails) {

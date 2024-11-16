@@ -1,8 +1,8 @@
 package healthcare.users.controllers;
 
-import healthcare.main.Main;
 import healthcare.users.models.*;
 import healthcare.users.view.*;
+import healthcare.records.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -160,7 +160,7 @@ public class AdministratorController {
             String[] staffDetails = newEntry.split(",");
             String staffID = staffDetails[0];
             String defaultPassword = "password";
-            String hashedPassword = Main.hashPassword(defaultPassword);
+            String hashedPassword = Obfuscation.hashPassword(defaultPassword);
 
             String passwordEntry = staffID + "," + hashedPassword + "," + role;
 
@@ -404,7 +404,6 @@ public class AdministratorController {
 
         if (existingEntry == null) {
             view.displayErrorMessage("Medicine not found.");
-            scanner.close();
             return;
         }
 
@@ -425,7 +424,6 @@ public class AdministratorController {
             view.displayErrorMessage("Medicine not found or update failed.");
         }
 
-        scanner.close();
     }
 
     public void manageReplenishmentRequests() {

@@ -41,21 +41,6 @@ public class Main {
     private static Map<String, PharmacistController> pharmacistMap;
     private static Map<String, AdministratorController> administratorMap;
 
-    // Utility method to hash passwords with SHA-256
-    public static String hashPassword(String password) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(password.getBytes());
-            StringBuilder hashString = new StringBuilder();
-            for (byte b : hashBytes) {
-                hashString.append(String.format("%02x", b));
-            }
-            return hashString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Hashing algorithm not available.");
-        }
-    }
-
     private static void loadAllData() throws IOException {
         // Load all data once to avoid repeated file I/O
         patientMap = loadPatientsFromCSV();
@@ -160,14 +145,20 @@ public class Main {
         System.out.println("3. Exit");
         System.out.println("=================================================");
         System.out.print("Choose an option: ");
-        int choice = sc.nextInt();
-        sc.nextLine(); // Consume newline
-        switch (choice) {
-            case 1 -> registerUser();
-            case 2 -> showLoginScreen();
-            case 3 -> exitApp();
-            case 4 -> registerAdmin();
-            default -> System.out.println("Invalid option. Please try again.");
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1 -> registerUser();
+                case 2 -> showLoginScreen();
+                case 3 -> exitApp();
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        } else {
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine();
         }
     }
 
@@ -181,7 +172,6 @@ public class Main {
         System.out.println("===========================================");
         System.out.println("\nPress Enter to exit...");
         scanner.nextLine();
-        scanner.close();
         // Exit the application
         System.exit(0);
     }
@@ -384,7 +374,7 @@ public class Main {
 
             // Creating a default password and storing it in the password file
             String defaultPassword = "password";
-            String hashedPassword = hashPassword(defaultPassword);
+            String hashedPassword = Obfuscation.hashPassword(defaultPassword);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(staffPasswordsFile, true))) {
                 writer.write(id + "," + hashedPassword + "," + dob);
                 writer.newLine();
@@ -424,8 +414,8 @@ public class Main {
             hospitalId = sc.nextLine().toUpperCase();
 
             // Check if the hospital ID exists in either staff or patient maps
-            if ((!UserModel.userPasswordStaffMap.containsKey(hospitalId)
-                    && !UserModel.userPasswordPatientMap.containsKey(hospitalId))
+            if ((!UserModel.userNameMapStaff.containsKey(hospitalId)
+                    && !UserModel.userNameMapPatient.containsKey(hospitalId))
                     && (!UserModel.userNameMapDoctor.containsKey(hospitalId)
                             && !UserModel.userPasswordDoctorMap.containsKey(hospitalId))) {
                 System.out.println("Invalid Hospital ID. Please try again.");
