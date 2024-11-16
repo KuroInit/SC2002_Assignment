@@ -14,7 +14,7 @@ public class AdministratorModel {
     public String getAdministratorID() {
         return administratorID;
     }
-    
+
     private static final String staffListPath = "Staff_List.csv";
     private static final String doctorListPath = "Doctor_List.csv";
     private static final String appointmentRequestsPath = "appointmentRequests.csv";
@@ -28,7 +28,6 @@ public class AdministratorModel {
     private static final String MEDICINE_HEADER = "Medicine Name,Stock,Low Stock Indicator,Stock Level";
     private static final String REPLENISHMENT_HEADER = "Medicine Name,Stock,Date,Replenishment Request";
 
-    // Method to read data from a CSV file
     public List<String> readDataFromFile(String filePath) {
         List<String> data = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -43,7 +42,6 @@ public class AdministratorModel {
         return data;
     }
 
-    // Method to write data to a CSV file
     public void writeDataToFile(String filePath, List<String> data) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             for (String line : data) {
@@ -55,7 +53,6 @@ public class AdministratorModel {
         }
     }
 
-    // Method to append data to a CSV file
     public boolean appendDataToFile(String filePath, String entry) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
             bw.write(entry);
@@ -67,7 +64,6 @@ public class AdministratorModel {
         }
     }
 
-    // Method to filter data based on a specific field and value
     public List<String> filterData(List<String> data, int fieldIndex, String filterValue) {
         List<String> filteredData = new ArrayList<>();
         for (String line : data) {
@@ -79,50 +75,43 @@ public class AdministratorModel {
         return filteredData;
     }
 
-    // Method to update an entry in the CSV file based on a specific ID
     public boolean updateEntry(String filePath, String id, int idIndex, String updatedEntry, String header) {
         List<String> data = readDataFromFile(filePath);
         boolean entryFound = false;
         List<String> updatedData = new ArrayList<>();
-    
-        // Use the specified header, adding it if the file is empty or header is missing
+
         if (!data.isEmpty() && data.get(0).equals(header)) {
-            updatedData.add(data.remove(0)); // Keep existing header and remove it from data list
+            updatedData.add(data.remove(0));
         } else {
-            updatedData.add(header); // Add correct header if missing
+            updatedData.add(header);
         }
-    
+
         for (String line : data) {
             String[] fields = line.split(",");
             if (fields[idIndex].equals(id)) {
-                updatedData.add(updatedEntry);  // Add the updated entry
+                updatedData.add(updatedEntry);
                 entryFound = true;
             } else {
-                updatedData.add(line);  // Keep unchanged entry
+                updatedData.add(line);
             }
         }
-    
-        // Write updated data back to file
+
         writeDataToFile(filePath, updatedData);
         return entryFound;
     }
-    
-    
-    
+
     public String[] getEntryById(String filePath, String id) {
         List<String> data = readDataFromFile(filePath);
-    
+
         for (String line : data) {
             String[] fields = line.split(",");
-            if (fields[0].equals(id)) {  // Assuming ID is at index 0
-                return fields;  // Return existing fields if ID matches
+            if (fields[0].equals(id)) {
+                return fields;
             }
         }
-        return null;  // Return null if ID is not found
+        return null;
     }
-    
 
-    // Method to remove an entry from a CSV file based on a specific ID
     public boolean removeEntry(String filePath, String id, String header) {
         List<String> data = readDataFromFile(filePath);
         boolean entryFound = false;
@@ -147,14 +136,13 @@ public class AdministratorModel {
 
     private static final String FEEDBACK_FILE = "patient_feedback.csv";
 
-    // Method to read feedback from the file
     public List<String[]> getFeedback() {
         List<String[]> feedbackList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(FEEDBACK_FILE))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] feedbackDetails = line.split(","); // Split by comma
+                String[] feedbackDetails = line.split(",");
                 feedbackList.add(feedbackDetails);
             }
         } catch (FileNotFoundException e) {
@@ -166,7 +154,6 @@ public class AdministratorModel {
         return feedbackList;
     }
 
-    // Method to get file paths based on the type of staff
     public String getFilePathForStaffType(String staffType) {
         return switch (staffType.toLowerCase()) {
             case "doctor" -> doctorListPath;
@@ -175,7 +162,6 @@ public class AdministratorModel {
         };
     }
 
-    // Getters for static file paths (useful for accessing them directly)
     public static String getStaffListPath() {
         return staffListPath;
     }

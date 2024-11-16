@@ -149,6 +149,7 @@ public class AdministratorView {
 
     public void displayFilteredStaff(List<String> staffData, String filterField, String filterValue) {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("==========================================================================");
         System.out.println("                          Staff List                         ");
         System.out.println("==========================================================================");
@@ -171,7 +172,8 @@ public class AdministratorView {
 
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine();
+        scanner.nextLine();
+        scanner.close();
     }
 
     private boolean matchesFilter(String[] details, String filterField, String filterValue) {
@@ -255,10 +257,11 @@ public class AdministratorView {
 
             System.out.print("   Enter Age: ");
             details.append(scanner.nextLine());
-            
+
         }
 
         System.out.println("===========================================");
+        scanner.close();
         return details.toString();
     }
 
@@ -284,8 +287,8 @@ public class AdministratorView {
         System.out.println("          Update Staff Details             ");
         System.out.println("===========================================");
         System.out.println("Select the field to update:");
-        
-        if (idIndex==1) {
+
+        if (idIndex == 1) {
             System.out.println("  1. Name");
             System.out.println("  2. Age");
             System.out.println("  3. Specialisation");
@@ -298,115 +301,60 @@ public class AdministratorView {
             // Update only the selected field based on choice
             System.out.println("===========================================");
             switch (choice) {
-            case 1 -> {
-                System.out.print("Enter new Name: ");
-                fields[1] = scanner.nextLine();
-            }
-            case 2 -> {
-                System.out.print("Enter new Age: ");
-                fields[4] = scanner.nextLine();
-            }
-            case 3 -> {
-                System.out.print("Enter new Specialization: ");
-                fields[5] = scanner.nextLine();
-            }
-        
-            default -> System.out.println("Invalid choice.");
+                case 1 -> {
+                    System.out.print("Enter new Name: ");
+                    fields[1] = scanner.nextLine();
+                }
+                case 2 -> {
+                    System.out.print("Enter new Age: ");
+                    fields[4] = scanner.nextLine();
+                }
+                case 3 -> {
+                    System.out.print("Enter new Specialization: ");
+                    fields[5] = scanner.nextLine();
+                }
+
+                default -> System.out.println("Invalid choice.");
             }
             System.out.println("===========================================");
 
-            
-    
-        }
-        else if (idIndex==2) {
+        } else if (idIndex == 2) {
             System.out.println("  1. Name");
             System.out.println("  2. Role");
             System.out.println("  3. Age");
             System.out.print("Enter your choice: ");
 
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
-        // Update only the selected field based on choice
-        System.out.println("===========================================");
-        switch (choice) {
-            case 1 -> {
-                System.out.print("Enter new Name: ");
-                fields[1] = scanner.nextLine();
-            }
-            case 2 -> {
-                System.out.print("Enter new Role: ");
-                fields[2] = scanner.nextLine();
-                System.out.print("Enter new ID: ");
-                fields[0] = scanner.nextLine();
-            }
-            case 3 -> {
-                System.out.print("Enter new Age: ");
-                fields[4] = scanner.nextLine();
-            }
-        
-            default -> System.out.println("Invalid choice.");
-        }
-        System.out.println("===========================================");
-
-        
-    }
-    return String.join(",", fields);
-    
-}  
-        /* 
-        System.out.println("  1. Name");
-        if (fields[2].equalsIgnoreCase("(?i)pharmacist|administrator|nurse")) {
-            System.out.println("  2. Role");
-        }
-        System.out.println("  3. Gender");
-        System.out.println("  4. Age");
-        if (fields[2].equals("(?i)Doctor|DOCTOR|doctor")) {
-            System.out.println("  5. Specialisation");
-        }*/
-        /*System.out.println("===========================================");
-        System.out.print("Enter your choice: ");
-
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        // Update only the selected field based on choice
-        System.out.println("===========================================");
-        switch (choice) {
-            case 1 -> {
-                System.out.print("Enter new Name: ");
-                fields[1] = scanner.nextLine();
-            }
-            case 2 -> {
-                if (fields[2].equals("Other Staff")) {
+            // Update only the selected field based on choice
+            System.out.println("===========================================");
+            switch (choice) {
+                case 1 -> {
+                    System.out.print("Enter new Name: ");
+                    fields[1] = scanner.nextLine();
+                }
+                case 2 -> {
                     System.out.print("Enter new Role: ");
                     fields[2] = scanner.nextLine();
-                } else {
-                    System.out.println("Invalid choice for Doctor.");
+                    System.out.print("Enter new ID: ");
+                    fields[0] = scanner.nextLine();
                 }
-            }
-            case 3 -> {
-                System.out.print("Enter new Gender: ");
-                fields[3] = scanner.nextLine();
-            }
-            case 4 -> {
-                System.out.print("Enter new Age: ");
-                fields[4] = scanner.nextLine();
-            }
-            case 5 -> {
-                if (fields[2].equals("Doctor")) {
-                    System.out.print("Enter new Specialisation: ");
-                    fields[5] = scanner.nextLine();
-                } else {
-                    System.out.println("Invalid choice for Other Staff.");
+                case 3 -> {
+                    System.out.print("Enter new Age: ");
+                    fields[4] = scanner.nextLine();
                 }
-            }
-            default -> System.out.println("Invalid choice.");
-        }
-        System.out.println("===========================================");
 
+                default -> System.out.println("Invalid choice.");
+            }
+            System.out.println("===========================================");
+
+        }
+
+        scanner.close();
         return String.join(",", fields);
-    }*/
+
+    }
 
     public String promptIDInput() {
         Screen.clearConsole();
@@ -417,6 +365,7 @@ public class AdministratorView {
         Scanner sc = new Scanner(System.in);
         String id = sc.nextLine();
         System.out.println("===========================================");
+        sc.close();
         return id;
     }
 
@@ -536,23 +485,22 @@ public class AdministratorView {
         boolean found = false;
         for (String appointment : appointments) {
             String[] details = appointment.split(",");
-        if (filterField==null && filterValue==null && statusFilter==null) {
-            System.out.println("| Appointment Details                                     |");
-            System.out.println("----------------------------------------------------------");
-            System.out.printf("| Appointment ID:           %s%n", details[0]);
-            System.out.printf("| Doctor ID:                %s%n", details[1]);
-            System.out.printf("| Patient ID:               %s%n", details[2]);
-            System.out.printf("| Date:                     %s%n", details[3]);
-            System.out.printf("| Time:                     %s%n", details[4]);
-            System.out.printf("| Status:                   %s%n", details[5]);
-            System.out.printf("| Service:                  %s%n", details[6]);
-            System.out.printf("| Consultation Notes:       %s%n", details[7]);
-            System.out.printf("| Prescribed Medications:   %s%n", details[8]);
-            System.out.printf("| Quantity of Medications:  %s%n", details[9]);
-            System.out.printf("| Medication Status:        %s%n", details[10]);
-            System.out.println("----------------------------------------------------------");
-        }
-            else if (matchesAppointmentFilter(details, filterField, filterValue, statusFilter)) {
+            if (filterField == null && filterValue == null && statusFilter == null) {
+                System.out.println("| Appointment Details                                     |");
+                System.out.println("----------------------------------------------------------");
+                System.out.printf("| Appointment ID:           %s%n", details[0]);
+                System.out.printf("| Doctor ID:                %s%n", details[1]);
+                System.out.printf("| Patient ID:               %s%n", details[2]);
+                System.out.printf("| Date:                     %s%n", details[3]);
+                System.out.printf("| Time:                     %s%n", details[4]);
+                System.out.printf("| Status:                   %s%n", details[5]);
+                System.out.printf("| Service:                  %s%n", details[6]);
+                System.out.printf("| Consultation Notes:       %s%n", details[7]);
+                System.out.printf("| Prescribed Medications:   %s%n", details[8]);
+                System.out.printf("| Quantity of Medications:  %s%n", details[9]);
+                System.out.printf("| Medication Status:        %s%n", details[10]);
+                System.out.println("----------------------------------------------------------");
+            } else if (matchesAppointmentFilter(details, filterField, filterValue, statusFilter)) {
                 System.out.println("| Appointment Details                                     |");
                 System.out.println("----------------------------------------------------------");
                 System.out.printf("| Appointment ID:           %s%n", details[0]);
@@ -568,17 +516,18 @@ public class AdministratorView {
                 System.out.printf("| Medication Status:        %s%n", details[10]);
                 System.out.println("----------------------------------------------------------");
                 found = true;
-            
-            if (!found) {
-                System.out.println("|                No matching appointments found           |");
-                System.out.println("----------------------------------------------------------");
+
+                if (!found) {
+                    System.out.println("|                No matching appointments found           |");
+                    System.out.println("----------------------------------------------------------");
+                }
             }
-        }
         }
         System.out.println("==========================================================");
         System.out.println("\nPress Enter to continue...");
         Scanner scanner = new Scanner(System.in);
         scanner.nextLine();
+        scanner.close();
     }
 
     private boolean matchesAppointmentFilter(String[] details, String filterField, String filterValue,
@@ -637,6 +586,7 @@ public class AdministratorView {
         System.out.println("\nPress Enter to continue...");
         Scanner scanner = new Scanner(System.in);
         scanner.nextLine();
+        scanner.close();
     }
 
     public String collectMedicineDetails(Scanner scanner) {
@@ -653,22 +603,22 @@ public class AdministratorView {
 
         // Collect quantity
         System.out.print("   Enter Quantity: ");
-        String quantity =scanner.nextLine();
+        String quantity = scanner.nextLine();
         details.append(quantity).append(",");
 
         // Collect low stock indicator
         System.out.print("   Enter Low Stock Indicator: ");
-        String lowstock =scanner.nextLine();
-        if (Integer.parseInt(quantity) < Integer.parseInt(lowstock)){
+        String lowstock = scanner.nextLine();
+        if (Integer.parseInt(quantity) < Integer.parseInt(lowstock)) {
             details.append(lowstock).append(",Low Stock");
-        }
-        else{
+        } else {
             details.append(lowstock).append(",In Stock");
         }
 
         scanner.nextLine(); // Consume newline
 
         System.out.println("===========================================");
+        scanner.close();
         return details.toString();
     }
 
@@ -720,6 +670,7 @@ public class AdministratorView {
 
     public void displayReplenishmentRequests(List<String> requests) {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("=========================================================================");
         System.out.println("               Replenishment Requests                        ");
         System.out.println("=========================================================================");
@@ -739,48 +690,56 @@ public class AdministratorView {
 
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine(); // Wait for Enter key
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void displaySuccessMessage(String message) {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("                SUCCESS                    ");
         System.out.println("===========================================");
         System.out.println("   " + message);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine(); // Wait for Enter key
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void displayErrorMessage(String message) {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("                 ERROR                     ");
         System.out.println("===========================================");
         System.out.println("   " + message);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine(); // Wait for Enter key
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void displayExitMessage(String context) {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("               EXIT MESSAGE                ");
         System.out.println("===========================================");
         System.out.println("   Exiting " + context + ".");
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine(); // Wait for Enter key
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void displayInvalidOption() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("            INVALID OPTION                 ");
         System.out.println("===========================================");
         System.out.println("   Invalid option. Please try again.");
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine(); // Wait for Enter key
+        scanner.nextLine();
+        scanner.close();
     }
-
 
 }

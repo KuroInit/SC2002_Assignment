@@ -1,7 +1,6 @@
 package healthcare.records;
 
 import java.time.ZoneId;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +20,6 @@ public class Appointment {
     private AppointmentStatus appointmentStatus;
     private ServiceTypes serviceType;
 
-    // Constructor with corrected parameter name and initialization
     public Appointment(Date appointmentDate, TreatmentTypes type, String patientID, String doctorID) {
         this.appointmentDate = appointmentDate != null
                 ? LocalDateTime.ofInstant(appointmentDate.toInstant(), ZoneId.systemDefault())
@@ -36,13 +34,11 @@ public class Appointment {
     }
 
     public String toCSV() {
-        // Convert the prescribed medications list to a semicolon-separated string
+
         String medications = prescribedMedication.stream()
                 .map(Medication::getMedicationName)
                 .collect(Collectors.joining(";"));
 
-        // Return a comma-separated line representing the appointment details, including
-        // consultationNotes
         return String.join(",",
                 appointmentID,
                 doctorID,
@@ -61,7 +57,6 @@ public class Appointment {
         return String.valueOf(id);
     }
 
-    // Patient methods
     public String getPatientID() {
         return patientID;
     }
@@ -107,7 +102,6 @@ public class Appointment {
                 + appointmentStatus.toString();
     }
 
-    // Doctor methods
     public void setStatus(AppointmentStatus appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
     }
@@ -124,7 +118,6 @@ public class Appointment {
         this.appointmentStatus = status;
     }
 
-    // Enums
     public enum AppointmentStatus {
         PENDING, APPROVED, REJECTED, COMPLETED;
     }
@@ -137,12 +130,10 @@ public class Appointment {
         CONSULTATION, XRAY, BLOOD_TEST, SURGERY, OTHERS;
     }
 
-    // Medication class
     public class Medication {
         private String medicationName;
         private AppointmentStatus medicationStatus;
 
-        // Constructor with corrected initialization
         public Medication(String name) {
             this.medicationName = name;
             this.medicationStatus = AppointmentStatus.PENDING;
@@ -156,7 +147,6 @@ public class Appointment {
             return medicationStatus;
         }
 
-        // Update status for medication
         public void updateMedicationStatus(AppointmentStatus status) {
             this.medicationStatus = status;
         }

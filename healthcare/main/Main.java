@@ -173,14 +173,15 @@ public class Main {
 
     private static void exitApp() {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("               EXITING APP                 ");
         System.out.println("===========================================");
         System.out.println("   Thank you for using the application!");
         System.out.println("===========================================");
         System.out.println("\nPress Enter to exit...");
-        new Scanner(System.in).nextLine();
-
+        scanner.nextLine();
+        scanner.close();
         // Exit the application
         System.exit(0);
     }

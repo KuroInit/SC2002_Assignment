@@ -26,6 +26,7 @@ public class PatientView {
 
     public void displayPatientDetails(PatientModel patient) {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("====================================================");
         System.out.println("                  Patient Details                   ");
         System.out.println("====================================================");
@@ -38,7 +39,9 @@ public class PatientView {
         System.out.printf("| %-20s : %s%n", "Contact Number", patient.getContactNumber());
         System.out.println("----------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine(); // Wait for Enter
+        scanner.nextLine();
+        scanner.close();
+
     }
 
     public void displayUpdateInfoOptions() {
@@ -56,22 +59,26 @@ public class PatientView {
 
     public void displayInvalidChoiceMessage() {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("             Invalid Choice                ");
         System.out.println("===========================================");
         System.out.println("   Invalid choice. Please try again.");
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine(); // Wait for Enter
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void displayLogoutMessage() {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("              Logging Out...               ");
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new Scanner(System.in).nextLine(); // Wait for Enter
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void promptForEmail() {

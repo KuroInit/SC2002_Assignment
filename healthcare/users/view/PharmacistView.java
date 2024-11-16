@@ -1,5 +1,7 @@
 package healthcare.users.view;
 
+import java.util.Scanner;
+
 public class PharmacistView {
 
     public void displayPharmacistMenu() {
@@ -29,34 +31,40 @@ public class PharmacistView {
 
     public void displayError(String errorMessage) {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("                 ERROR                     ");
         System.out.println("===========================================");
         System.out.println("   Error: " + errorMessage);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine();
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void displayAppointmentOutcome(String appointmentDetails) {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("         Appointment Outcome Record        ");
         System.out.println("===========================================");
         System.out.println(appointmentDetails);
         System.out.println("===========================================");
-
+        scanner.nextLine();
+        scanner.close();
     }
 
     public void displayMedicationInventory(String inventoryDetails) {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("          Medication Inventory             ");
         System.out.println("===========================================");
         System.out.println(inventoryDetails);
         System.out.println("===========================================");
         System.out.println("\nPress Enter to continue...");
-        new java.util.Scanner(System.in).nextLine();
+        scanner.nextLine();
+        scanner.close();
     }
 
 }

@@ -1,4 +1,8 @@
-@startuml
+@startuml controller_collated
+skinparam classBackgroundColor #D1E9FF
+skinparam classBorderColor #5B9BD5
+skinparam classFontColor #1F4E79
+skinparam classArrowColor #1F4E79
 package healthcare.users.controllers {
 
     ' AdministratorController Class

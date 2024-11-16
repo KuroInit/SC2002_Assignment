@@ -35,6 +35,7 @@ public class DoctorView {
 
     public void displayPatientDetails(String[] details) {
         Screen.clearConsole();
+        Scanner scanner = new Scanner(System.in);
         System.out.println("====================================================");
         System.out.println("                 Patient Details                    ");
         System.out.println("====================================================");
@@ -47,8 +48,8 @@ public class DoctorView {
         System.out.printf("| %-20s : %s%n", "Contact Number", details[6]);
         System.out.println("----------------------------------------------------");
         System.out.println("\nPress Enter to continue...");
-        Scanner scanner = new Scanner(System.in);
         scanner.nextLine();
+        scanner.close();
     }
 
     public void displayAppointmentDetails(String[] appointmentDetails) {

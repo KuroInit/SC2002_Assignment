@@ -32,7 +32,8 @@ public class UserController {
 
     private static void loadPasswordsAndRoles() {
         loadPasswordFile(DOCTOR_PASSWORDS_FILE, UserModel.userPasswordDoctorMap, UserModel.userRoleDoctorMap, "Doctor");
-        loadPasswordFile(PATIENT_PASSWORDS_FILE, UserModel.userPasswordPatientMap, UserModel.userRolePatientMap, "Patient");
+        loadPasswordFile(PATIENT_PASSWORDS_FILE, UserModel.userPasswordPatientMap, UserModel.userRolePatientMap,
+                "Patient");
         loadPasswordFile(STAFF_PASSWORDS_FILE, UserModel.userPasswordStaffMap, UserModel.userRoleStaffMap, "Staff");
     }
 
@@ -78,14 +79,13 @@ public class UserController {
         }
     }
 
-    public static void registerUser(String userId, String name, String dob, String gender, String bloodType, 
-                                    String email, String phoneNumber, String role, String hashedPassword) throws IOException {
+    public static void registerUser(String userId, String name, String dob, String gender, String bloodType,
+            String email, String phoneNumber, String role, String hashedPassword) throws IOException {
         String filePath;
         Map<String, String> passwordMap;
         Map<String, String> roleMap;
         Map<String, String> nameMap;
 
-        // Determine the file and map to update based on the role
         switch (role) {
             case "Patient":
                 filePath = "Patient_List.csv";
@@ -94,7 +94,7 @@ public class UserController {
                 nameMap = UserModel.userNameMapPatient;
                 break;
             case "Doctor":
-                filePath = "Doctor_List.csv"; // Separate file for doctors
+                filePath = "Doctor_List.csv";
                 passwordMap = UserModel.userPasswordDoctorMap;
                 roleMap = UserModel.userRoleDoctorMap;
                 nameMap = UserModel.userNameMapDoctor;
@@ -110,20 +110,18 @@ public class UserController {
                 throw new IllegalArgumentException("Invalid role provided");
         }
 
-        // Add user details to maps
         passwordMap.put(userId, hashedPassword);
         roleMap.put(userId, role);
         nameMap.put(userId, name);
 
-        // Write user data to the appropriate file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(userId + "," + name + "," + dob + "," + gender + "," + bloodType + "," + email + "," + phoneNumber);
+            writer.write(
+                    userId + "," + name + "," + dob + "," + gender + "," + bloodType + "," + email + "," + phoneNumber);
             writer.newLine();
         }
 
-        // Write password data to the respective password file
-        String passwordFilePath = role.equals("Patient") ? "Patient_Passwords.csv" : 
-                                  (role.equals("Doctor") ? "Doctor_Passwords.csv" : "Staff_Passwords.csv");
+        String passwordFilePath = role.equals("Patient") ? "Patient_Passwords.csv"
+                : (role.equals("Doctor") ? "Doctor_Passwords.csv" : "Staff_Passwords.csv");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(passwordFilePath, true))) {
             writer.write(userId + "," + hashedPassword + "," + role);
             writer.newLine();
@@ -131,9 +129,8 @@ public class UserController {
     }
 
     public static void changeUserPassword(String hospitalId, String newHashedPassword) throws IOException {
-        String role = UserModel.userRoleStaffMap.containsKey(hospitalId) ? 
-                    UserModel.userRoleStaffMap.get(hospitalId) : 
-                    UserModel.userRolePatientMap.get(hospitalId);
+        String role = UserModel.userRoleStaffMap.containsKey(hospitalId) ? UserModel.userRoleStaffMap.get(hospitalId)
+                : UserModel.userRolePatientMap.get(hospitalId);
         String filePath;
 
         switch (role) {
@@ -155,19 +152,18 @@ public class UserController {
                 return;
         }
 
-    // Update the password in the file
         updatePasswordInFile(filePath, hospitalId, newHashedPassword);
     }
 
-// Helper method to update password in the file
-    private static void updatePasswordInFile(String filePath, String hospitalId, String newHashedPassword) throws IOException {
+    private static void updatePasswordInFile(String filePath, String hospitalId, String newHashedPassword)
+            throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(filePath));
         List<String> updatedLines = new ArrayList<>();
 
         for (String line : lines) {
             String[] details = line.split(",");
             if (details[0].equals(hospitalId)) {
-                details[1] = newHashedPassword; // Update the password field
+                details[1] = newHashedPassword;
                 line = String.join(",", details);
             }
             updatedLines.add(line);

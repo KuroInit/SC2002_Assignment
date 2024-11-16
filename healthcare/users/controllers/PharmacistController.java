@@ -25,7 +25,7 @@ public class PharmacistController {
             pharmacistView.displayPharmacistMenu();
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (choice) {
                 case 1 -> viewAppointmentOutcomeRecord();
@@ -50,7 +50,7 @@ public class PharmacistController {
                 "Completed Appointments:\n-----------------------------------------------------\n");
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine(); // Skip header
+            br.readLine();
             String line;
             boolean found = false;
 
@@ -96,14 +96,13 @@ public class PharmacistController {
         String prescribedMedicine = null;
         int prescribedQuantity = 0;
 
-        // Step 1: Locate the appointment and extract the medicine and quantity
         try (BufferedReader br = new BufferedReader(new FileReader(appointmentRequestsPath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details[0].equals(appointmentID) && "PENDING".equalsIgnoreCase(details[10])) {
                     appointmentFound = true;
-                    details[10] = "DISPENSED"; // Update status
+                    details[10] = "DISPENSED";
                     prescribedMedicine = details[8];
                     prescribedQuantity = Integer.parseInt(details[9]);
                     appointments.add(String.join(",", details));
@@ -123,7 +122,6 @@ public class PharmacistController {
             return;
         }
 
-        // Step 2: Update the appointment file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(appointmentRequestsPath))) {
             for (String updatedLine : appointments) {
                 bw.write(updatedLine);
@@ -137,7 +135,6 @@ public class PharmacistController {
             return;
         }
 
-        // Step 3: Update the medicine list by subtracting the prescribed quantity
         List<String> medicineData = new ArrayList<>();
         boolean medicineFound = false;
 
@@ -174,7 +171,6 @@ public class PharmacistController {
             return;
         }
 
-        // Step 4: Save the updated medicine list back to the file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(medicineListPath))) {
             for (String updatedLine : medicineData) {
                 bw.write(updatedLine);
