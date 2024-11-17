@@ -364,7 +364,6 @@ public class AdministratorView {
         Scanner sc = new Scanner(System.in);
         String id = sc.nextLine();
         System.out.println("===========================================");
-        sc.close();
         return id;
     }
 
@@ -694,6 +693,7 @@ public class AdministratorView {
     }
 
     public void displaySuccessMessage(String message) {
+        Screen.clearConsole();
         Scanner scanner = new Scanner(System.in);
         System.out.println("===========================================");
         System.out.println("                SUCCESS                    ");

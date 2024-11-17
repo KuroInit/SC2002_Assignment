@@ -219,15 +219,29 @@ public class AdministratorController {
         String filepath;
         String header;
         view.promptIsDoctor();
+        boolean passRemoved = false, isRemoved = false;
+        String passpath;
+        String passHeader;
+        String id;
         Integer isDoctor = scanner.nextInt();
         switch (isDoctor) {
             case 1 -> {
                 filepath = model.getDoctorListPath();
                 header = model.getDoctorHeader();
+                passpath = model.getDoctorPasswordsPath();
+                passHeader = "Doctor ID,Password,Role";
+                id = view.promptIDInput();
+                isRemoved = model.removeEntry(filepath, id, header);
+                passRemoved = model.removeEntry(passpath, id, passHeader);
             }
             case 2 -> {
                 filepath = model.getStaffListPath();
                 header = model.getStaffHeader();
+                passpath = model.getStaffPasswordsPath();
+                passHeader = "Staff ID,Password,Role";
+                id = view.promptIDInput();
+                isRemoved = model.removeEntry(filepath, id, header);
+                passRemoved = model.removeEntry(passpath, id, passHeader);
             }
             default -> {
                 System.out.println("Invalid staff type selected. Defaulting to Doctor.");
@@ -235,9 +249,8 @@ public class AdministratorController {
                 header = model.getDoctorHeader();
             }
         }
-        boolean isRemoved = model.removeEntry(filepath, view.promptIDInput(), header);
 
-        if (isRemoved) {
+        if (isRemoved && passRemoved) {
             view.displaySuccessMessage("Staff removed successfully.");
         } else {
             view.displayErrorMessage("Staff not found or removal failed.");
